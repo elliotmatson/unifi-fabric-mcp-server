@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
 ### Added
+- Write audit log (`UNIFI_AUDIT_WRITES`, default `true`): every call to a tool that is not read-only logs one structured INFO line (`tool-write-audit {json}` on the `unifi_fabric.audit` logger) with the tool, outcome (`ok` / `error` / `dry_run`), duration, host, site and arguments. Credential values in the logged arguments are always masked and large payloads are capped; response bodies and API keys are never logged. Lines go to stderr with the rest of the server log, so the server stays stateless.
 - `UNIFI_REDACT_SECRETS` (default `false`): opt-in masking of credential field values in every tool result — Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens and Classic-API `x_*` secret fields — for deployments that must not hand credentials to their MCP clients. It uses an explicit, documented field list (no pattern guessing): only string values are masked, so flags such as `x_ssh_auth_password_enabled`, counts and pagination cursors like `nextToken` are untouched. Masked values say how to turn masking off, and the result's `_meta.redactedFields` lists the masked paths. Masking runs on the finished result, so tool logic always works on raw data. Default behaviour is unchanged: complete upstream payloads. ([#26](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/26))
 
 ### Changed
