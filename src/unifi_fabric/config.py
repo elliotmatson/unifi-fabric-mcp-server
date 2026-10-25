@@ -353,6 +353,14 @@ class Settings(BaseSettings):
         "Masking applies to results only; tool logic always works on raw data. See "
         "src/unifi_fabric/_redaction.py for the exact field rules.",
     )
+    audit_writes: bool = Field(
+        default=True,
+        description="Write audit log. Env: UNIFI_AUDIT_WRITES. When true (default), every "
+        "call to a tool that is not read-only logs one structured INFO line "
+        "('tool-write-audit {json}') on the unifi_fabric.audit logger: tool, outcome "
+        "(ok/error/dry_run), duration, host, site and the arguments with credential values "
+        "masked. Response bodies and API keys are never logged. Logs go to stderr only.",
+    )
     enable_connector_write: bool = Field(
         default=False,
         description="Enable the guarded generic Fabric connector WRITE relay "

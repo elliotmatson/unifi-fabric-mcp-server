@@ -17,6 +17,7 @@ from typing import Any
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
 
+from ._audit import WriteAuditMiddleware
 from ._dry_run import DryRunMiddleware
 from ._redaction import CredentialMaskingMiddleware
 from ._tool_selection import ToolSelectionMiddleware, validate_selection
@@ -437,6 +438,8 @@ mcp.add_middleware(ToolSelectionMiddleware(get_settings))
 mcp.add_middleware(DryRunMiddleware(mcp.get_tool))
 # Opt-in credential masking on tool results (UNIFI_REDACT_SECRETS, default off).
 mcp.add_middleware(CredentialMaskingMiddleware(lambda: get_settings().redact_secrets))
+# One structured audit log line per write-tool call (UNIFI_AUDIT_WRITES, default on).
+mcp.add_middleware(WriteAuditMiddleware(lambda: get_settings().audit_writes, mcp.get_tool))
 
 
 def _require() -> tuple[UniFiClient, Registry]:
