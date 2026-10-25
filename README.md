@@ -14,7 +14,7 @@ An MCP (Model Context Protocol) server that exposes the UniFi Site Manager API a
 
 **Highlights:**
 
-- 283 tools across Fleet, Network, Firewall, Protect, VPN, InnerSpace, History, and more
+- 284 tools across Fleet, Network, Firewall, Protect, VPN, InnerSpace, History, and more
 - Faithful pass-through — tools return complete upstream payloads including credential fields (WLAN passphrases, RADIUS secrets, API tokens), GPS coordinates, and Protect recognition data. The `include_secrets` and `include_gps` parameters have been removed; all fields are always returned. Callers upgrading from 0.4.x or earlier should drop those parameters.
 - Configurable authentication: `none` (loopback/dev) / `bearer` (LAN/VPN) / `oauth` (resource-server, JWT-verified via JWKS)
 - Configurable TLS: plain HTTP / in-server HTTPS (`https`) / mutual TLS (`mtls`)
@@ -265,7 +265,7 @@ The tool set was verified against a live deployment during a read-only sweep (12
 
 ## Available Tools
 
-The server exposes **283 tools** organized by domain for managing UniFi infrastructure:
+The server exposes **284 tools** organized by domain for managing UniFi infrastructure:
 
 | Domain | Tool Count | Purpose |
 |--------|-----------|---------|
@@ -275,7 +275,7 @@ The server exposes **283 tools** organized by domain for managing UniFi infrastr
 | **Device Management** | 21 | Device control, adoption, stats, actions, location, tagging, STP/port-state reads |
 | **Clients** | 8 | Client listing, stats, blocking, reconnection |
 | **Firewall** | 24 | Policies, zones, ACL rules, rule ordering |
-| **DNS & Traffic** | 24 | DNS policies, traffic rules, matching lists, routes, dynamic DNS, DPI app/category catalogue |
+| **DNS & Traffic** | 25 | DNS policies, traffic rules, matching lists, routes, dynamic DNS, DPI app/category catalogue, traffic flow log |
 | **Port Forwarding** | 4 | List, create, update, delete port forwards |
 | **WLAN** | 6 | WLAN configs, groups, security settings |
 | **Protect** | 79 | Cameras, sensors, lights, chimes, liveviews, PTZ, snapshots, historical events, face/vehicle recognition, arm profiles, sirens, fobs, relays, speakers, bridges, link stations, alarm hubs, Protect users, ULP users, application metadata, POS overlay ingestion |
