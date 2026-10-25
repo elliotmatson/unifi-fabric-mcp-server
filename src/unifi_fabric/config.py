@@ -346,10 +346,11 @@ class Settings(BaseSettings):
         "POST-based queries, run normally. Default off.",
     )
     redact_secrets: bool = Field(
-        default=False,
+        default=True,
         description="Mask credential field values (Wi-Fi passphrases, RADIUS/VPN secrets, "
         "private keys, API tokens, Classic-API x_* secret fields) in every tool result. "
-        "Env: UNIFI_REDACT_SECRETS. Default OFF: tools return the complete upstream payload. "
+        "Env: UNIFI_REDACT_SECRETS. Default ON in this fork; set false to return the complete "
+        "upstream payload, credentials included. "
         "Masking applies to results only; tool logic always works on raw data. See "
         "src/unifi_fabric/_redaction.py for the exact field rules.",
     )
