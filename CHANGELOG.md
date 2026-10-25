@@ -7,16 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-25
+
+### Added
+- Server-side tool selection. `UNIFI_READ_ONLY=true` exposes only read tools; `UNIFI_TOOL_FAMILIES` (e.g. `network,protect`) and `UNIFI_DISABLED_TOOL_FAMILIES` (e.g. `connector`) choose tool families: `site_manager`, `network`, `firewall`, `devices`, `clients`, `hotspot`, `vpn`, `statistics`, `protect`, `innerspace`, `mobility`, `carrier`, `connector`. Hidden tools are left out of `tools/list` and refused if called; unknown family names stop the server at startup. Default unchanged: every tool is exposed. `docs/TOOLS.md` shows each tool's family. ([swkstudios#27](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/27))
+- Write audit log (`UNIFI_AUDIT_WRITES`, default `true`): every call to a tool that is not read-only logs one structured INFO line (`tool-write-audit {json}` on the `unifi_fabric.audit` logger) with the tool, outcome (`ok` / `error` / `dry_run`), duration, host, site and arguments. Credential values in the logged arguments are always masked and large payloads are capped; response bodies and API keys are never logged. Lines go to stderr with the rest of the server log, so the server stays stateless.
+- `UNIFI_REDACT_SECRETS` (default `true` in this fork, `false` upstream): masking of credential field values in every tool result — Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens and Classic-API `x_*` secret fields — for deployments that must not hand credentials to their MCP clients. It uses an explicit, documented field list (no pattern guessing): only string values are masked, so flags such as `x_ssh_auth_password_enabled`, counts and pagination cursors like `nextToken` are untouched. Masked values say how to turn masking off, and the result's `_meta.redactedFields` lists the masked paths. Masking runs on the finished result, so tool logic always works on raw data. Default behaviour is unchanged: complete upstream payloads. ([swkstudios#26](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/26))
+- `UNIFI_DRY_RUN` (default `false`): dry-run mode. No mutating request (POST/PUT/PATCH/DELETE) is sent to the UniFi API; a write tool runs its validation, gates and reads as usual, then stops at its first write and returns `{dryRun: true, sent: false, tool, request}` with the method, resolved path, API key label, query params and JSON body it would have sent. Read tools, including POST-based queries, are unaffected. The preview fits each tool's declared output schema. ([swkstudios#28](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/28))
+
 ### Changed
 - **This fork masks credential values by default** (`UNIFI_REDACT_SECRETS=true`): Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens and Classic-API `x_*` secret fields in tool results are replaced by a placeholder naming the setting. Set `UNIFI_REDACT_SECRETS=false` to return the complete upstream payload, credentials included. Upstream's default stays off.
+- The Fabric connector relay (`fabric_connector_*`) no longer masks credential fields on its own or truncates non-JSON bodies at 4,000 characters: relayed bodies are returned verbatim like every other tool's, and masking follows `UNIFI_REDACT_SECRETS`. Deployments that relied on the relay's built-in masking should set `UNIFI_REDACT_SECRETS=true`.
+
+### Fixed
+- Connector relay writes that changed only a credential field (e.g. a Wi-Fi passphrase) were reported as `noOp: true, changed: false`, because the before/after bodies were compared after masking. They are now compared raw.
 
 ## [0.7.0] - 2026-10-25
 
 ### Added
 - `list_traffic_flows` — read a site's traffic flow log (Insights > Flows). The console serves flows only as a POST search, so reading them previously needed the write-gated `fabric_connector_post`; this tool performs that search read-only and returns the response verbatim. Time window in epoch seconds (default: the last hour), console-side `direction` / `action` / `risk` filters, and paging (`page_size` up to 5000; one query returns at most 10,000 flows). Requires flow logging to be enabled on the console. Annotated `readOnlyHint=true`.
-
-### Added
-- Server-side tool selection. `UNIFI_READ_ONLY=true` exposes only read tools; `UNIFI_TOOL_FAMILIES` (e.g. `network,protect`) and `UNIFI_DISABLED_TOOL_FAMILIES` (e.g. `connector`) choose tool families: `site_manager`, `network`, `firewall`, `devices`, `clients`, `hotspot`, `vpn`, `statistics`, `protect`, `innerspace`, `mobility`, `carrier`, `connector`. Hidden tools are left out of `tools/list` and refused if called; unknown family names stop the server at startup. Default unchanged: every tool is exposed. `docs/TOOLS.md` shows each tool's family. ([#27](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/27))
 
 ### Changed
 - This repository is now a maintained fork of `swkstudios/unifi-fabric-mcp-server`. Container images are published to `ghcr.io/elliotmatson/unifi-fabric-mcp-server` (`:vX.Y.Z` and `:latest`), each release is tagged and published as a GitHub Release, and the README documents running a release straight from git with `uvx --from git+https://github.com/elliotmatson/unifi-fabric-mcp-server@vX.Y.Z unifi-fabric-mcp`. Docs, CODEOWNERS and issue links point to the fork; the upstream-only public-language PR lint is removed.
@@ -29,19 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `site` parameter also matches a site's `internalReference` slug, so `site="default"` keeps working on consoles whose only site was renamed in the UI.
 - With several API keys configured (one per Fabric / org), the fleet tools `list_all_devices`, `list_all_clients`, `get_fleet_summary`, `search_device_fleet` and `list_devices` (without `host`) now cover every key's org when no `key_label` is given, instead of silently querying only the first key. Records are tagged with `_keyLabel`, `get_fleet_summary` adds a per-key `byKey` breakdown, and a failing key is reported under `errors` without hiding the others (all keys failing raises). Passing `key_label` still scopes to one key; single-key deployments are unchanged.
 - Docker examples in `README.md` and `docs/AUTH-OAUTH.md` referenced image tags that are never published (`:0.6.1`, `:0.5.0`, and `:dev` / `:X.Y` aliases), so the documented `docker run` commands failed to pull. They now use the published `:vX.Y.Z` form, and the tag guidance describes what releases actually publish (`:vX.Y.Z` and `:latest`).
-
-### Added
-- Write audit log (`UNIFI_AUDIT_WRITES`, default `true`): every call to a tool that is not read-only logs one structured INFO line (`tool-write-audit {json}` on the `unifi_fabric.audit` logger) with the tool, outcome (`ok` / `error` / `dry_run`), duration, host, site and arguments. Credential values in the logged arguments are always masked and large payloads are capped; response bodies and API keys are never logged. Lines go to stderr with the rest of the server log, so the server stays stateless.
-- `UNIFI_REDACT_SECRETS` (default `false`): opt-in masking of credential field values in every tool result — Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens and Classic-API `x_*` secret fields — for deployments that must not hand credentials to their MCP clients. It uses an explicit, documented field list (no pattern guessing): only string values are masked, so flags such as `x_ssh_auth_password_enabled`, counts and pagination cursors like `nextToken` are untouched. Masked values say how to turn masking off, and the result's `_meta.redactedFields` lists the masked paths. Masking runs on the finished result, so tool logic always works on raw data. Default behaviour is unchanged: complete upstream payloads. ([#26](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/26))
-
-### Changed
-- The Fabric connector relay (`fabric_connector_*`) no longer masks credential fields on its own or truncates non-JSON bodies at 4,000 characters: relayed bodies are returned verbatim like every other tool's, and masking follows `UNIFI_REDACT_SECRETS`. Deployments that relied on the relay's built-in masking should set `UNIFI_REDACT_SECRETS=true`.
-
-### Fixed
-- Connector relay writes that changed only a credential field (e.g. a Wi-Fi passphrase) were reported as `noOp: true, changed: false`, because the before/after bodies were compared after masking. They are now compared raw.
-
-### Added
-- `UNIFI_DRY_RUN` (default `false`): dry-run mode. No mutating request (POST/PUT/PATCH/DELETE) is sent to the UniFi API; a write tool runs its validation, gates and reads as usual, then stops at its first write and returns `{dryRun: true, sent: false, tool, request}` with the method, resolved path, API key label, query params and JSON body it would have sent. Read tools, including POST-based queries, are unaffected. The preview fits each tool's declared output schema. ([#28](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/28))
 
 ## [0.6.2] - 2026-08-16
 
