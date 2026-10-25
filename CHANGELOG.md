@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Changed
+- Releases are cut by a single **Release** workflow, started by pushing a `vX.Y.Z` tag or by a manual run with that tag. It verifies the tag against `pyproject.toml` and `CHANGELOG.md`, runs the full CI gates on the release commit, creates the tag if missing, publishes the multi-arch image to `ghcr.io/<owner>/<repo>` (`:vX.Y.Z` and `:latest`, image name derived from the repository instead of hard-coded), and creates a GitHub Release with the changelog section as its notes.
+
 ## [0.6.2] - 2026-08-16
 
 ### Added
