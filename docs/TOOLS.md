@@ -36,292 +36,292 @@ Access comes from each tool's MCP annotations (`readOnlyHint`, `destructiveHint`
 
 Destructive: 43, Destructive (idempotent): 41, Read: 164, Write: 36
 
-| Tool | Category | Access |
-| --- | --- | --- |
-| [`adopt_device`](#adopt_device) | Device Management | Write |
-| [`alarm_hub_trigger_output`](#alarm_hub_trigger_output) | Other | Destructive |
-| [`allow_network_on_port_profile`](#allow_network_on_port_profile) | Other | Write |
-| [`approve_pending_device`](#approve_pending_device) | Other | Write |
-| [`assign_carrier_subscriber_plan`](#assign_carrier_subscriber_plan) | Other | Write |
-| [`attach_carrier_subscriber_host`](#attach_carrier_subscriber_host) | Other | Write |
-| [`block_client`](#block_client) | Client Management | Destructive |
-| [`bulk_delete_hotspot_vouchers`](#bulk_delete_hotspot_vouchers) | Other | Destructive |
-| [`compare_site_performance`](#compare_site_performance) | Other | Read |
-| [`create_acl_rule`](#create_acl_rule) | Create | Write |
-| [`create_arm_profile`](#create_arm_profile) | Create | Write |
-| [`create_carrier_subscriber`](#create_carrier_subscriber) | Create | Write |
-| [`create_device_tag`](#create_device_tag) | Create | Write |
-| [`create_dns_policy`](#create_dns_policy) | Create | Write |
-| [`create_firewall_policy`](#create_firewall_policy) | Create | Write |
-| [`create_firewall_zone_proxy`](#create_firewall_zone_proxy) | Create | Write |
-| [`create_hotspot_operator`](#create_hotspot_operator) | Create | Write |
-| [`create_hotspot_vouchers`](#create_hotspot_vouchers) | Create | Write |
-| [`create_liveview`](#create_liveview) | Create | Write |
-| [`create_network`](#create_network) | Create | Write |
-| [`create_port_forward`](#create_port_forward) | Create | Write |
-| [`create_radius_profile`](#create_radius_profile) | Create | Write |
-| [`create_rtsps_stream`](#create_rtsps_stream) | Create | Write |
-| [`create_site_to_site_tunnel`](#create_site_to_site_tunnel) | Create | Write |
-| [`create_traffic_matching_list`](#create_traffic_matching_list) | Create | Write |
-| [`create_traffic_route`](#create_traffic_route) | Create | Write |
-| [`create_traffic_rule`](#create_traffic_rule) | Create | Write |
-| [`create_vpn_server`](#create_vpn_server) | Create | Write |
-| [`create_wifi_broadcast`](#create_wifi_broadcast) | Create | Write |
-| [`delete_acl_rule`](#delete_acl_rule) | Delete | Destructive |
-| [`delete_arm_profile`](#delete_arm_profile) | Delete | Destructive |
-| [`delete_device_tag`](#delete_device_tag) | Delete | Destructive |
-| [`delete_dns_policy`](#delete_dns_policy) | Delete | Destructive |
-| [`delete_firewall_policy`](#delete_firewall_policy) | Delete | Destructive |
-| [`delete_firewall_zone_proxy`](#delete_firewall_zone_proxy) | Delete | Destructive |
-| [`delete_hotspot_operator`](#delete_hotspot_operator) | Delete | Destructive |
-| [`delete_hotspot_voucher`](#delete_hotspot_voucher) | Delete | Destructive |
-| [`delete_network`](#delete_network) | Delete | Destructive |
-| [`delete_port_forward`](#delete_port_forward) | Delete | Destructive |
-| [`delete_rtsps_stream`](#delete_rtsps_stream) | Delete | Destructive |
-| [`delete_site_to_site_tunnel`](#delete_site_to_site_tunnel) | Delete | Destructive |
-| [`delete_traffic_matching_list`](#delete_traffic_matching_list) | Delete | Destructive |
-| [`delete_traffic_route`](#delete_traffic_route) | Delete | Destructive |
-| [`delete_traffic_rule`](#delete_traffic_rule) | Delete | Destructive |
-| [`delete_vpn_server`](#delete_vpn_server) | Delete | Destructive |
-| [`delete_wifi_broadcast`](#delete_wifi_broadcast) | Delete | Destructive |
-| [`detach_carrier_subscriber_host`](#detach_carrier_subscriber_host) | Other | Destructive |
-| [`disable_arm`](#disable_arm) | Execute & Actions | Destructive |
-| [`disable_camera_mic_permanently`](#disable_camera_mic_permanently) | Execute & Actions | Destructive |
-| [`enable_arm`](#enable_arm) | Other | Write |
-| [`exclude_network_on_port_profile`](#exclude_network_on_port_profile) | Other | Destructive |
-| [`execute_client_action`](#execute_client_action) | Execute & Actions | Destructive |
-| [`execute_device_action`](#execute_device_action) | Execute & Actions | Destructive |
-| [`execute_port_action`](#execute_port_action) | Execute & Actions | Destructive |
-| [`fabric_connector_delete`](#fabric_connector_delete) | Other | Destructive |
-| [`fabric_connector_get`](#fabric_connector_get) | Other | Read |
-| [`fabric_connector_patch`](#fabric_connector_patch) | Other | Destructive |
-| [`fabric_connector_post`](#fabric_connector_post) | Other | Write |
-| [`fabric_connector_put`](#fabric_connector_put) | Other | Destructive |
-| [`get_account`](#get_account) | Reading & Inspection | Read |
-| [`get_acl_rule`](#get_acl_rule) | Reading & Inspection | Read |
-| [`get_acl_rule_ordering`](#get_acl_rule_ordering) | Reading & Inspection | Read |
-| [`get_alarm_hub`](#get_alarm_hub) | Reading & Inspection | Read |
-| [`get_arm_profile`](#get_arm_profile) | Reading & Inspection | Read |
-| [`get_bridge`](#get_bridge) | Reading & Inspection | Read |
-| [`get_camera`](#get_camera) | Reading & Inspection | Read |
-| [`get_camera_snapshot`](#get_camera_snapshot) | Reading & Inspection | Read |
-| [`get_carrier_service_plan`](#get_carrier_service_plan) | Reading & Inspection | Read |
-| [`get_carrier_subscriber`](#get_carrier_subscriber) | Reading & Inspection | Read |
-| [`get_channel_plan`](#get_channel_plan) | Reading & Inspection | Read |
-| [`get_chime`](#get_chime) | Reading & Inspection | Read |
-| [`get_client`](#get_client) | Reading & Inspection | Read |
-| [`get_client_link_diagnostics`](#get_client_link_diagnostics) | Reading & Inspection | Read |
-| [`get_device`](#get_device) | Reading & Inspection | Read |
-| [`get_device_port_state`](#get_device_port_state) | Reading & Inspection | Read |
-| [`get_device_statistics`](#get_device_statistics) | Reading & Inspection | Read |
-| [`get_device_stp_state`](#get_device_stp_state) | Reading & Inspection | Read |
-| [`get_dns_policy`](#get_dns_policy) | Reading & Inspection | Read |
-| [`get_dynamic_dns`](#get_dynamic_dns) | Reading & Inspection | Read |
-| [`get_firewall_group`](#get_firewall_group) | Reading & Inspection | Read |
-| [`get_firewall_policy`](#get_firewall_policy) | Reading & Inspection | Read |
-| [`get_firewall_policy_ordering`](#get_firewall_policy_ordering) | Reading & Inspection | Read |
-| [`get_firewall_rule`](#get_firewall_rule) | Reading & Inspection | Read |
-| [`get_firewall_zone_proxy`](#get_firewall_zone_proxy) | Reading & Inspection | Read |
-| [`get_fleet_summary`](#get_fleet_summary) | Reading & Inspection | Read |
-| [`get_fob`](#get_fob) | Reading & Inspection | Read |
-| [`get_historical_stats`](#get_historical_stats) | Reading & Inspection | Read |
-| [`get_host`](#get_host) | Reading & Inspection | Read |
-| [`get_hotspot_package`](#get_hotspot_package) | Reading & Inspection | Read |
-| [`get_hotspot_voucher`](#get_hotspot_voucher) | Reading & Inspection | Read |
-| [`get_innerspace_asset`](#get_innerspace_asset) | Reading & Inspection | Read |
-| [`get_innerspace_project`](#get_innerspace_project) | Reading & Inspection | Read |
-| [`get_innerspace_summary`](#get_innerspace_summary) | Reading & Inspection | Read |
-| [`get_isp_metrics`](#get_isp_metrics) | Reading & Inspection | Read |
-| [`get_lag`](#get_lag) | Reading & Inspection | Read |
-| [`get_light`](#get_light) | Reading & Inspection | Read |
-| [`get_link_station`](#get_link_station) | Reading & Inspection | Read |
-| [`get_liveview`](#get_liveview) | Reading & Inspection | Read |
-| [`get_mc_lag_domain`](#get_mc_lag_domain) | Reading & Inspection | Read |
-| [`get_mobility_device`](#get_mobility_device) | Reading & Inspection | Read |
-| [`get_network`](#get_network) | Reading & Inspection | Read |
-| [`get_network_application_info`](#get_network_application_info) | Reading & Inspection | Read |
-| [`get_network_references`](#get_network_references) | Reading & Inspection | Read |
-| [`get_nvr`](#get_nvr) | Reading & Inspection | Read |
-| [`get_port_profile`](#get_port_profile) | Reading & Inspection | Read |
-| [`get_protect_application_info`](#get_protect_application_info) | Reading & Inspection | Read |
-| [`get_protect_user`](#get_protect_user) | Reading & Inspection | Read |
-| [`get_radius_profile`](#get_radius_profile) | Reading & Inspection | Read |
-| [`get_recognition_group_counts`](#get_recognition_group_counts) | Reading & Inspection | Read |
-| [`get_recognition_group_image`](#get_recognition_group_image) | Reading & Inspection | Read |
-| [`get_relay`](#get_relay) | Reading & Inspection | Read |
-| [`get_rtsps_stream`](#get_rtsps_stream) | Reading & Inspection | Read |
-| [`get_scheduled_task`](#get_scheduled_task) | Reading & Inspection | Read |
-| [`get_sdwan_config`](#get_sdwan_config) | Reading & Inspection | Read |
-| [`get_sdwan_config_status`](#get_sdwan_config_status) | Reading & Inspection | Read |
-| [`get_sensor`](#get_sensor) | Reading & Inspection | Read |
-| [`get_setting`](#get_setting) | Reading & Inspection | Read |
-| [`get_siren`](#get_siren) | Reading & Inspection | Read |
-| [`get_site_health_summary`](#get_site_health_summary) | Reading & Inspection | Read |
-| [`get_site_inventory`](#get_site_inventory) | Reading & Inspection | Read |
-| [`get_site_statistics`](#get_site_statistics) | Reading & Inspection | Read |
-| [`get_speaker`](#get_speaker) | Reading & Inspection | Read |
-| [`get_switch_stack`](#get_switch_stack) | Reading & Inspection | Read |
-| [`get_system_info`](#get_system_info) | Reading & Inspection | Read |
-| [`get_thumbnail`](#get_thumbnail) | Reading & Inspection | Read |
-| [`get_traffic_matching_list`](#get_traffic_matching_list) | Reading & Inspection | Read |
-| [`get_traffic_route`](#get_traffic_route) | Reading & Inspection | Read |
-| [`get_ulp_user`](#get_ulp_user) | Reading & Inspection | Read |
-| [`get_user`](#get_user) | Reading & Inspection | Read |
-| [`get_viewer`](#get_viewer) | Reading & Inspection | Read |
-| [`get_vpn_server`](#get_vpn_server) | Reading & Inspection | Read |
-| [`get_wifi_broadcast`](#get_wifi_broadcast) | Reading & Inspection | Read |
-| [`get_wlan_config`](#get_wlan_config) | Reading & Inspection | Read |
-| [`get_wlan_group`](#get_wlan_group) | Reading & Inspection | Read |
-| [`list_accounts`](#list_accounts) | Listing & Discovery | Read |
-| [`list_acl_rules`](#list_acl_rules) | Listing & Discovery | Read |
-| [`list_active_clients_stats`](#list_active_clients_stats) | Listing & Discovery | Read |
-| [`list_alarm_hubs`](#list_alarm_hubs) | Listing & Discovery | Read |
-| [`list_all_clients`](#list_all_clients) | Listing & Discovery | Read |
-| [`list_all_devices`](#list_all_devices) | Listing & Discovery | Read |
-| [`list_all_sites_aggregated`](#list_all_sites_aggregated) | Listing & Discovery | Read |
-| [`list_arm_profiles`](#list_arm_profiles) | Listing & Discovery | Read |
-| [`list_bridges`](#list_bridges) | Listing & Discovery | Read |
-| [`list_cameras`](#list_cameras) | Listing & Discovery | Read |
-| [`list_carrier_service_plans`](#list_carrier_service_plans) | Listing & Discovery | Read |
-| [`list_carrier_subscribers`](#list_carrier_subscribers) | Listing & Discovery | Read |
-| [`list_chimes`](#list_chimes) | Listing & Discovery | Read |
-| [`list_client_sessions`](#list_client_sessions) | Listing & Discovery | Read |
-| [`list_clients`](#list_clients) | Listing & Discovery | Read |
-| [`list_configured_api_keys`](#list_configured_api_keys) | Listing & Discovery | Read |
-| [`list_countries`](#list_countries) | Listing & Discovery | Read |
-| [`list_device_stats`](#list_device_stats) | Listing & Discovery | Read |
-| [`list_device_tags`](#list_device_tags) | Listing & Discovery | Read |
-| [`list_devices`](#list_devices) | Listing & Discovery | Read |
-| [`list_dns_policies`](#list_dns_policies) | Listing & Discovery | Read |
-| [`list_dpi_applications`](#list_dpi_applications) | Listing & Discovery | Read |
-| [`list_dpi_categories`](#list_dpi_categories) | Listing & Discovery | Read |
-| [`list_dynamic_dns`](#list_dynamic_dns) | Listing & Discovery | Read |
-| [`list_firewall_groups`](#list_firewall_groups) | Listing & Discovery | Read |
-| [`list_firewall_policies`](#list_firewall_policies) | Listing & Discovery | Read |
-| [`list_firewall_rules`](#list_firewall_rules) | Listing & Discovery | Read |
-| [`list_firewall_zones_proxy`](#list_firewall_zones_proxy) | Listing & Discovery | Read |
-| [`list_fobs`](#list_fobs) | Listing & Discovery | Read |
-| [`list_hosts`](#list_hosts) | Listing & Discovery | Read |
-| [`list_hotspot_operators`](#list_hotspot_operators) | Listing & Discovery | Read |
-| [`list_hotspot_packages`](#list_hotspot_packages) | Listing & Discovery | Read |
-| [`list_hotspot_vouchers`](#list_hotspot_vouchers) | Listing & Discovery | Read |
-| [`list_innerspace_access_points`](#list_innerspace_access_points) | Listing & Discovery | Read |
-| [`list_innerspace_devices`](#list_innerspace_devices) | Listing & Discovery | Read |
-| [`list_innerspace_floor_plans`](#list_innerspace_floor_plans) | Listing & Discovery | Read |
-| [`list_innerspace_inventory`](#list_innerspace_inventory) | Listing & Discovery | Read |
-| [`list_innerspace_switches`](#list_innerspace_switches) | Listing & Discovery | Read |
-| [`list_known_clients`](#list_known_clients) | Listing & Discovery | Read |
-| [`list_lags`](#list_lags) | Listing & Discovery | Read |
-| [`list_lights`](#list_lights) | Listing & Discovery | Read |
-| [`list_link_stations`](#list_link_stations) | Listing & Discovery | Read |
-| [`list_liveviews`](#list_liveviews) | Listing & Discovery | Read |
-| [`list_local_sites`](#list_local_sites) | Listing & Discovery | Read |
-| [`list_mc_lag_domains`](#list_mc_lag_domains) | Listing & Discovery | Read |
-| [`list_mobility_admins`](#list_mobility_admins) | Listing & Discovery | Read |
-| [`list_mobility_clients`](#list_mobility_clients) | Listing & Discovery | Read |
-| [`list_mobility_devices`](#list_mobility_devices) | Listing & Discovery | Read |
-| [`list_mobility_workspaces`](#list_mobility_workspaces) | Listing & Discovery | Read |
-| [`list_networks`](#list_networks) | Listing & Discovery | Read |
-| [`list_pending_devices`](#list_pending_devices) | Listing & Discovery | Read |
-| [`list_port_forwards`](#list_port_forwards) | Listing & Discovery | Read |
-| [`list_port_profiles`](#list_port_profiles) | Listing & Discovery | Read |
-| [`list_protect_events`](#list_protect_events) | Listing & Discovery | Read |
-| [`list_protect_files`](#list_protect_files) | Listing & Discovery | Read |
-| [`list_protect_users`](#list_protect_users) | Listing & Discovery | Read |
-| [`list_radius_profiles`](#list_radius_profiles) | Listing & Discovery | Read |
-| [`list_recognition_detections`](#list_recognition_detections) | Listing & Discovery | Read |
-| [`list_recognition_groups`](#list_recognition_groups) | Listing & Discovery | Read |
-| [`list_relays`](#list_relays) | Listing & Discovery | Read |
-| [`list_rogue_aps`](#list_rogue_aps) | Listing & Discovery | Read |
-| [`list_routing_entries`](#list_routing_entries) | Listing & Discovery | Read |
-| [`list_scheduled_tasks`](#list_scheduled_tasks) | Listing & Discovery | Read |
-| [`list_sdwan_configs`](#list_sdwan_configs) | Listing & Discovery | Read |
-| [`list_sensors`](#list_sensors) | Listing & Discovery | Read |
-| [`list_settings`](#list_settings) | Listing & Discovery | Read |
-| [`list_sirens`](#list_sirens) | Listing & Discovery | Read |
-| [`list_site_devices`](#list_site_devices) | Listing & Discovery | Read |
-| [`list_site_to_site_tunnels`](#list_site_to_site_tunnels) | Listing & Discovery | Read |
-| [`list_sites`](#list_sites) | Listing & Discovery | Read |
-| [`list_speakers`](#list_speakers) | Listing & Discovery | Read |
-| [`list_switch_stacks`](#list_switch_stacks) | Listing & Discovery | Read |
-| [`list_traffic_flows`](#list_traffic_flows) | Listing & Discovery | Read |
-| [`list_traffic_matching_lists`](#list_traffic_matching_lists) | Listing & Discovery | Read |
-| [`list_traffic_routes`](#list_traffic_routes) | Listing & Discovery | Read |
-| [`list_traffic_rules`](#list_traffic_rules) | Listing & Discovery | Read |
-| [`list_ulp_users`](#list_ulp_users) | Listing & Discovery | Read |
-| [`list_users`](#list_users) | Listing & Discovery | Read |
-| [`list_viewers`](#list_viewers) | Listing & Discovery | Read |
-| [`list_vpn_servers`](#list_vpn_servers) | Listing & Discovery | Read |
-| [`list_wan_interfaces`](#list_wan_interfaces) | Listing & Discovery | Read |
-| [`list_wifi_broadcasts`](#list_wifi_broadcasts) | Listing & Discovery | Read |
-| [`list_wlan_configs`](#list_wlan_configs) | Listing & Discovery | Read |
-| [`list_wlan_groups`](#list_wlan_groups) | Listing & Discovery | Read |
-| [`locate_device`](#locate_device) | Device Control | Write |
-| [`patch_firewall_policy`](#patch_firewall_policy) | Update | Destructive |
-| [`pos_ingest_transaction`](#pos_ingest_transaction) | Other | Write |
-| [`ptz_goto_preset`](#ptz_goto_preset) | Device Control | Write |
-| [`ptz_patrol_start`](#ptz_patrol_start) | Device Control | Write |
-| [`ptz_patrol_stop`](#ptz_patrol_stop) | Device Control | Write |
-| [`query_isp_metrics`](#query_isp_metrics) | Other | Read |
-| [`reconnect_client`](#reconnect_client) | Client Management | Destructive |
-| [`reject_pending_device`](#reject_pending_device) | Other | Destructive |
-| [`relay_activate_output`](#relay_activate_output) | Other | Destructive |
-| [`restart_device`](#restart_device) | Device Management | Destructive |
-| [`resume_carrier_subscriber`](#resume_carrier_subscriber) | Other | Write |
-| [`search_across_sites`](#search_across_sites) | Search | Read |
-| [`search_device_fleet`](#search_device_fleet) | Search | Read |
-| [`set_acl_rule_ordering`](#set_acl_rule_ordering) | Configuration | Destructive (idempotent) |
-| [`set_firewall_policy_ordering`](#set_firewall_policy_ordering) | Configuration | Destructive (idempotent) |
-| [`siren_play`](#siren_play) | Other | Destructive |
-| [`siren_stop`](#siren_stop) | Other | Destructive |
-| [`siren_test_sound`](#siren_test_sound) | Other | Destructive |
-| [`speaker_test_sound`](#speaker_test_sound) | Other | Destructive |
-| [`start_talkback_session`](#start_talkback_session) | Execute & Actions | Write |
-| [`suspend_carrier_subscriber`](#suspend_carrier_subscriber) | Other | Destructive |
-| [`trigger_alarm_webhook`](#trigger_alarm_webhook) | Execute & Actions | Destructive |
-| [`unadopt_device`](#unadopt_device) | Device Management | Destructive |
-| [`unblock_client`](#unblock_client) | Client Management | Write |
-| [`update_acl_rule`](#update_acl_rule) | Update | Destructive (idempotent) |
-| [`update_alarm_hub`](#update_alarm_hub) | Update | Destructive (idempotent) |
-| [`update_arm_profile`](#update_arm_profile) | Update | Destructive (idempotent) |
-| [`update_arm_profile_settings`](#update_arm_profile_settings) | Update | Destructive (idempotent) |
-| [`update_bridge`](#update_bridge) | Update | Destructive (idempotent) |
-| [`update_camera`](#update_camera) | Update | Destructive (idempotent) |
-| [`update_carrier_subscriber`](#update_carrier_subscriber) | Update | Destructive (idempotent) |
-| [`update_chime`](#update_chime) | Update | Destructive (idempotent) |
-| [`update_device_tag`](#update_device_tag) | Update | Destructive (idempotent) |
-| [`update_dns_policy`](#update_dns_policy) | Update | Destructive (idempotent) |
-| [`update_dynamic_dns`](#update_dynamic_dns) | Update | Destructive (idempotent) |
-| [`update_firewall_policy`](#update_firewall_policy) | Update | Destructive (idempotent) |
-| [`update_firewall_zone_proxy`](#update_firewall_zone_proxy) | Update | Destructive (idempotent) |
-| [`update_fob`](#update_fob) | Update | Destructive (idempotent) |
-| [`update_hotspot_operator`](#update_hotspot_operator) | Update | Destructive (idempotent) |
-| [`update_light`](#update_light) | Update | Destructive (idempotent) |
-| [`update_link_station`](#update_link_station) | Update | Destructive (idempotent) |
-| [`update_liveview`](#update_liveview) | Update | Destructive (idempotent) |
-| [`update_mobility_device_name`](#update_mobility_device_name) | Update | Destructive (idempotent) |
-| [`update_mobility_device_network`](#update_mobility_device_network) | Update | Destructive (idempotent) |
-| [`update_mobility_device_wireless`](#update_mobility_device_wireless) | Update | Destructive (idempotent) |
-| [`update_network`](#update_network) | Update | Destructive (idempotent) |
-| [`update_port_forward`](#update_port_forward) | Update | Destructive (idempotent) |
-| [`update_port_profile`](#update_port_profile) | Update | Destructive (idempotent) |
-| [`update_relay`](#update_relay) | Update | Destructive (idempotent) |
-| [`update_sensor`](#update_sensor) | Update | Destructive (idempotent) |
-| [`update_setting`](#update_setting) | Update | Destructive (idempotent) |
-| [`update_siren`](#update_siren) | Update | Destructive (idempotent) |
-| [`update_site_to_site_tunnel`](#update_site_to_site_tunnel) | Update | Destructive (idempotent) |
-| [`update_speaker`](#update_speaker) | Update | Destructive (idempotent) |
-| [`update_traffic_matching_list`](#update_traffic_matching_list) | Update | Destructive (idempotent) |
-| [`update_traffic_route`](#update_traffic_route) | Update | Destructive (idempotent) |
-| [`update_traffic_rule`](#update_traffic_rule) | Update | Destructive (idempotent) |
-| [`update_user`](#update_user) | Update | Destructive (idempotent) |
-| [`update_viewer`](#update_viewer) | Update | Destructive (idempotent) |
-| [`update_vpn_server`](#update_vpn_server) | Update | Destructive (idempotent) |
-| [`update_wan_interface`](#update_wan_interface) | Update | Destructive (idempotent) |
-| [`update_wifi_broadcast`](#update_wifi_broadcast) | Update | Destructive (idempotent) |
-| [`update_wlan_config`](#update_wlan_config) | Update | Destructive (idempotent) |
-| [`upgrade_device`](#upgrade_device) | Device Management | Destructive |
-| [`upload_protect_file`](#upload_protect_file) | Create | Write |
+| Tool | Family | Category | Access |
+| --- | --- | --- | --- |
+| [`adopt_device`](#adopt_device) | devices | Device Management | Write |
+| [`alarm_hub_trigger_output`](#alarm_hub_trigger_output) | protect | Other | Destructive |
+| [`allow_network_on_port_profile`](#allow_network_on_port_profile) | network | Other | Write |
+| [`approve_pending_device`](#approve_pending_device) | devices | Other | Write |
+| [`assign_carrier_subscriber_plan`](#assign_carrier_subscriber_plan) | carrier | Other | Write |
+| [`attach_carrier_subscriber_host`](#attach_carrier_subscriber_host) | carrier | Other | Write |
+| [`block_client`](#block_client) | clients | Client Management | Destructive |
+| [`bulk_delete_hotspot_vouchers`](#bulk_delete_hotspot_vouchers) | hotspot | Other | Destructive |
+| [`compare_site_performance`](#compare_site_performance) | site_manager | Other | Read |
+| [`create_acl_rule`](#create_acl_rule) | firewall | Create | Write |
+| [`create_arm_profile`](#create_arm_profile) | protect | Create | Write |
+| [`create_carrier_subscriber`](#create_carrier_subscriber) | carrier | Create | Write |
+| [`create_device_tag`](#create_device_tag) | devices | Create | Write |
+| [`create_dns_policy`](#create_dns_policy) | network | Create | Write |
+| [`create_firewall_policy`](#create_firewall_policy) | firewall | Create | Write |
+| [`create_firewall_zone_proxy`](#create_firewall_zone_proxy) | firewall | Create | Write |
+| [`create_hotspot_operator`](#create_hotspot_operator) | hotspot | Create | Write |
+| [`create_hotspot_vouchers`](#create_hotspot_vouchers) | hotspot | Create | Write |
+| [`create_liveview`](#create_liveview) | protect | Create | Write |
+| [`create_network`](#create_network) | network | Create | Write |
+| [`create_port_forward`](#create_port_forward) | network | Create | Write |
+| [`create_radius_profile`](#create_radius_profile) | vpn | Create | Write |
+| [`create_rtsps_stream`](#create_rtsps_stream) | protect | Create | Write |
+| [`create_site_to_site_tunnel`](#create_site_to_site_tunnel) | vpn | Create | Write |
+| [`create_traffic_matching_list`](#create_traffic_matching_list) | network | Create | Write |
+| [`create_traffic_route`](#create_traffic_route) | network | Create | Write |
+| [`create_traffic_rule`](#create_traffic_rule) | network | Create | Write |
+| [`create_vpn_server`](#create_vpn_server) | vpn | Create | Write |
+| [`create_wifi_broadcast`](#create_wifi_broadcast) | network | Create | Write |
+| [`delete_acl_rule`](#delete_acl_rule) | firewall | Delete | Destructive |
+| [`delete_arm_profile`](#delete_arm_profile) | protect | Delete | Destructive |
+| [`delete_device_tag`](#delete_device_tag) | devices | Delete | Destructive |
+| [`delete_dns_policy`](#delete_dns_policy) | network | Delete | Destructive |
+| [`delete_firewall_policy`](#delete_firewall_policy) | firewall | Delete | Destructive |
+| [`delete_firewall_zone_proxy`](#delete_firewall_zone_proxy) | firewall | Delete | Destructive |
+| [`delete_hotspot_operator`](#delete_hotspot_operator) | hotspot | Delete | Destructive |
+| [`delete_hotspot_voucher`](#delete_hotspot_voucher) | hotspot | Delete | Destructive |
+| [`delete_network`](#delete_network) | network | Delete | Destructive |
+| [`delete_port_forward`](#delete_port_forward) | network | Delete | Destructive |
+| [`delete_rtsps_stream`](#delete_rtsps_stream) | protect | Delete | Destructive |
+| [`delete_site_to_site_tunnel`](#delete_site_to_site_tunnel) | vpn | Delete | Destructive |
+| [`delete_traffic_matching_list`](#delete_traffic_matching_list) | network | Delete | Destructive |
+| [`delete_traffic_route`](#delete_traffic_route) | network | Delete | Destructive |
+| [`delete_traffic_rule`](#delete_traffic_rule) | network | Delete | Destructive |
+| [`delete_vpn_server`](#delete_vpn_server) | vpn | Delete | Destructive |
+| [`delete_wifi_broadcast`](#delete_wifi_broadcast) | network | Delete | Destructive |
+| [`detach_carrier_subscriber_host`](#detach_carrier_subscriber_host) | carrier | Other | Destructive |
+| [`disable_arm`](#disable_arm) | protect | Execute & Actions | Destructive |
+| [`disable_camera_mic_permanently`](#disable_camera_mic_permanently) | protect | Execute & Actions | Destructive |
+| [`enable_arm`](#enable_arm) | protect | Other | Write |
+| [`exclude_network_on_port_profile`](#exclude_network_on_port_profile) | network | Other | Destructive |
+| [`execute_client_action`](#execute_client_action) | clients | Execute & Actions | Destructive |
+| [`execute_device_action`](#execute_device_action) | devices | Execute & Actions | Destructive |
+| [`execute_port_action`](#execute_port_action) | devices | Execute & Actions | Destructive |
+| [`fabric_connector_delete`](#fabric_connector_delete) | connector | Other | Destructive |
+| [`fabric_connector_get`](#fabric_connector_get) | connector | Other | Read |
+| [`fabric_connector_patch`](#fabric_connector_patch) | connector | Other | Destructive |
+| [`fabric_connector_post`](#fabric_connector_post) | connector | Other | Write |
+| [`fabric_connector_put`](#fabric_connector_put) | connector | Other | Destructive |
+| [`get_account`](#get_account) | network | Reading & Inspection | Read |
+| [`get_acl_rule`](#get_acl_rule) | firewall | Reading & Inspection | Read |
+| [`get_acl_rule_ordering`](#get_acl_rule_ordering) | firewall | Reading & Inspection | Read |
+| [`get_alarm_hub`](#get_alarm_hub) | protect | Reading & Inspection | Read |
+| [`get_arm_profile`](#get_arm_profile) | protect | Reading & Inspection | Read |
+| [`get_bridge`](#get_bridge) | protect | Reading & Inspection | Read |
+| [`get_camera`](#get_camera) | protect | Reading & Inspection | Read |
+| [`get_camera_snapshot`](#get_camera_snapshot) | protect | Reading & Inspection | Read |
+| [`get_carrier_service_plan`](#get_carrier_service_plan) | carrier | Reading & Inspection | Read |
+| [`get_carrier_subscriber`](#get_carrier_subscriber) | carrier | Reading & Inspection | Read |
+| [`get_channel_plan`](#get_channel_plan) | network | Reading & Inspection | Read |
+| [`get_chime`](#get_chime) | protect | Reading & Inspection | Read |
+| [`get_client`](#get_client) | clients | Reading & Inspection | Read |
+| [`get_client_link_diagnostics`](#get_client_link_diagnostics) | statistics | Reading & Inspection | Read |
+| [`get_device`](#get_device) | devices | Reading & Inspection | Read |
+| [`get_device_port_state`](#get_device_port_state) | statistics | Reading & Inspection | Read |
+| [`get_device_statistics`](#get_device_statistics) | devices | Reading & Inspection | Read |
+| [`get_device_stp_state`](#get_device_stp_state) | statistics | Reading & Inspection | Read |
+| [`get_dns_policy`](#get_dns_policy) | network | Reading & Inspection | Read |
+| [`get_dynamic_dns`](#get_dynamic_dns) | network | Reading & Inspection | Read |
+| [`get_firewall_group`](#get_firewall_group) | firewall | Reading & Inspection | Read |
+| [`get_firewall_policy`](#get_firewall_policy) | firewall | Reading & Inspection | Read |
+| [`get_firewall_policy_ordering`](#get_firewall_policy_ordering) | firewall | Reading & Inspection | Read |
+| [`get_firewall_rule`](#get_firewall_rule) | firewall | Reading & Inspection | Read |
+| [`get_firewall_zone_proxy`](#get_firewall_zone_proxy) | firewall | Reading & Inspection | Read |
+| [`get_fleet_summary`](#get_fleet_summary) | site_manager | Reading & Inspection | Read |
+| [`get_fob`](#get_fob) | protect | Reading & Inspection | Read |
+| [`get_historical_stats`](#get_historical_stats) | statistics | Reading & Inspection | Read |
+| [`get_host`](#get_host) | site_manager | Reading & Inspection | Read |
+| [`get_hotspot_package`](#get_hotspot_package) | hotspot | Reading & Inspection | Read |
+| [`get_hotspot_voucher`](#get_hotspot_voucher) | hotspot | Reading & Inspection | Read |
+| [`get_innerspace_asset`](#get_innerspace_asset) | innerspace | Reading & Inspection | Read |
+| [`get_innerspace_project`](#get_innerspace_project) | innerspace | Reading & Inspection | Read |
+| [`get_innerspace_summary`](#get_innerspace_summary) | innerspace | Reading & Inspection | Read |
+| [`get_isp_metrics`](#get_isp_metrics) | site_manager | Reading & Inspection | Read |
+| [`get_lag`](#get_lag) | network | Reading & Inspection | Read |
+| [`get_light`](#get_light) | protect | Reading & Inspection | Read |
+| [`get_link_station`](#get_link_station) | protect | Reading & Inspection | Read |
+| [`get_liveview`](#get_liveview) | protect | Reading & Inspection | Read |
+| [`get_mc_lag_domain`](#get_mc_lag_domain) | network | Reading & Inspection | Read |
+| [`get_mobility_device`](#get_mobility_device) | mobility | Reading & Inspection | Read |
+| [`get_network`](#get_network) | network | Reading & Inspection | Read |
+| [`get_network_application_info`](#get_network_application_info) | network | Reading & Inspection | Read |
+| [`get_network_references`](#get_network_references) | network | Reading & Inspection | Read |
+| [`get_nvr`](#get_nvr) | protect | Reading & Inspection | Read |
+| [`get_port_profile`](#get_port_profile) | network | Reading & Inspection | Read |
+| [`get_protect_application_info`](#get_protect_application_info) | protect | Reading & Inspection | Read |
+| [`get_protect_user`](#get_protect_user) | protect | Reading & Inspection | Read |
+| [`get_radius_profile`](#get_radius_profile) | vpn | Reading & Inspection | Read |
+| [`get_recognition_group_counts`](#get_recognition_group_counts) | protect | Reading & Inspection | Read |
+| [`get_recognition_group_image`](#get_recognition_group_image) | protect | Reading & Inspection | Read |
+| [`get_relay`](#get_relay) | protect | Reading & Inspection | Read |
+| [`get_rtsps_stream`](#get_rtsps_stream) | protect | Reading & Inspection | Read |
+| [`get_scheduled_task`](#get_scheduled_task) | network | Reading & Inspection | Read |
+| [`get_sdwan_config`](#get_sdwan_config) | site_manager | Reading & Inspection | Read |
+| [`get_sdwan_config_status`](#get_sdwan_config_status) | site_manager | Reading & Inspection | Read |
+| [`get_sensor`](#get_sensor) | protect | Reading & Inspection | Read |
+| [`get_setting`](#get_setting) | network | Reading & Inspection | Read |
+| [`get_siren`](#get_siren) | protect | Reading & Inspection | Read |
+| [`get_site_health_summary`](#get_site_health_summary) | site_manager | Reading & Inspection | Read |
+| [`get_site_inventory`](#get_site_inventory) | clients | Reading & Inspection | Read |
+| [`get_site_statistics`](#get_site_statistics) | statistics | Reading & Inspection | Read |
+| [`get_speaker`](#get_speaker) | protect | Reading & Inspection | Read |
+| [`get_switch_stack`](#get_switch_stack) | network | Reading & Inspection | Read |
+| [`get_system_info`](#get_system_info) | statistics | Reading & Inspection | Read |
+| [`get_thumbnail`](#get_thumbnail) | protect | Reading & Inspection | Read |
+| [`get_traffic_matching_list`](#get_traffic_matching_list) | network | Reading & Inspection | Read |
+| [`get_traffic_route`](#get_traffic_route) | network | Reading & Inspection | Read |
+| [`get_ulp_user`](#get_ulp_user) | protect | Reading & Inspection | Read |
+| [`get_user`](#get_user) | network | Reading & Inspection | Read |
+| [`get_viewer`](#get_viewer) | protect | Reading & Inspection | Read |
+| [`get_vpn_server`](#get_vpn_server) | vpn | Reading & Inspection | Read |
+| [`get_wifi_broadcast`](#get_wifi_broadcast) | network | Reading & Inspection | Read |
+| [`get_wlan_config`](#get_wlan_config) | network | Reading & Inspection | Read |
+| [`get_wlan_group`](#get_wlan_group) | network | Reading & Inspection | Read |
+| [`list_accounts`](#list_accounts) | network | Listing & Discovery | Read |
+| [`list_acl_rules`](#list_acl_rules) | firewall | Listing & Discovery | Read |
+| [`list_active_clients_stats`](#list_active_clients_stats) | statistics | Listing & Discovery | Read |
+| [`list_alarm_hubs`](#list_alarm_hubs) | protect | Listing & Discovery | Read |
+| [`list_all_clients`](#list_all_clients) | site_manager | Listing & Discovery | Read |
+| [`list_all_devices`](#list_all_devices) | site_manager | Listing & Discovery | Read |
+| [`list_all_sites_aggregated`](#list_all_sites_aggregated) | site_manager | Listing & Discovery | Read |
+| [`list_arm_profiles`](#list_arm_profiles) | protect | Listing & Discovery | Read |
+| [`list_bridges`](#list_bridges) | protect | Listing & Discovery | Read |
+| [`list_cameras`](#list_cameras) | protect | Listing & Discovery | Read |
+| [`list_carrier_service_plans`](#list_carrier_service_plans) | carrier | Listing & Discovery | Read |
+| [`list_carrier_subscribers`](#list_carrier_subscribers) | carrier | Listing & Discovery | Read |
+| [`list_chimes`](#list_chimes) | protect | Listing & Discovery | Read |
+| [`list_client_sessions`](#list_client_sessions) | statistics | Listing & Discovery | Read |
+| [`list_clients`](#list_clients) | clients | Listing & Discovery | Read |
+| [`list_configured_api_keys`](#list_configured_api_keys) | site_manager | Listing & Discovery | Read |
+| [`list_countries`](#list_countries) | network | Listing & Discovery | Read |
+| [`list_device_stats`](#list_device_stats) | statistics | Listing & Discovery | Read |
+| [`list_device_tags`](#list_device_tags) | network | Listing & Discovery | Read |
+| [`list_devices`](#list_devices) | site_manager | Listing & Discovery | Read |
+| [`list_dns_policies`](#list_dns_policies) | network | Listing & Discovery | Read |
+| [`list_dpi_applications`](#list_dpi_applications) | network | Listing & Discovery | Read |
+| [`list_dpi_categories`](#list_dpi_categories) | network | Listing & Discovery | Read |
+| [`list_dynamic_dns`](#list_dynamic_dns) | network | Listing & Discovery | Read |
+| [`list_firewall_groups`](#list_firewall_groups) | firewall | Listing & Discovery | Read |
+| [`list_firewall_policies`](#list_firewall_policies) | firewall | Listing & Discovery | Read |
+| [`list_firewall_rules`](#list_firewall_rules) | firewall | Listing & Discovery | Read |
+| [`list_firewall_zones_proxy`](#list_firewall_zones_proxy) | firewall | Listing & Discovery | Read |
+| [`list_fobs`](#list_fobs) | protect | Listing & Discovery | Read |
+| [`list_hosts`](#list_hosts) | site_manager | Listing & Discovery | Read |
+| [`list_hotspot_operators`](#list_hotspot_operators) | hotspot | Listing & Discovery | Read |
+| [`list_hotspot_packages`](#list_hotspot_packages) | hotspot | Listing & Discovery | Read |
+| [`list_hotspot_vouchers`](#list_hotspot_vouchers) | hotspot | Listing & Discovery | Read |
+| [`list_innerspace_access_points`](#list_innerspace_access_points) | innerspace | Listing & Discovery | Read |
+| [`list_innerspace_devices`](#list_innerspace_devices) | innerspace | Listing & Discovery | Read |
+| [`list_innerspace_floor_plans`](#list_innerspace_floor_plans) | innerspace | Listing & Discovery | Read |
+| [`list_innerspace_inventory`](#list_innerspace_inventory) | innerspace | Listing & Discovery | Read |
+| [`list_innerspace_switches`](#list_innerspace_switches) | innerspace | Listing & Discovery | Read |
+| [`list_known_clients`](#list_known_clients) | statistics | Listing & Discovery | Read |
+| [`list_lags`](#list_lags) | network | Listing & Discovery | Read |
+| [`list_lights`](#list_lights) | protect | Listing & Discovery | Read |
+| [`list_link_stations`](#list_link_stations) | protect | Listing & Discovery | Read |
+| [`list_liveviews`](#list_liveviews) | protect | Listing & Discovery | Read |
+| [`list_local_sites`](#list_local_sites) | network | Listing & Discovery | Read |
+| [`list_mc_lag_domains`](#list_mc_lag_domains) | network | Listing & Discovery | Read |
+| [`list_mobility_admins`](#list_mobility_admins) | mobility | Listing & Discovery | Read |
+| [`list_mobility_clients`](#list_mobility_clients) | mobility | Listing & Discovery | Read |
+| [`list_mobility_devices`](#list_mobility_devices) | mobility | Listing & Discovery | Read |
+| [`list_mobility_workspaces`](#list_mobility_workspaces) | mobility | Listing & Discovery | Read |
+| [`list_networks`](#list_networks) | network | Listing & Discovery | Read |
+| [`list_pending_devices`](#list_pending_devices) | devices | Listing & Discovery | Read |
+| [`list_port_forwards`](#list_port_forwards) | network | Listing & Discovery | Read |
+| [`list_port_profiles`](#list_port_profiles) | network | Listing & Discovery | Read |
+| [`list_protect_events`](#list_protect_events) | protect | Listing & Discovery | Read |
+| [`list_protect_files`](#list_protect_files) | protect | Listing & Discovery | Read |
+| [`list_protect_users`](#list_protect_users) | protect | Listing & Discovery | Read |
+| [`list_radius_profiles`](#list_radius_profiles) | vpn | Listing & Discovery | Read |
+| [`list_recognition_detections`](#list_recognition_detections) | protect | Listing & Discovery | Read |
+| [`list_recognition_groups`](#list_recognition_groups) | protect | Listing & Discovery | Read |
+| [`list_relays`](#list_relays) | protect | Listing & Discovery | Read |
+| [`list_rogue_aps`](#list_rogue_aps) | network | Listing & Discovery | Read |
+| [`list_routing_entries`](#list_routing_entries) | network | Listing & Discovery | Read |
+| [`list_scheduled_tasks`](#list_scheduled_tasks) | network | Listing & Discovery | Read |
+| [`list_sdwan_configs`](#list_sdwan_configs) | site_manager | Listing & Discovery | Read |
+| [`list_sensors`](#list_sensors) | protect | Listing & Discovery | Read |
+| [`list_settings`](#list_settings) | network | Listing & Discovery | Read |
+| [`list_sirens`](#list_sirens) | protect | Listing & Discovery | Read |
+| [`list_site_devices`](#list_site_devices) | devices | Listing & Discovery | Read |
+| [`list_site_to_site_tunnels`](#list_site_to_site_tunnels) | vpn | Listing & Discovery | Read |
+| [`list_sites`](#list_sites) | site_manager | Listing & Discovery | Read |
+| [`list_speakers`](#list_speakers) | protect | Listing & Discovery | Read |
+| [`list_switch_stacks`](#list_switch_stacks) | network | Listing & Discovery | Read |
+| [`list_traffic_flows`](#list_traffic_flows) | network | Listing & Discovery | Read |
+| [`list_traffic_matching_lists`](#list_traffic_matching_lists) | network | Listing & Discovery | Read |
+| [`list_traffic_routes`](#list_traffic_routes) | network | Listing & Discovery | Read |
+| [`list_traffic_rules`](#list_traffic_rules) | network | Listing & Discovery | Read |
+| [`list_ulp_users`](#list_ulp_users) | protect | Listing & Discovery | Read |
+| [`list_users`](#list_users) | network | Listing & Discovery | Read |
+| [`list_viewers`](#list_viewers) | protect | Listing & Discovery | Read |
+| [`list_vpn_servers`](#list_vpn_servers) | vpn | Listing & Discovery | Read |
+| [`list_wan_interfaces`](#list_wan_interfaces) | network | Listing & Discovery | Read |
+| [`list_wifi_broadcasts`](#list_wifi_broadcasts) | network | Listing & Discovery | Read |
+| [`list_wlan_configs`](#list_wlan_configs) | network | Listing & Discovery | Read |
+| [`list_wlan_groups`](#list_wlan_groups) | network | Listing & Discovery | Read |
+| [`locate_device`](#locate_device) | devices | Device Control | Write |
+| [`patch_firewall_policy`](#patch_firewall_policy) | firewall | Update | Destructive |
+| [`pos_ingest_transaction`](#pos_ingest_transaction) | protect | Other | Write |
+| [`ptz_goto_preset`](#ptz_goto_preset) | protect | Device Control | Write |
+| [`ptz_patrol_start`](#ptz_patrol_start) | protect | Device Control | Write |
+| [`ptz_patrol_stop`](#ptz_patrol_stop) | protect | Device Control | Write |
+| [`query_isp_metrics`](#query_isp_metrics) | site_manager | Other | Read |
+| [`reconnect_client`](#reconnect_client) | clients | Client Management | Destructive |
+| [`reject_pending_device`](#reject_pending_device) | devices | Other | Destructive |
+| [`relay_activate_output`](#relay_activate_output) | protect | Other | Destructive |
+| [`restart_device`](#restart_device) | devices | Device Management | Destructive |
+| [`resume_carrier_subscriber`](#resume_carrier_subscriber) | carrier | Other | Write |
+| [`search_across_sites`](#search_across_sites) | site_manager | Search | Read |
+| [`search_device_fleet`](#search_device_fleet) | site_manager | Search | Read |
+| [`set_acl_rule_ordering`](#set_acl_rule_ordering) | firewall | Configuration | Destructive (idempotent) |
+| [`set_firewall_policy_ordering`](#set_firewall_policy_ordering) | firewall | Configuration | Destructive (idempotent) |
+| [`siren_play`](#siren_play) | protect | Other | Destructive |
+| [`siren_stop`](#siren_stop) | protect | Other | Destructive |
+| [`siren_test_sound`](#siren_test_sound) | protect | Other | Destructive |
+| [`speaker_test_sound`](#speaker_test_sound) | protect | Other | Destructive |
+| [`start_talkback_session`](#start_talkback_session) | protect | Execute & Actions | Write |
+| [`suspend_carrier_subscriber`](#suspend_carrier_subscriber) | carrier | Other | Destructive |
+| [`trigger_alarm_webhook`](#trigger_alarm_webhook) | protect | Execute & Actions | Destructive |
+| [`unadopt_device`](#unadopt_device) | devices | Device Management | Destructive |
+| [`unblock_client`](#unblock_client) | clients | Client Management | Write |
+| [`update_acl_rule`](#update_acl_rule) | firewall | Update | Destructive (idempotent) |
+| [`update_alarm_hub`](#update_alarm_hub) | protect | Update | Destructive (idempotent) |
+| [`update_arm_profile`](#update_arm_profile) | protect | Update | Destructive (idempotent) |
+| [`update_arm_profile_settings`](#update_arm_profile_settings) | protect | Update | Destructive (idempotent) |
+| [`update_bridge`](#update_bridge) | protect | Update | Destructive (idempotent) |
+| [`update_camera`](#update_camera) | protect | Update | Destructive (idempotent) |
+| [`update_carrier_subscriber`](#update_carrier_subscriber) | carrier | Update | Destructive (idempotent) |
+| [`update_chime`](#update_chime) | protect | Update | Destructive (idempotent) |
+| [`update_device_tag`](#update_device_tag) | devices | Update | Destructive (idempotent) |
+| [`update_dns_policy`](#update_dns_policy) | network | Update | Destructive (idempotent) |
+| [`update_dynamic_dns`](#update_dynamic_dns) | network | Update | Destructive (idempotent) |
+| [`update_firewall_policy`](#update_firewall_policy) | firewall | Update | Destructive (idempotent) |
+| [`update_firewall_zone_proxy`](#update_firewall_zone_proxy) | firewall | Update | Destructive (idempotent) |
+| [`update_fob`](#update_fob) | protect | Update | Destructive (idempotent) |
+| [`update_hotspot_operator`](#update_hotspot_operator) | hotspot | Update | Destructive (idempotent) |
+| [`update_light`](#update_light) | protect | Update | Destructive (idempotent) |
+| [`update_link_station`](#update_link_station) | protect | Update | Destructive (idempotent) |
+| [`update_liveview`](#update_liveview) | protect | Update | Destructive (idempotent) |
+| [`update_mobility_device_name`](#update_mobility_device_name) | mobility | Update | Destructive (idempotent) |
+| [`update_mobility_device_network`](#update_mobility_device_network) | mobility | Update | Destructive (idempotent) |
+| [`update_mobility_device_wireless`](#update_mobility_device_wireless) | mobility | Update | Destructive (idempotent) |
+| [`update_network`](#update_network) | network | Update | Destructive (idempotent) |
+| [`update_port_forward`](#update_port_forward) | network | Update | Destructive (idempotent) |
+| [`update_port_profile`](#update_port_profile) | network | Update | Destructive (idempotent) |
+| [`update_relay`](#update_relay) | protect | Update | Destructive (idempotent) |
+| [`update_sensor`](#update_sensor) | protect | Update | Destructive (idempotent) |
+| [`update_setting`](#update_setting) | network | Update | Destructive (idempotent) |
+| [`update_siren`](#update_siren) | protect | Update | Destructive (idempotent) |
+| [`update_site_to_site_tunnel`](#update_site_to_site_tunnel) | vpn | Update | Destructive (idempotent) |
+| [`update_speaker`](#update_speaker) | protect | Update | Destructive (idempotent) |
+| [`update_traffic_matching_list`](#update_traffic_matching_list) | network | Update | Destructive (idempotent) |
+| [`update_traffic_route`](#update_traffic_route) | network | Update | Destructive (idempotent) |
+| [`update_traffic_rule`](#update_traffic_rule) | network | Update | Destructive (idempotent) |
+| [`update_user`](#update_user) | network | Update | Destructive (idempotent) |
+| [`update_viewer`](#update_viewer) | protect | Update | Destructive (idempotent) |
+| [`update_vpn_server`](#update_vpn_server) | vpn | Update | Destructive (idempotent) |
+| [`update_wan_interface`](#update_wan_interface) | network | Update | Destructive (idempotent) |
+| [`update_wifi_broadcast`](#update_wifi_broadcast) | network | Update | Destructive (idempotent) |
+| [`update_wlan_config`](#update_wlan_config) | network | Update | Destructive (idempotent) |
+| [`upgrade_device`](#upgrade_device) | devices | Device Management | Destructive |
+| [`upload_protect_file`](#upload_protect_file) | protect | Create | Write |
 
 ---
 

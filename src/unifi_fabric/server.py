@@ -17,6 +17,7 @@ from typing import Any
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
 
+from ._tool_selection import ToolSelectionMiddleware, validate_selection
 from .client import UniFiClient
 from .config import MCPTransportSettings, Settings
 from .registry import Registry
@@ -77,6 +78,7 @@ async def lifespan(app: FastMCP) -> AsyncIterator[None]:
         raise RuntimeError(
             "No API key configured. Set UNIFI_API_KEY or UNIFI_API_KEYS before starting the server."
         )
+    validate_selection(settings)
     _client = UniFiClient(settings)
     _registry = Registry(
         _client,
@@ -418,6 +420,8 @@ mcp = FastMCP(
     lifespan=lifespan,
     auth=build_auth(_mcp_transport),
 )
+# UNIFI_READ_ONLY / UNIFI_TOOL_FAMILIES / UNIFI_DISABLED_TOOL_FAMILIES (default: all tools).
+mcp.add_middleware(ToolSelectionMiddleware(get_settings))
 
 
 def _require() -> tuple[UniFiClient, Registry]:

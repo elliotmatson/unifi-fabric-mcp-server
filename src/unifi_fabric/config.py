@@ -319,6 +319,24 @@ class Settings(BaseSettings):
         "DEBUG, INFO, WARNING, ERROR, CRITICAL. Logs go to stderr only — no file handlers. "
         "Request/response bodies are never logged.",
     )
+    read_only: bool = Field(
+        default=False,
+        description="Read-only mode. Env: UNIFI_READ_ONLY. When true, only read tools "
+        "(readOnlyHint=true) are listed and callable; every write tool is hidden and refused. "
+        "Default off.",
+    )
+    tool_families: str = Field(
+        default="",
+        description="Comma-separated tool families to expose (e.g. 'network,protect'). "
+        "Env: UNIFI_TOOL_FAMILIES. Empty (default) exposes every family. Families: "
+        "site_manager, network, firewall, devices, clients, hotspot, vpn, statistics, protect, "
+        "innerspace, mobility, carrier, connector.",
+    )
+    disabled_tool_families: str = Field(
+        default="",
+        description="Comma-separated tool families to hide (e.g. 'connector,carrier'). "
+        "Env: UNIFI_DISABLED_TOOL_FAMILIES. Applied after UNIFI_TOOL_FAMILIES.",
+    )
     enable_connector_write: bool = Field(
         default=False,
         description="Enable the guarded generic Fabric connector WRITE relay "
