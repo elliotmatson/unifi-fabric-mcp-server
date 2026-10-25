@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Fixed
+- The `host` parameter of per-console tools now finds a console by the name Site Manager shows (`reportedState.name`), case- and whitespace-insensitively, so names with spaces, dots or parentheses work, and by its MAC address in any notation (`aa:bb:cc:dd:ee:ff`, `AABBCCDDEEFF`, ...). Previously such names were rejected as an invalid host id, and with several API keys a bare MAC was routed to the first key ("403 host not found" for consoles owned by another key). An unknown name now fails with "not found" and points to `list_hosts`.
+- The `site` parameter also matches a site's `internalReference` slug, so `site="default"` keeps working on consoles whose only site was renamed in the UI.
+
 ## [0.6.2] - 2026-08-16
 
 ### Added
