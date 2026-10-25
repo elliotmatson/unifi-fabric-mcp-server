@@ -106,10 +106,10 @@ Add to `~/.claude/settings.json` or project `.mcp.json`:
 Run the server as a container. The MCP client connects over HTTP to the `/mcp` endpoint.
 
 ```bash
-docker run -e UNIFI_API_KEY="your-api-key-here" -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run -e UNIFI_API_KEY="your-api-key-here" -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
 ```
 
-> **Tip:** `:0.6.1` pins to the last stable release. `:dev` is the moving alias for the current development build — it is updated by CI on every successful dev-branch push and is the fastest way to pull pre-release work. `:latest` and the short form `:X.Y` move **only** when a clean release tag (`vX.Y.Z`, no pre-release suffix) is published; they are never moved by a dev-branch push or a pre-release tag. For production deployments, pin by digest instead — see [Docker Deployment](#docker-deployment).
+> **Tip:** `:v0.6.2` pins to a release. Each release is published as `:vX.Y.Z` (note the leading `v`), and `:latest` moves to each new release. For production deployments, pin by digest instead — see [Docker Deployment](#docker-deployment).
 
 Add to `~/.claude/settings.json` or project `.mcp.json`:
 
@@ -466,7 +466,7 @@ To use a different transport, override the environment variable at runtime:
 
 ```bash
 # SSE transport
-docker run -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=sse -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=sse -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
 ```
 
 MCP clients connect to the `/sse` endpoint — note the path differs from the streamable-http default (`/mcp`):
@@ -492,7 +492,7 @@ A `200` printed on stdout confirms the server is listening. (The SSE stream stay
 
 ```bash
 # Stdio transport
-docker run --no-healthcheck --rm -i -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=stdio ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run --no-healthcheck --rm -i -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=stdio ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
 ```
 
 With stdio transport the MCP client must **spawn** the container as a subprocess (analogous to Track A), not connect over HTTP. Pass `--rm -i` so the container receives stdin and is removed on exit. The corresponding client config uses `command`/`args`, not `type`/`url`:
@@ -505,7 +505,7 @@ With stdio transport the MCP client must **spawn** the container as a subprocess
       "args": ["run", "--rm", "-i",
                "-e", "UNIFI_API_KEY=your-api-key-here",
                "-e", "FASTMCP_TRANSPORT=stdio",
-               "ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1"]
+               "ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2"]
     }
   }
 }
@@ -518,7 +518,7 @@ With stdio transport the MCP client must **spawn** the container as a subprocess
 ```yaml
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
     environment:
       UNIFI_API_KEY: your-api-key-here
       FASTMCP_TRANSPORT: sse  # or stdio
@@ -541,12 +541,12 @@ When unset (the default), the server runs without transport-layer authentication
 
 ```bash
 # Docker
-docker run -e UNIFI_API_KEY="..." -e MCP_BEARER_TOKEN="my-secret-token" -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run -e UNIFI_API_KEY="..." -e MCP_BEARER_TOKEN="my-secret-token" -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
 
 # Docker Compose
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
     environment:
       UNIFI_API_KEY: your-api-key-here
       MCP_BEARER_TOKEN: my-secret-token
@@ -598,14 +598,14 @@ docker run \
   -e MCP_TLS_KEYFILE=/certs/key.pem \
   -v /path/to/certs:/certs:ro \
   -p 3000:3000 \
-  ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+  ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
 ```
 
 ```yaml
 # Docker Compose — bearer auth with in-server HTTPS
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
     environment:
       UNIFI_API_KEY: your-api-key-here
       MCP_BEARER_TOKEN: my-secret-token
@@ -665,7 +665,7 @@ docker run \
   -e MCP_TLS_CA_CERTS=/certs/ca-cert.pem \
   -v /path/to/certs:/certs:ro \
   -p 3000:3000 \
-  ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+  ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
 ```
 
 Most MCP clients cannot present a client certificate directly. The recommended pattern is a TLS-terminating reverse proxy that presents the client certificate toward the server; downstream MCP clients connect to the proxy over standard HTTPS with the bearer token in the `Authorization` header:
