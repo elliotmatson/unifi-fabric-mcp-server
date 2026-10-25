@@ -9,6 +9,7 @@ from fastmcp import FastMCP
 
 from ..client import UniFiClient, validate_id
 from ..registry import Registry, _assert_uuid
+from ._annotations import TOOL_CLASS
 from ._payload import sanitize_integration_write
 from .network import _proxy
 from .network_services_proxy import (
@@ -283,7 +284,7 @@ async def _create_radius_profile(
 def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
     """Register all VPN, site-to-site tunnel, and RADIUS profile MCP tools."""
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["create_site_to_site_tunnel"])
     async def create_site_to_site_tunnel(
         host: str,
         site: str,
@@ -297,7 +298,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _create_site_to_site_tunnel(client, registry, host, site, tunnel)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["update_site_to_site_tunnel"])
     async def update_site_to_site_tunnel(
         host: str,
         site: str,
@@ -313,7 +314,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _update_site_to_site_tunnel(client, registry, host, site, tunnel_id, tunnel)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["delete_site_to_site_tunnel"])
     async def delete_site_to_site_tunnel(
         host: str,
         site: str,
@@ -327,7 +328,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _delete_site_to_site_tunnel(client, registry, host, site, tunnel_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_vpn_server"])
     async def get_vpn_server(
         host: str,
         site: str,
@@ -341,7 +342,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_vpn_server(client, registry, host, site, server_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["create_vpn_server"])
     async def create_vpn_server(
         host: str,
         site: str,
@@ -368,7 +369,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             enabled=enabled,
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["update_vpn_server"])
     async def update_vpn_server(
         host: str,
         site: str,
@@ -384,7 +385,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _update_vpn_server(client, registry, host, site, server_id, **fields)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["delete_vpn_server"])
     async def delete_vpn_server(
         host: str,
         site: str,
@@ -400,7 +401,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         await _delete_vpn_server(client, registry, host, site, server_id)
         return f"VPN server {server_id} deleted."
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_radius_profile"])
     async def get_radius_profile(
         host: str,
         site: str,
@@ -414,7 +415,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_radius_profile(client, registry, host, site, profile_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["create_radius_profile"])
     async def create_radius_profile(
         host: str,
         site: str,

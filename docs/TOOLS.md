@@ -30,6 +30,298 @@ Total tools: 283
 - [Search](#search) (2)
 - [Update](#update) (40)
 
+## Tool access index
+
+Access comes from each tool's MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`), which clients and gateways can use to tell reads from writes. **Read**: reads only. **Write**: adds or starts something without removing existing state. **Destructive**: deletes, overwrites, interrupts or triggers something; *idempotent* means repeating the same call has no further effect. Server-side write gates (`confirm=true`, `UNIFI_ENABLE_*`) still apply.
+
+Destructive: 43, Destructive (idempotent): 41, Read: 163, Write: 36
+
+| Tool | Category | Access |
+| --- | --- | --- |
+| [`adopt_device`](#adopt_device) | Device Management | Write |
+| [`alarm_hub_trigger_output`](#alarm_hub_trigger_output) | Other | Destructive |
+| [`allow_network_on_port_profile`](#allow_network_on_port_profile) | Other | Write |
+| [`approve_pending_device`](#approve_pending_device) | Other | Write |
+| [`assign_carrier_subscriber_plan`](#assign_carrier_subscriber_plan) | Other | Write |
+| [`attach_carrier_subscriber_host`](#attach_carrier_subscriber_host) | Other | Write |
+| [`block_client`](#block_client) | Client Management | Destructive |
+| [`bulk_delete_hotspot_vouchers`](#bulk_delete_hotspot_vouchers) | Other | Destructive |
+| [`compare_site_performance`](#compare_site_performance) | Other | Read |
+| [`create_acl_rule`](#create_acl_rule) | Create | Write |
+| [`create_arm_profile`](#create_arm_profile) | Create | Write |
+| [`create_carrier_subscriber`](#create_carrier_subscriber) | Create | Write |
+| [`create_device_tag`](#create_device_tag) | Create | Write |
+| [`create_dns_policy`](#create_dns_policy) | Create | Write |
+| [`create_firewall_policy`](#create_firewall_policy) | Create | Write |
+| [`create_firewall_zone_proxy`](#create_firewall_zone_proxy) | Create | Write |
+| [`create_hotspot_operator`](#create_hotspot_operator) | Create | Write |
+| [`create_hotspot_vouchers`](#create_hotspot_vouchers) | Create | Write |
+| [`create_liveview`](#create_liveview) | Create | Write |
+| [`create_network`](#create_network) | Create | Write |
+| [`create_port_forward`](#create_port_forward) | Create | Write |
+| [`create_radius_profile`](#create_radius_profile) | Create | Write |
+| [`create_rtsps_stream`](#create_rtsps_stream) | Create | Write |
+| [`create_site_to_site_tunnel`](#create_site_to_site_tunnel) | Create | Write |
+| [`create_traffic_matching_list`](#create_traffic_matching_list) | Create | Write |
+| [`create_traffic_route`](#create_traffic_route) | Create | Write |
+| [`create_traffic_rule`](#create_traffic_rule) | Create | Write |
+| [`create_vpn_server`](#create_vpn_server) | Create | Write |
+| [`create_wifi_broadcast`](#create_wifi_broadcast) | Create | Write |
+| [`delete_acl_rule`](#delete_acl_rule) | Delete | Destructive |
+| [`delete_arm_profile`](#delete_arm_profile) | Delete | Destructive |
+| [`delete_device_tag`](#delete_device_tag) | Delete | Destructive |
+| [`delete_dns_policy`](#delete_dns_policy) | Delete | Destructive |
+| [`delete_firewall_policy`](#delete_firewall_policy) | Delete | Destructive |
+| [`delete_firewall_zone_proxy`](#delete_firewall_zone_proxy) | Delete | Destructive |
+| [`delete_hotspot_operator`](#delete_hotspot_operator) | Delete | Destructive |
+| [`delete_hotspot_voucher`](#delete_hotspot_voucher) | Delete | Destructive |
+| [`delete_network`](#delete_network) | Delete | Destructive |
+| [`delete_port_forward`](#delete_port_forward) | Delete | Destructive |
+| [`delete_rtsps_stream`](#delete_rtsps_stream) | Delete | Destructive |
+| [`delete_site_to_site_tunnel`](#delete_site_to_site_tunnel) | Delete | Destructive |
+| [`delete_traffic_matching_list`](#delete_traffic_matching_list) | Delete | Destructive |
+| [`delete_traffic_route`](#delete_traffic_route) | Delete | Destructive |
+| [`delete_traffic_rule`](#delete_traffic_rule) | Delete | Destructive |
+| [`delete_vpn_server`](#delete_vpn_server) | Delete | Destructive |
+| [`delete_wifi_broadcast`](#delete_wifi_broadcast) | Delete | Destructive |
+| [`detach_carrier_subscriber_host`](#detach_carrier_subscriber_host) | Other | Destructive |
+| [`disable_arm`](#disable_arm) | Execute & Actions | Destructive |
+| [`disable_camera_mic_permanently`](#disable_camera_mic_permanently) | Execute & Actions | Destructive |
+| [`enable_arm`](#enable_arm) | Other | Write |
+| [`exclude_network_on_port_profile`](#exclude_network_on_port_profile) | Other | Destructive |
+| [`execute_client_action`](#execute_client_action) | Execute & Actions | Destructive |
+| [`execute_device_action`](#execute_device_action) | Execute & Actions | Destructive |
+| [`execute_port_action`](#execute_port_action) | Execute & Actions | Destructive |
+| [`fabric_connector_delete`](#fabric_connector_delete) | Other | Destructive |
+| [`fabric_connector_get`](#fabric_connector_get) | Other | Read |
+| [`fabric_connector_patch`](#fabric_connector_patch) | Other | Destructive |
+| [`fabric_connector_post`](#fabric_connector_post) | Other | Write |
+| [`fabric_connector_put`](#fabric_connector_put) | Other | Destructive |
+| [`get_account`](#get_account) | Reading & Inspection | Read |
+| [`get_acl_rule`](#get_acl_rule) | Reading & Inspection | Read |
+| [`get_acl_rule_ordering`](#get_acl_rule_ordering) | Reading & Inspection | Read |
+| [`get_alarm_hub`](#get_alarm_hub) | Reading & Inspection | Read |
+| [`get_arm_profile`](#get_arm_profile) | Reading & Inspection | Read |
+| [`get_bridge`](#get_bridge) | Reading & Inspection | Read |
+| [`get_camera`](#get_camera) | Reading & Inspection | Read |
+| [`get_camera_snapshot`](#get_camera_snapshot) | Reading & Inspection | Read |
+| [`get_carrier_service_plan`](#get_carrier_service_plan) | Reading & Inspection | Read |
+| [`get_carrier_subscriber`](#get_carrier_subscriber) | Reading & Inspection | Read |
+| [`get_channel_plan`](#get_channel_plan) | Reading & Inspection | Read |
+| [`get_chime`](#get_chime) | Reading & Inspection | Read |
+| [`get_client`](#get_client) | Reading & Inspection | Read |
+| [`get_client_link_diagnostics`](#get_client_link_diagnostics) | Reading & Inspection | Read |
+| [`get_device`](#get_device) | Reading & Inspection | Read |
+| [`get_device_port_state`](#get_device_port_state) | Reading & Inspection | Read |
+| [`get_device_statistics`](#get_device_statistics) | Reading & Inspection | Read |
+| [`get_device_stp_state`](#get_device_stp_state) | Reading & Inspection | Read |
+| [`get_dns_policy`](#get_dns_policy) | Reading & Inspection | Read |
+| [`get_dynamic_dns`](#get_dynamic_dns) | Reading & Inspection | Read |
+| [`get_firewall_group`](#get_firewall_group) | Reading & Inspection | Read |
+| [`get_firewall_policy`](#get_firewall_policy) | Reading & Inspection | Read |
+| [`get_firewall_policy_ordering`](#get_firewall_policy_ordering) | Reading & Inspection | Read |
+| [`get_firewall_rule`](#get_firewall_rule) | Reading & Inspection | Read |
+| [`get_firewall_zone_proxy`](#get_firewall_zone_proxy) | Reading & Inspection | Read |
+| [`get_fleet_summary`](#get_fleet_summary) | Reading & Inspection | Read |
+| [`get_fob`](#get_fob) | Reading & Inspection | Read |
+| [`get_historical_stats`](#get_historical_stats) | Reading & Inspection | Read |
+| [`get_host`](#get_host) | Reading & Inspection | Read |
+| [`get_hotspot_package`](#get_hotspot_package) | Reading & Inspection | Read |
+| [`get_hotspot_voucher`](#get_hotspot_voucher) | Reading & Inspection | Read |
+| [`get_innerspace_asset`](#get_innerspace_asset) | Reading & Inspection | Read |
+| [`get_innerspace_project`](#get_innerspace_project) | Reading & Inspection | Read |
+| [`get_innerspace_summary`](#get_innerspace_summary) | Reading & Inspection | Read |
+| [`get_isp_metrics`](#get_isp_metrics) | Reading & Inspection | Read |
+| [`get_lag`](#get_lag) | Reading & Inspection | Read |
+| [`get_light`](#get_light) | Reading & Inspection | Read |
+| [`get_link_station`](#get_link_station) | Reading & Inspection | Read |
+| [`get_liveview`](#get_liveview) | Reading & Inspection | Read |
+| [`get_mc_lag_domain`](#get_mc_lag_domain) | Reading & Inspection | Read |
+| [`get_mobility_device`](#get_mobility_device) | Reading & Inspection | Read |
+| [`get_network`](#get_network) | Reading & Inspection | Read |
+| [`get_network_application_info`](#get_network_application_info) | Reading & Inspection | Read |
+| [`get_network_references`](#get_network_references) | Reading & Inspection | Read |
+| [`get_nvr`](#get_nvr) | Reading & Inspection | Read |
+| [`get_port_profile`](#get_port_profile) | Reading & Inspection | Read |
+| [`get_protect_application_info`](#get_protect_application_info) | Reading & Inspection | Read |
+| [`get_protect_user`](#get_protect_user) | Reading & Inspection | Read |
+| [`get_radius_profile`](#get_radius_profile) | Reading & Inspection | Read |
+| [`get_recognition_group_counts`](#get_recognition_group_counts) | Reading & Inspection | Read |
+| [`get_recognition_group_image`](#get_recognition_group_image) | Reading & Inspection | Read |
+| [`get_relay`](#get_relay) | Reading & Inspection | Read |
+| [`get_rtsps_stream`](#get_rtsps_stream) | Reading & Inspection | Read |
+| [`get_scheduled_task`](#get_scheduled_task) | Reading & Inspection | Read |
+| [`get_sdwan_config`](#get_sdwan_config) | Reading & Inspection | Read |
+| [`get_sdwan_config_status`](#get_sdwan_config_status) | Reading & Inspection | Read |
+| [`get_sensor`](#get_sensor) | Reading & Inspection | Read |
+| [`get_setting`](#get_setting) | Reading & Inspection | Read |
+| [`get_siren`](#get_siren) | Reading & Inspection | Read |
+| [`get_site_health_summary`](#get_site_health_summary) | Reading & Inspection | Read |
+| [`get_site_inventory`](#get_site_inventory) | Reading & Inspection | Read |
+| [`get_site_statistics`](#get_site_statistics) | Reading & Inspection | Read |
+| [`get_speaker`](#get_speaker) | Reading & Inspection | Read |
+| [`get_switch_stack`](#get_switch_stack) | Reading & Inspection | Read |
+| [`get_system_info`](#get_system_info) | Reading & Inspection | Read |
+| [`get_thumbnail`](#get_thumbnail) | Reading & Inspection | Read |
+| [`get_traffic_matching_list`](#get_traffic_matching_list) | Reading & Inspection | Read |
+| [`get_traffic_route`](#get_traffic_route) | Reading & Inspection | Read |
+| [`get_ulp_user`](#get_ulp_user) | Reading & Inspection | Read |
+| [`get_user`](#get_user) | Reading & Inspection | Read |
+| [`get_viewer`](#get_viewer) | Reading & Inspection | Read |
+| [`get_vpn_server`](#get_vpn_server) | Reading & Inspection | Read |
+| [`get_wifi_broadcast`](#get_wifi_broadcast) | Reading & Inspection | Read |
+| [`get_wlan_config`](#get_wlan_config) | Reading & Inspection | Read |
+| [`get_wlan_group`](#get_wlan_group) | Reading & Inspection | Read |
+| [`list_accounts`](#list_accounts) | Listing & Discovery | Read |
+| [`list_acl_rules`](#list_acl_rules) | Listing & Discovery | Read |
+| [`list_active_clients_stats`](#list_active_clients_stats) | Listing & Discovery | Read |
+| [`list_alarm_hubs`](#list_alarm_hubs) | Listing & Discovery | Read |
+| [`list_all_clients`](#list_all_clients) | Listing & Discovery | Read |
+| [`list_all_devices`](#list_all_devices) | Listing & Discovery | Read |
+| [`list_all_sites_aggregated`](#list_all_sites_aggregated) | Listing & Discovery | Read |
+| [`list_arm_profiles`](#list_arm_profiles) | Listing & Discovery | Read |
+| [`list_bridges`](#list_bridges) | Listing & Discovery | Read |
+| [`list_cameras`](#list_cameras) | Listing & Discovery | Read |
+| [`list_carrier_service_plans`](#list_carrier_service_plans) | Listing & Discovery | Read |
+| [`list_carrier_subscribers`](#list_carrier_subscribers) | Listing & Discovery | Read |
+| [`list_chimes`](#list_chimes) | Listing & Discovery | Read |
+| [`list_client_sessions`](#list_client_sessions) | Listing & Discovery | Read |
+| [`list_clients`](#list_clients) | Listing & Discovery | Read |
+| [`list_configured_api_keys`](#list_configured_api_keys) | Listing & Discovery | Read |
+| [`list_countries`](#list_countries) | Listing & Discovery | Read |
+| [`list_device_stats`](#list_device_stats) | Listing & Discovery | Read |
+| [`list_device_tags`](#list_device_tags) | Listing & Discovery | Read |
+| [`list_devices`](#list_devices) | Listing & Discovery | Read |
+| [`list_dns_policies`](#list_dns_policies) | Listing & Discovery | Read |
+| [`list_dpi_applications`](#list_dpi_applications) | Listing & Discovery | Read |
+| [`list_dpi_categories`](#list_dpi_categories) | Listing & Discovery | Read |
+| [`list_dynamic_dns`](#list_dynamic_dns) | Listing & Discovery | Read |
+| [`list_firewall_groups`](#list_firewall_groups) | Listing & Discovery | Read |
+| [`list_firewall_policies`](#list_firewall_policies) | Listing & Discovery | Read |
+| [`list_firewall_rules`](#list_firewall_rules) | Listing & Discovery | Read |
+| [`list_firewall_zones_proxy`](#list_firewall_zones_proxy) | Listing & Discovery | Read |
+| [`list_fobs`](#list_fobs) | Listing & Discovery | Read |
+| [`list_hosts`](#list_hosts) | Listing & Discovery | Read |
+| [`list_hotspot_operators`](#list_hotspot_operators) | Listing & Discovery | Read |
+| [`list_hotspot_packages`](#list_hotspot_packages) | Listing & Discovery | Read |
+| [`list_hotspot_vouchers`](#list_hotspot_vouchers) | Listing & Discovery | Read |
+| [`list_innerspace_access_points`](#list_innerspace_access_points) | Listing & Discovery | Read |
+| [`list_innerspace_devices`](#list_innerspace_devices) | Listing & Discovery | Read |
+| [`list_innerspace_floor_plans`](#list_innerspace_floor_plans) | Listing & Discovery | Read |
+| [`list_innerspace_inventory`](#list_innerspace_inventory) | Listing & Discovery | Read |
+| [`list_innerspace_switches`](#list_innerspace_switches) | Listing & Discovery | Read |
+| [`list_known_clients`](#list_known_clients) | Listing & Discovery | Read |
+| [`list_lags`](#list_lags) | Listing & Discovery | Read |
+| [`list_lights`](#list_lights) | Listing & Discovery | Read |
+| [`list_link_stations`](#list_link_stations) | Listing & Discovery | Read |
+| [`list_liveviews`](#list_liveviews) | Listing & Discovery | Read |
+| [`list_local_sites`](#list_local_sites) | Listing & Discovery | Read |
+| [`list_mc_lag_domains`](#list_mc_lag_domains) | Listing & Discovery | Read |
+| [`list_mobility_admins`](#list_mobility_admins) | Listing & Discovery | Read |
+| [`list_mobility_clients`](#list_mobility_clients) | Listing & Discovery | Read |
+| [`list_mobility_devices`](#list_mobility_devices) | Listing & Discovery | Read |
+| [`list_mobility_workspaces`](#list_mobility_workspaces) | Listing & Discovery | Read |
+| [`list_networks`](#list_networks) | Listing & Discovery | Read |
+| [`list_pending_devices`](#list_pending_devices) | Listing & Discovery | Read |
+| [`list_port_forwards`](#list_port_forwards) | Listing & Discovery | Read |
+| [`list_port_profiles`](#list_port_profiles) | Listing & Discovery | Read |
+| [`list_protect_events`](#list_protect_events) | Listing & Discovery | Read |
+| [`list_protect_files`](#list_protect_files) | Listing & Discovery | Read |
+| [`list_protect_users`](#list_protect_users) | Listing & Discovery | Read |
+| [`list_radius_profiles`](#list_radius_profiles) | Listing & Discovery | Read |
+| [`list_recognition_detections`](#list_recognition_detections) | Listing & Discovery | Read |
+| [`list_recognition_groups`](#list_recognition_groups) | Listing & Discovery | Read |
+| [`list_relays`](#list_relays) | Listing & Discovery | Read |
+| [`list_rogue_aps`](#list_rogue_aps) | Listing & Discovery | Read |
+| [`list_routing_entries`](#list_routing_entries) | Listing & Discovery | Read |
+| [`list_scheduled_tasks`](#list_scheduled_tasks) | Listing & Discovery | Read |
+| [`list_sdwan_configs`](#list_sdwan_configs) | Listing & Discovery | Read |
+| [`list_sensors`](#list_sensors) | Listing & Discovery | Read |
+| [`list_settings`](#list_settings) | Listing & Discovery | Read |
+| [`list_sirens`](#list_sirens) | Listing & Discovery | Read |
+| [`list_site_devices`](#list_site_devices) | Listing & Discovery | Read |
+| [`list_site_to_site_tunnels`](#list_site_to_site_tunnels) | Listing & Discovery | Read |
+| [`list_sites`](#list_sites) | Listing & Discovery | Read |
+| [`list_speakers`](#list_speakers) | Listing & Discovery | Read |
+| [`list_switch_stacks`](#list_switch_stacks) | Listing & Discovery | Read |
+| [`list_traffic_matching_lists`](#list_traffic_matching_lists) | Listing & Discovery | Read |
+| [`list_traffic_routes`](#list_traffic_routes) | Listing & Discovery | Read |
+| [`list_traffic_rules`](#list_traffic_rules) | Listing & Discovery | Read |
+| [`list_ulp_users`](#list_ulp_users) | Listing & Discovery | Read |
+| [`list_users`](#list_users) | Listing & Discovery | Read |
+| [`list_viewers`](#list_viewers) | Listing & Discovery | Read |
+| [`list_vpn_servers`](#list_vpn_servers) | Listing & Discovery | Read |
+| [`list_wan_interfaces`](#list_wan_interfaces) | Listing & Discovery | Read |
+| [`list_wifi_broadcasts`](#list_wifi_broadcasts) | Listing & Discovery | Read |
+| [`list_wlan_configs`](#list_wlan_configs) | Listing & Discovery | Read |
+| [`list_wlan_groups`](#list_wlan_groups) | Listing & Discovery | Read |
+| [`locate_device`](#locate_device) | Device Control | Write |
+| [`patch_firewall_policy`](#patch_firewall_policy) | Update | Destructive |
+| [`pos_ingest_transaction`](#pos_ingest_transaction) | Other | Write |
+| [`ptz_goto_preset`](#ptz_goto_preset) | Device Control | Write |
+| [`ptz_patrol_start`](#ptz_patrol_start) | Device Control | Write |
+| [`ptz_patrol_stop`](#ptz_patrol_stop) | Device Control | Write |
+| [`query_isp_metrics`](#query_isp_metrics) | Other | Read |
+| [`reconnect_client`](#reconnect_client) | Client Management | Destructive |
+| [`reject_pending_device`](#reject_pending_device) | Other | Destructive |
+| [`relay_activate_output`](#relay_activate_output) | Other | Destructive |
+| [`restart_device`](#restart_device) | Device Management | Destructive |
+| [`resume_carrier_subscriber`](#resume_carrier_subscriber) | Other | Write |
+| [`search_across_sites`](#search_across_sites) | Search | Read |
+| [`search_device_fleet`](#search_device_fleet) | Search | Read |
+| [`set_acl_rule_ordering`](#set_acl_rule_ordering) | Configuration | Destructive (idempotent) |
+| [`set_firewall_policy_ordering`](#set_firewall_policy_ordering) | Configuration | Destructive (idempotent) |
+| [`siren_play`](#siren_play) | Other | Destructive |
+| [`siren_stop`](#siren_stop) | Other | Destructive |
+| [`siren_test_sound`](#siren_test_sound) | Other | Destructive |
+| [`speaker_test_sound`](#speaker_test_sound) | Other | Destructive |
+| [`start_talkback_session`](#start_talkback_session) | Execute & Actions | Write |
+| [`suspend_carrier_subscriber`](#suspend_carrier_subscriber) | Other | Destructive |
+| [`trigger_alarm_webhook`](#trigger_alarm_webhook) | Execute & Actions | Destructive |
+| [`unadopt_device`](#unadopt_device) | Device Management | Destructive |
+| [`unblock_client`](#unblock_client) | Client Management | Write |
+| [`update_acl_rule`](#update_acl_rule) | Update | Destructive (idempotent) |
+| [`update_alarm_hub`](#update_alarm_hub) | Update | Destructive (idempotent) |
+| [`update_arm_profile`](#update_arm_profile) | Update | Destructive (idempotent) |
+| [`update_arm_profile_settings`](#update_arm_profile_settings) | Update | Destructive (idempotent) |
+| [`update_bridge`](#update_bridge) | Update | Destructive (idempotent) |
+| [`update_camera`](#update_camera) | Update | Destructive (idempotent) |
+| [`update_carrier_subscriber`](#update_carrier_subscriber) | Update | Destructive (idempotent) |
+| [`update_chime`](#update_chime) | Update | Destructive (idempotent) |
+| [`update_device_tag`](#update_device_tag) | Update | Destructive (idempotent) |
+| [`update_dns_policy`](#update_dns_policy) | Update | Destructive (idempotent) |
+| [`update_dynamic_dns`](#update_dynamic_dns) | Update | Destructive (idempotent) |
+| [`update_firewall_policy`](#update_firewall_policy) | Update | Destructive (idempotent) |
+| [`update_firewall_zone_proxy`](#update_firewall_zone_proxy) | Update | Destructive (idempotent) |
+| [`update_fob`](#update_fob) | Update | Destructive (idempotent) |
+| [`update_hotspot_operator`](#update_hotspot_operator) | Update | Destructive (idempotent) |
+| [`update_light`](#update_light) | Update | Destructive (idempotent) |
+| [`update_link_station`](#update_link_station) | Update | Destructive (idempotent) |
+| [`update_liveview`](#update_liveview) | Update | Destructive (idempotent) |
+| [`update_mobility_device_name`](#update_mobility_device_name) | Update | Destructive (idempotent) |
+| [`update_mobility_device_network`](#update_mobility_device_network) | Update | Destructive (idempotent) |
+| [`update_mobility_device_wireless`](#update_mobility_device_wireless) | Update | Destructive (idempotent) |
+| [`update_network`](#update_network) | Update | Destructive (idempotent) |
+| [`update_port_forward`](#update_port_forward) | Update | Destructive (idempotent) |
+| [`update_port_profile`](#update_port_profile) | Update | Destructive (idempotent) |
+| [`update_relay`](#update_relay) | Update | Destructive (idempotent) |
+| [`update_sensor`](#update_sensor) | Update | Destructive (idempotent) |
+| [`update_setting`](#update_setting) | Update | Destructive (idempotent) |
+| [`update_siren`](#update_siren) | Update | Destructive (idempotent) |
+| [`update_site_to_site_tunnel`](#update_site_to_site_tunnel) | Update | Destructive (idempotent) |
+| [`update_speaker`](#update_speaker) | Update | Destructive (idempotent) |
+| [`update_traffic_matching_list`](#update_traffic_matching_list) | Update | Destructive (idempotent) |
+| [`update_traffic_route`](#update_traffic_route) | Update | Destructive (idempotent) |
+| [`update_traffic_rule`](#update_traffic_rule) | Update | Destructive (idempotent) |
+| [`update_user`](#update_user) | Update | Destructive (idempotent) |
+| [`update_viewer`](#update_viewer) | Update | Destructive (idempotent) |
+| [`update_vpn_server`](#update_vpn_server) | Update | Destructive (idempotent) |
+| [`update_wan_interface`](#update_wan_interface) | Update | Destructive (idempotent) |
+| [`update_wifi_broadcast`](#update_wifi_broadcast) | Update | Destructive (idempotent) |
+| [`update_wlan_config`](#update_wlan_config) | Update | Destructive (idempotent) |
+| [`upgrade_device`](#upgrade_device) | Device Management | Destructive |
+| [`upload_protect_file`](#upload_protect_file) | Create | Write |
+
 ---
 
 ## Client Management
@@ -37,6 +329,8 @@ Total tools: 283
 **3 tools**
 
 ### `block_client`
+
+**Access:** Destructive
 
 Block a client on a site.
 
@@ -57,6 +351,8 @@ client_id: REQUIRED. Obtain it from `list_clients` (its id field).
 
 ### `reconnect_client`
 
+**Access:** Destructive
+
 Force a client to reconnect on a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -75,6 +371,8 @@ client_id: REQUIRED. Obtain it from `list_clients` (its id field).
 `dict[str, Any]`
 
 ### `unblock_client`
+
+**Access:** Write
 
 Unblock a previously blocked client on a site.
 
@@ -102,6 +400,8 @@ client_id: REQUIRED. Obtain it from `list_clients` (its id field).
 
 ### `set_acl_rule_ordering`
 
+**Access:** Destructive (idempotent)
+
 Set the ordering of ACL rules for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -120,6 +420,8 @@ ordering: ACL rule ordering configuration.
 `dict[str, Any]`
 
 ### `set_firewall_policy_ordering`
+
+**Access:** Destructive (idempotent)
 
 Set the ordering of firewall policies within one source/destination zone pair.
 
@@ -153,6 +455,8 @@ ordering: policy ordering configuration (the ordered policy list for that zone p
 
 ### `create_acl_rule`
 
+**Access:** Write
+
 Create a new ACL rule on a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -180,6 +484,8 @@ perimeter firewall rules, use create_firewall_policy instead.
 
 ### `create_arm_profile`
 
+**Access:** Write
+
 Create an arm profile (POST /v1/arm-profiles via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -200,6 +506,8 @@ settings: the rest of the required body — automations, schedules, recordEveryt
 `dict[str, Any]`
 
 ### `create_carrier_subscriber`
+
+**Access:** Write
 
 Create a Carrier / ISP Fabric subscriber (POST /v1/carrier/subscribers). Guarded write.
 
@@ -234,6 +542,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `create_device_tag`
 
+**Access:** Write
+
 Create a device tag on a site. This is a write operation that modifies live config.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -255,6 +565,8 @@ Tags can then be assigned to devices to group and filter them in the UniFi UI.
 `dict[str, Any]`
 
 ### `create_dns_policy`
+
+**Access:** Write
 
 Create a new DNS policy on a site.
 
@@ -279,6 +591,8 @@ existing policy with get_dns_policy to confirm the exact shape for the type you 
 `dict[str, Any]`
 
 ### `create_firewall_policy`
+
+**Access:** Write
 
 Create a new firewall policy on a site.
 
@@ -323,6 +637,8 @@ naming it — and all verified against the live controller):
 
 ### `create_firewall_zone_proxy`
 
+**Access:** Write
+
 Create a new firewall zone on a site via connector proxy.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -344,6 +660,8 @@ controller. Get network IDs from list_networks.
 
 ### `create_hotspot_operator`
 
+**Access:** Write
+
 Create a hotspot operator account.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -364,6 +682,8 @@ name: operator username. password: operator password.
 `dict[str, Any]`
 
 ### `create_hotspot_vouchers`
+
+**Access:** Write
 
 Generate hotspot vouchers for a site.
 
@@ -387,6 +707,8 @@ bandwidth limits, etc.
 
 ### `create_liveview`
 
+**Access:** Write
+
 Create a liveview on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -406,6 +728,8 @@ settings: optional additional liveview fields (layout, slots, etc.).
 `dict[str, Any]`
 
 ### `create_network`
+
+**Access:** Write
 
 Create a new network/VLAN on a site.
 
@@ -448,6 +772,8 @@ When that happens this response carries a ``warnings`` entry (code
 
 ### `create_port_forward`
 
+**Access:** Write
+
 Create a port forwarding rule via the Classic REST API.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -472,6 +798,8 @@ Example: {"enabled": true, "name": "SSH", "pfwd_interface": "wan", "src": "any",
 `dict[str, Any]`
 
 ### `create_radius_profile`
+
+**Access:** Write
 
 Create a RADIUS authentication profile.
 
@@ -504,6 +832,8 @@ firmware version and profiles are effectively read-only. Use list_radius_profile
 
 ### `create_rtsps_stream`
 
+**Access:** Write
+
 Create an RTSPS stream for a Protect camera.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -531,6 +861,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 
 ### `create_site_to_site_tunnel`
 
+**Access:** Write
+
 Create a site-to-site VPN tunnel. This is a write operation that modifies live config.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -549,6 +881,8 @@ tunnel: tunnel configuration payload (remoteIp, psk, networks, enabled, etc.).
 `dict[str, Any]`
 
 ### `create_traffic_matching_list`
+
+**Access:** Write
 
 Create a new traffic matching list on a site.
 
@@ -572,6 +906,8 @@ traffic_list: for a PORTS list the live object also carries ``name`` (str) and
 `dict[str, Any]`
 
 ### `create_traffic_route`
+
+**Access:** Write
 
 Create a traffic route on a site (policy-based routing / WAN load-balancing).
 
@@ -597,6 +933,8 @@ field names (verified: 'network_id' is accepted, 'networkId' is not):
 `Any`
 
 ### `create_traffic_rule`
+
+**Access:** Write
 
 Create a traffic matching rule (QoS, block, or route by application/IP group).
 
@@ -627,6 +965,8 @@ on firmware 10.2.105 and below.
 
 ### `create_vpn_server`
 
+**Access:** Write
+
 Create a VPN server (OpenVPN, WireGuard, or L2TP).
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -649,6 +989,8 @@ subnet: VPN client address pool CIDR.
 `dict[str, Any]`
 
 ### `create_wifi_broadcast`
+
+**Access:** Write
 
 Create a new WiFi broadcast SSID on a site.
 
@@ -673,6 +1015,8 @@ broadcast: for a STANDARD SSID also include: {'name': str (SSID name), 'enabled'
 `dict[str, Any]`
 
 ### `upload_protect_file`
+
+**Access:** Write
 
 Upload a Protect device asset file. WARNING: Uploads asset file to NVR storage.
 Overwriting system files may not be reversible.
@@ -706,6 +1050,8 @@ file_content_base64: base64-encoded file content.
 
 ### `delete_acl_rule`
 
+**Access:** Destructive
+
 Delete an ACL rule.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -724,6 +1070,8 @@ rule_id: REQUIRED. The rule's id; obtain it from `list_acl_rules` (its id field)
 `str`
 
 ### `delete_arm_profile`
+
+**Access:** Destructive
 
 Delete an arm profile (DELETE /v1/arm-profiles/{id}). Irreversible — no undo.
 
@@ -745,6 +1093,8 @@ confirm: must be true to execute. Governed by UNIFI_PROTECT_MUTATIONS_ENABLED.
 
 ### `delete_device_tag`
 
+**Access:** Destructive
+
 Delete a device tag by ID. This permanently removes the tag from the site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -763,6 +1113,8 @@ tag_id: device tag ID to delete.
 `dict[str, Any]`
 
 ### `delete_dns_policy`
+
+**Access:** Destructive
 
 Delete a DNS policy.
 
@@ -783,6 +1135,8 @@ policy_id: REQUIRED. The policy's id; obtain it from `list_dns_policies` (its id
 
 ### `delete_firewall_policy`
 
+**Access:** Destructive
+
 Delete a firewall policy.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -801,6 +1155,8 @@ policy_id: REQUIRED. The policy's id; obtain it from `list_firewall_policies` (i
 `str`
 
 ### `delete_firewall_zone_proxy`
+
+**Access:** Destructive
 
 Delete a firewall zone via connector proxy.
 
@@ -821,6 +1177,8 @@ zone_id: REQUIRED. Obtain it from `list_firewall_zones_proxy` (its id field).
 
 ### `delete_hotspot_operator`
 
+**Access:** Destructive
+
 Delete a hotspot operator by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -839,6 +1197,8 @@ operator_id: hotspot operator ID.
 `str`
 
 ### `delete_hotspot_voucher`
+
+**Access:** Destructive
 
 Delete a single hotspot voucher.
 
@@ -859,6 +1219,8 @@ voucher_id: REQUIRED. Obtain it from `list_hotspot_vouchers` (its id field).
 
 ### `delete_network`
 
+**Access:** Destructive
+
 Delete a network/VLAN.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -878,6 +1240,8 @@ network_id: REQUIRED. Obtain it from `list_networks` (its id field).
 
 ### `delete_port_forward`
 
+**Access:** Destructive
+
 Delete a port forwarding rule by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -896,6 +1260,8 @@ forward_id: REQUIRED. Obtain it from `list_port_forwards` (its id field).
 `str`
 
 ### `delete_rtsps_stream`
+
+**Access:** Destructive
 
 Delete an RTSPS stream for a Protect camera.
 
@@ -921,6 +1287,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 
 ### `delete_site_to_site_tunnel`
 
+**Access:** Destructive
+
 Delete a site-to-site VPN tunnel by ID. This permanently removes the tunnel config.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -939,6 +1307,8 @@ tunnel_id: tunnel ID to delete.
 `dict[str, Any]`
 
 ### `delete_traffic_matching_list`
+
+**Access:** Destructive
 
 Delete a traffic matching list.
 
@@ -959,6 +1329,8 @@ list_id: REQUIRED. Obtain it from `list_traffic_matching_lists` (its id field).
 
 ### `delete_traffic_route`
 
+**Access:** Destructive
+
 Delete a traffic route by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -977,6 +1349,8 @@ route_id: REQUIRED. Obtain it from `list_traffic_routes` (its id field).
 `str`
 
 ### `delete_traffic_rule`
+
+**Access:** Destructive
 
 Delete a traffic rule by ID.
 
@@ -997,6 +1371,8 @@ rule_id: REQUIRED. The rule's id; obtain it from `list_traffic_rules` (its id fi
 
 ### `delete_vpn_server`
 
+**Access:** Destructive
+
 Delete a VPN server by ID. WARNING: Permanently removes VPN server.
 Connected clients will lose access immediately.
 
@@ -1016,6 +1392,8 @@ server_id: VPN server ID.
 `str`
 
 ### `delete_wifi_broadcast`
+
+**Access:** Destructive
 
 Delete a WiFi broadcast SSID.
 
@@ -1043,6 +1421,8 @@ broadcast_id: REQUIRED. Obtain it from `list_wifi_broadcasts` (its id field).
 
 ### `locate_device`
 
+**Access:** Write
+
 Toggle the locate LED on an adopted device.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1064,6 +1444,8 @@ device_id: REQUIRED. Obtain it from `list_devices` (its id field).
 
 ### `ptz_goto_preset`
 
+**Access:** Write
+
 Move a PTZ camera to a preset position slot.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1084,6 +1466,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 
 ### `ptz_patrol_start`
 
+**Access:** Write
+
 Start a PTZ patrol on a preset slot.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1103,6 +1487,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 `dict[str, Any]`
 
 ### `ptz_patrol_stop`
+
+**Access:** Write
 
 Stop the current PTZ patrol on a camera.
 
@@ -1129,6 +1515,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 
 ### `adopt_device`
 
+**Access:** Write
+
 Adopt a device onto a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1151,6 +1539,8 @@ adopt_device(host="main-office", site="HQ", device={"mac": "aa:bb:cc:dd:ee:ff"})
 
 ### `restart_device`
 
+**Access:** Destructive
+
 Restart an adopted device.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1169,6 +1559,8 @@ device_id: REQUIRED. Obtain it from `list_devices` (its id field).
 `dict[str, Any]`
 
 ### `unadopt_device`
+
+**Access:** Destructive
 
 Unadopt (remove) a device from a site.
 
@@ -1191,6 +1583,8 @@ unadopt_device(host="main-office", site="HQ", device_id="device-uuid-here")
 `str`
 
 ### `upgrade_device`
+
+**Access:** Destructive
 
 Trigger a firmware upgrade on an adopted device.
 
@@ -1218,6 +1612,8 @@ device_id: REQUIRED. Obtain it from `list_devices` (its id field).
 
 ### `disable_arm`
 
+**Access:** Destructive
+
 Disable the arm alarm (POST /v1/arm-profiles/disable). Disarms the system.
 
 WARNING: physical side effects; requires a local Alarm Manager.
@@ -1237,6 +1633,8 @@ confirm: must be true to execute. Governed by UNIFI_PROTECT_MUTATIONS_ENABLED.
 
 ### `disable_camera_mic_permanently`
 
+**Access:** Destructive
+
 Permanently disable the microphone on a Protect camera. This cannot be undone.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1254,6 +1652,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 `dict[str, Any]`
 
 ### `execute_client_action`
+
+**Access:** Destructive
 
 Execute a client action (block, unblock, reconnect).
 
@@ -1277,6 +1677,8 @@ client_id: REQUIRED. Obtain it from `list_clients` (its id field).
 
 ### `execute_device_action`
 
+**Access:** Destructive
+
 Execute a device action (restart, upgrade, locate, etc.).
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1298,6 +1700,8 @@ device_id: REQUIRED. Obtain it from `list_devices` (its id field).
 `dict[str, Any]`
 
 ### `execute_port_action`
+
+**Access:** Destructive
 
 Execute a port action on a device interface.
 
@@ -1336,6 +1740,8 @@ device_id: REQUIRED. Obtain it from `list_devices` (its id field).
 
 ### `start_talkback_session`
 
+**Access:** Write
+
 Start a talkback audio session on a Protect camera.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1353,6 +1759,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 `dict[str, Any]`
 
 ### `trigger_alarm_webhook`
+
+**Access:** Destructive
 
 Trigger an alarm manager webhook by ID. WARNING: triggers physical alarm hardware.
 Verify webhook ID is correct before confirming.
@@ -1382,6 +1790,8 @@ confirm: must be True to execute. Prevents accidental triggers on live infrastru
 
 ### `list_accounts`
 
+**Access:** Read
+
 List local RADIUS user accounts for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1400,6 +1810,8 @@ Returned verbatim, including plaintext x_password credential fields.
 
 ### `list_acl_rules`
 
+**Access:** Read
+
 List all ACL rules for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1416,6 +1828,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `dict[str, Any]`
 
 ### `list_active_clients_stats`
+
+**Access:** Read
 
 List detailed per-client statistics: traffic, signal strength, and experience score.
 
@@ -1435,6 +1849,8 @@ Returns a list of client stat objects from the Classic REST /stat/sta endpoint.
 
 ### `list_alarm_hubs`
 
+**Access:** Read
+
 List alarm hubs on a Protect console (GET /v1/alarm-hubs via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1450,6 +1866,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_all_clients`
+
+**Access:** Read
 
 List all connected clients across all sites.
 
@@ -1469,6 +1887,8 @@ several keys configured: every key's sites, each client tagged with _keyLabel.
 `dict[str, Any]`
 
 ### `list_all_devices`
+
+**Access:** Read
 
 List all devices across the entire fleet.
 
@@ -1496,6 +1916,8 @@ keys configured: every key's devices, each tagged with _keyLabel.
 
 ### `list_all_sites_aggregated`
 
+**Access:** Read
+
 List all sites with aggregated health stats from the /v1/sites/ API.
 
 Returns sites merged with health summary: device counts, client counts,
@@ -1510,6 +1932,8 @@ No parameters.
 `dict[str, Any]`
 
 ### `list_arm_profiles`
+
+**Access:** Read
 
 List arm profiles on a Protect console (GET /v1/arm-profiles via Fabric proxy).
 
@@ -1528,6 +1952,8 @@ Availability requires a Protect application exposing the v7.1.87 Integration API
 
 ### `list_bridges`
 
+**Access:** Read
+
 List bridges on a Protect console (GET /v1/bridges via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1544,6 +1970,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 
 ### `list_cameras`
 
+**Access:** Read
+
 List all cameras on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1559,6 +1987,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_carrier_service_plans`
+
+**Access:** Read
 
 List the Carrier / ISP Fabric service plans for the authenticated organization.
 
@@ -1579,6 +2009,8 @@ key_label: optional configured API-key label to route on a specific key.
 `dict[str, Any]`
 
 ### `list_carrier_subscribers`
+
+**Access:** Read
 
 List Carrier / ISP Fabric subscribers visible to the authenticated ISP key.
 
@@ -1606,6 +2038,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `list_chimes`
 
+**Access:** Read
+
 List all chimes on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1621,6 +2055,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_client_sessions`
+
+**Access:** Read
 
 List historical client connection sessions from the Classic REST /stat/session endpoint.
 
@@ -1664,6 +2100,8 @@ The response is passed through verbatim, including identifiers (MAC/IP/hostname)
 
 ### `list_clients`
 
+**Access:** Read
+
 List connected clients for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1699,6 +2137,8 @@ than truncating silently.
 
 ### `list_configured_api_keys`
 
+**Access:** Read
+
 List all configured API keys with their labels and types.
 
 Shows which API keys are available for MSP multi-console queries.
@@ -1713,6 +2153,8 @@ No parameters.
 `dict[str, Any]`
 
 ### `list_countries`
+
+**Access:** Read
 
 List all countries with ISO codes available on a console.
 
@@ -1729,6 +2171,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_device_stats`
+
+**Access:** Read
 
 List per-device statistics: CPU load, memory, uptime, and port throughput.
 
@@ -1748,6 +2192,8 @@ Returns a list of device stat objects from the Classic REST /stat/device endpoin
 
 ### `list_device_tags`
 
+**Access:** Read
+
 List all device tags defined in a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1764,6 +2210,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `dict[str, Any]`
 
 ### `list_devices`
+
+**Access:** Read
 
 List all devices across the fleet with status, firmware, and model.
 
@@ -1786,6 +2234,8 @@ far with incomplete=true rather than truncating silently.
 
 ### `list_dns_policies`
 
+**Access:** Read
+
 List all DNS policies for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1807,6 +2257,8 @@ offset or limit for a single manual page. A capped drain is flagged incomplete.
 `dict[str, Any]`
 
 ### `list_dpi_applications`
+
+**Access:** Read
 
 List DPI applications available for traffic rules.
 
@@ -1833,6 +2285,8 @@ rather than truncating silently.
 
 ### `list_dpi_categories`
 
+**Access:** Read
+
 List DPI (Deep Packet Inspection) app categories available for traffic rules.
 
 Categories include Social Media, Streaming Video, Gaming, etc.
@@ -1858,6 +2312,8 @@ rather than truncating silently.
 
 ### `list_dynamic_dns`
 
+**Access:** Read
+
 List Dynamic DNS provider configurations for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1876,6 +2332,8 @@ Returned verbatim, including plaintext x_password credential fields.
 
 ### `list_firewall_groups`
 
+**Access:** Read
+
 List firewall groups (IP/port sets referenced by firewall rules) for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1892,6 +2350,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `Any`
 
 ### `list_firewall_policies`
+
+**Access:** Read
 
 List firewall policies for a site.
 
@@ -1921,6 +2381,8 @@ silently.
 
 ### `list_firewall_rules`
 
+**Access:** Read
+
 List classic L3/L4 firewall rules for a site (distinct from Integration API policies).
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -1937,6 +2399,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `Any`
 
 ### `list_firewall_zones_proxy`
+
+**Access:** Read
 
 List all firewall zones for a site via connector proxy.
 
@@ -1960,6 +2424,8 @@ limit for a single manual page. A capped drain is flagged incomplete.
 
 ### `list_fobs`
 
+**Access:** Read
+
 List fobs on a Protect console (GET /v1/fobs via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -1975,6 +2441,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_hosts`
+
+**Access:** Read
 
 List all UniFi consoles (hosts) with firmware, WAN IP, and status.
 
@@ -1996,6 +2464,8 @@ far with incomplete=true rather than truncating silently.
 
 ### `list_hotspot_operators`
 
+**Access:** Read
+
 List hotspot operator accounts for captive portal management.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2013,6 +2483,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 
 ### `list_hotspot_packages`
 
+**Access:** Read
+
 List guest portal billing packages for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2029,6 +2501,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `Any`
 
 ### `list_hotspot_vouchers`
+
+**Access:** Read
 
 List all hotspot/guest vouchers for a site (there is no `list_vouchers` — this is it).
 
@@ -2057,6 +2531,8 @@ is flagged incomplete.
 
 ### `list_innerspace_access_points`
 
+**Access:** Read
+
 List placed access points from a console's InnerSpace floor plans (Integration API).
 
 Each AP carries id, name, model (SKU), mac, serial, floor_plan_id, x/y (pixels on
@@ -2079,6 +2555,8 @@ site_id: optional UniFi site filter — only APs whose product siteId matches.
 `dict[str, Any]`
 
 ### `list_innerspace_devices`
+
+**Access:** Read
 
 List placed device shapes from a console's InnerSpace floor-plan.
 
@@ -2103,6 +2581,8 @@ mode: '3D' (default) or '2D'.
 
 ### `list_innerspace_floor_plans`
 
+**Access:** Read
+
 List a console's InnerSpace floor plans (documented Integration API).
 
 Each floor plan carries id, name, floor_number, image_url (an asset path — fetch
@@ -2126,6 +2606,8 @@ site_id: optional UniFi site filter — only floor plans whose product siteId ma
 
 ### `list_innerspace_inventory`
 
+**Access:** Read
+
 List UNPLACED device inventory for a console's InnerSpace project (Integration API).
 
 Devices known to the project but not yet positioned on a floor plan. Each carries
@@ -2148,6 +2630,8 @@ site_id: optional UniFi site filter — only inventory whose product siteId matc
 
 ### `list_innerspace_switches`
 
+**Access:** Read
+
 List placed switches from a console's InnerSpace floor plans (Integration API).
 
 Each switch carries id, name, model, type (switch), mac, serial, floor_plan_id,
@@ -2169,6 +2653,8 @@ site_id: optional UniFi site filter — only switches whose product siteId match
 `dict[str, Any]`
 
 ### `list_known_clients`
+
+**Access:** Read
 
 List the full per-site client roster incl. offline history (Classic REST /stat/alluser).
 
@@ -2195,6 +2681,8 @@ The response is passed through verbatim, including identifiers (MAC/IP/hostname/
 
 ### `list_lags`
 
+**Access:** Read
+
 List Link Aggregation Groups (LAGs) on a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2218,6 +2706,8 @@ filter: optional UniFi Integration API filter expression.
 
 ### `list_lights`
 
+**Access:** Read
+
 List all lights on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2233,6 +2723,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_link_stations`
+
+**Access:** Read
 
 List link stations on a Protect console (GET /v1/link-stations via Fabric proxy).
 
@@ -2250,6 +2742,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 
 ### `list_liveviews`
 
+**Access:** Read
+
 List all liveviews on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2265,6 +2759,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_local_sites`
+
+**Access:** Read
 
 List sites managed by one UniFi Network application.
 
@@ -2289,6 +2785,8 @@ than truncating silently. filter: optional UniFi Integration API filter.
 
 ### `list_mc_lag_domains`
 
+**Access:** Read
+
 List Multi-Chassis Link Aggregation (MC-LAG) domains on a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2312,6 +2810,8 @@ filter: optional UniFi Integration API filter expression.
 
 ### `list_mobility_admins`
 
+**Access:** Read
+
 List the admins of a Mobility workspace (mobility permissions only).
 
 Each admin carries name, email, status, is_owner and a permissions object
@@ -2333,6 +2833,8 @@ key_label: optional configured API-key label to route on a specific key.
 `dict[str, Any]`
 
 ### `list_mobility_clients`
+
+**Access:** Read
 
 List the clients associated with a UMR device.
 
@@ -2358,6 +2860,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `list_mobility_devices`
 
+**Access:** Read
+
 List the UMR devices in a Mobility workspace.
 
 Each device is the lightweight summary (id, name, model, state,
@@ -2380,6 +2884,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `list_mobility_workspaces`
 
+**Access:** Read
+
 List UniFi Mobility workspaces visible to the authenticated API key.
 
 A workspace is a mobility "cloud site" (workspace_id, workspace_name, is_owner,
@@ -2400,6 +2906,8 @@ key (multi-key deployments). Omit to use the default key.
 `dict[str, Any]`
 
 ### `list_networks`
+
+**Access:** Read
 
 List all networks/VLANs for a site.
 
@@ -2428,6 +2936,8 @@ flagged incomplete.
 
 ### `list_pending_devices`
 
+**Access:** Read
+
 List devices pending adoption on a console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2443,6 +2953,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_port_forwards`
+
+**Access:** Read
 
 List all port forwarding rules for a site.
 
@@ -2461,6 +2973,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 
 ### `list_port_profiles`
 
+**Access:** Read
+
 List switch port profiles (speed, VLAN, PoE config) for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2477,6 +2991,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `Any`
 
 ### `list_protect_events`
+
+**Access:** Read
 
 Query historical Protect events (motion, smart-detect, sensor open/close, etc.).
 
@@ -2551,6 +3067,8 @@ recognised-person name on face events is at metadata.detectedThumbnails[].matche
 
 ### `list_protect_files`
 
+**Access:** Read
+
 List Protect device asset files of a given type.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2572,6 +3090,8 @@ file_type: Protect asset category. 'sounds' and 'images' are the known categorie
 
 ### `list_protect_users`
 
+**Access:** Read
+
 List Protect users (GET /v1/users via Fabric proxy). Read-only in the Integration API.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2587,6 +3107,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_radius_profiles`
+
+**Access:** Read
 
 List RADIUS profiles for a site.
 
@@ -2609,6 +3131,8 @@ Pass offset or limit for a single manual page. A capped drain is flagged incompl
 `dict[str, Any]`
 
 ### `list_recognition_detections`
+
+**Access:** Read
 
 List a recognition group's detections (individual sightings) on a Protect console.
 
@@ -2659,6 +3183,8 @@ page: fetch a single page (1-based) instead of draining. The response pages via 
 
 ### `list_recognition_groups`
 
+**Access:** Read
+
 List recognition groups (enrolled faces / vehicles) on a Protect console.
 
 Uses the private /proxy/protect/api/recognition/{type}/groups REST path (not the
@@ -2708,6 +3234,8 @@ page: fetch a single page (1-based) instead of draining. The response pages via 
 
 ### `list_relays`
 
+**Access:** Read
+
 List relays on a Protect console (GET /v1/relays via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2723,6 +3251,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_rogue_aps`
+
+**Access:** Read
 
 List neighboring APs detected by the site's radios.
 
@@ -2747,6 +3277,8 @@ Returns entries with BSSID, SSID, channel, signal strength, is_rogue flag, and d
 
 ### `list_routing_entries`
 
+**Access:** Read
+
 List static routing table entries for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2764,6 +3296,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 
 ### `list_scheduled_tasks`
 
+**Access:** Read
+
 List scheduled tasks (firmware upgrade schedules, speed tests) for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2780,6 +3314,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `Any`
 
 ### `list_sdwan_configs`
+
+**Access:** Read
 
 List Site Magic (SD-WAN) VPN mesh configurations.
 
@@ -2800,6 +3336,8 @@ far with incomplete=true rather than truncating silently.
 
 ### `list_sensors`
 
+**Access:** Read
+
 List all sensors on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2815,6 +3353,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_settings`
+
+**Access:** Read
 
 List all controller setting groups for a site.
 
@@ -2834,6 +3374,8 @@ Returns a list of setting objects grouped by key (mgmt, super_smtp, guest_access
 
 ### `list_sirens`
 
+**Access:** Read
+
 List sirens on a Protect console (GET /v1/sirens via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2849,6 +3391,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_site_devices`
+
+**Access:** Read
 
 List all adopted devices for a site via connector proxy.
 
@@ -2878,6 +3422,8 @@ silently.
 
 ### `list_site_to_site_tunnels`
 
+**Access:** Read
+
 List site-to-site VPN tunnels for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2894,6 +3440,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `dict[str, Any]`
 
 ### `list_sites`
+
+**Access:** Read
 
 List all sites with device/client counts and ISP info.
 
@@ -2920,6 +3468,8 @@ far with incomplete=true rather than truncating silently.
 
 ### `list_speakers`
 
+**Access:** Read
+
 List speakers on a Protect console (GET /v1/speakers via Fabric proxy).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -2935,6 +3485,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_switch_stacks`
+
+**Access:** Read
 
 List switch stacks on a site.
 
@@ -2959,6 +3511,8 @@ filter: optional UniFi Integration API filter expression.
 
 ### `list_traffic_matching_lists`
 
+**Access:** Read
+
 List all traffic matching lists for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -2975,6 +3529,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `dict[str, Any]`
 
 ### `list_traffic_routes`
+
+**Access:** Read
 
 List static/policy traffic routes for a site.
 
@@ -2993,6 +3549,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 
 ### `list_traffic_rules`
 
+**Access:** Read
+
 List traffic matching rules (QoS, application, IP group matching).
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3010,6 +3568,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 
 ### `list_ulp_users`
 
+**Access:** Read
+
 List ULP (UniFi account) users (GET /v1/ulp-users). Read-only.
 
 Distinct from `list_protect_users` (/v1/users): these are UI-account identities.
@@ -3026,6 +3586,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_users`
+
+**Access:** Read
 
 List DHCP fixed-IP reservations and client aliases for a site.
 
@@ -3045,6 +3607,8 @@ Returns entries with fields: name, note, fixed_ip, use_fixedip, network_id.
 
 ### `list_viewers`
 
+**Access:** Read
+
 List all viewers on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3060,6 +3624,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `list_vpn_servers`
+
+**Access:** Read
 
 List VPN servers for a site.
 
@@ -3083,6 +3649,8 @@ offset or limit for a single manual page. A capped drain is flagged incomplete.
 
 ### `list_wan_interfaces`
 
+**Access:** Read
+
 List WAN interfaces for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3099,6 +3667,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `dict[str, Any]`
 
 ### `list_wifi_broadcasts`
+
+**Access:** Read
 
 List all WiFi broadcast SSIDs for a site.
 
@@ -3121,6 +3691,8 @@ the upstream `filter` query parameter for server-side filtering (e.g.
 
 ### `list_wlan_configs`
 
+**Access:** Read
+
 List per-SSID WLAN configurations (security, band steering, rate limits) for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3138,6 +3710,8 @@ Returned verbatim, including plaintext x_passphrase credential fields.
 `Any`
 
 ### `list_wlan_groups`
+
+**Access:** Read
 
 List WLAN groups for a site.
 
@@ -3162,6 +3736,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 **25 tools**
 
 ### `alarm_hub_trigger_output`
+
+**Access:** Destructive
 
 Trigger an alarm-hub output (POST /v1/alarm-hubs/{id}/outputs/{outputId}/trigger).
 
@@ -3190,6 +3766,8 @@ confirm: must be true to execute. enable: true on / false off (omit to toggle).
 `dict[str, Any]`
 
 ### `allow_network_on_port_profile`
+
+**Access:** Write
 
 Atomically allow (un-exclude) a VLAN network on a switch port profile.
 
@@ -3222,6 +3800,8 @@ Use it on every profile named in a `create_network` `D12_AUTO_EXCLUSION` warning
 
 ### `approve_pending_device`
 
+**Access:** Write
+
 Approve a pending device for adoption onto a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3240,6 +3820,8 @@ device_id: device ID from list_pending_devices to approve.
 `dict[str, Any]`
 
 ### `assign_carrier_subscriber_plan`
+
+**Access:** Write
 
 Assign a service plan to a subscriber (PUT .../subscribers/{id}/plan). Guarded write.
 
@@ -3268,6 +3850,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `attach_carrier_subscriber_host`
 
+**Access:** Write
+
 Attach or re-link a subscriber's gateway host (PUT .../subscribers/{id}/host). Guarded.
 
 Not testable against the maintainer's live hardware; hermetic/spec-conformance
@@ -3295,6 +3879,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `bulk_delete_hotspot_vouchers`
 
+**Access:** Destructive
+
 Bulk delete hotspot vouchers matching filter criteria.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3314,6 +3900,8 @@ filter_params: filter parameters to select vouchers for deletion.
 
 ### `compare_site_performance`
 
+**Access:** Read
+
 Compare health and performance metrics across multiple sites side-by-side.
 
 sites: list of site names or IDs to compare.
@@ -3329,6 +3917,8 @@ sites: list of site names or IDs to compare.
 `dict[str, Any]`
 
 ### `detach_carrier_subscriber_host`
+
+**Access:** Destructive
 
 Detach a subscriber's gateway host (DELETE .../subscribers/{id}/host). Guarded write.
 
@@ -3355,6 +3945,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `enable_arm`
 
+**Access:** Write
+
 Enable the arm alarm using the selected profile (POST /v1/arm-profiles/enable).
 
 WARNING: arms the alarm system (physical side effects); requires a local Alarm Manager.
@@ -3373,6 +3965,8 @@ confirm: must be true to execute. Governed by UNIFI_PROTECT_MUTATIONS_ENABLED.
 `dict[str, Any]`
 
 ### `exclude_network_on_port_profile`
+
+**Access:** Destructive
 
 Atomically exclude (untag) a VLAN network from a switch port profile.
 
@@ -3403,6 +3997,8 @@ Inverse of `allow_network_on_port_profile`: fresh-reads the profile, adds
 
 ### `fabric_connector_delete`
 
+**Access:** Destructive
+
 Relay a DELETE through the Fabric connector. MUTATION — GATED, IRREVERSIBLE.
 
 Refused unless BOTH confirm=true AND UNIFI_ENABLE_CONNECTOR_WRITE are set. DELETE has a
@@ -3428,6 +4024,8 @@ See fabric_connector_get for host/path/site/scope semantics. body: optional JSON
 `dict[str, Any]`
 
 ### `fabric_connector_get`
+
+**Access:** Read
 
 Relay a GET through the official Fabric connector to a console's /proxy/<path>.
 
@@ -3465,6 +4063,8 @@ Returns {method, routeClass, path, resolvedPath, status, body} (body credential-
 
 ### `fabric_connector_patch`
 
+**Access:** Destructive
+
 Relay a PATCH (partial update) through the Fabric connector. MUTATION — GATED.
 
 Refused unless BOTH confirm=true AND UNIFI_ENABLE_CONNECTOR_WRITE are set. PATCH has a
@@ -3493,6 +4093,8 @@ See fabric_connector_get for host/path/site/scope semantics. body: the JSON requ
 
 ### `fabric_connector_post`
 
+**Access:** Write
+
 Relay a POST (create/command) through the Fabric connector. MUTATION — GATED.
 
 Refused unless BOTH confirm=true AND the server's UNIFI_ENABLE_CONNECTOR_WRITE flag are
@@ -3520,6 +4122,8 @@ Every attempt is written to the structured audit log (never the API key value).
 `dict[str, Any]`
 
 ### `fabric_connector_put`
+
+**Access:** Destructive
 
 Relay a PUT (full replace) through the Fabric connector. MUTATION — GATED.
 
@@ -3550,6 +4154,8 @@ See fabric_connector_get for host/path/site/scope semantics. body: the JSON requ
 
 ### `pos_ingest_transaction`
 
+**Access:** Write
+
 Ingest a POS transaction overlay onto camera footage.
 
 Route: POST /v1/pos/cameras/{id}/transactions (Fabric proxy).
@@ -3577,6 +4183,8 @@ confirm: must be true to execute. Governed by UNIFI_PROTECT_MUTATIONS_ENABLED.
 `dict[str, Any]`
 
 ### `query_isp_metrics`
+
+**Access:** Read
 
 Query filtered ISP metrics with optional site/time range filters.
 
@@ -3615,6 +4223,8 @@ start_time/end_time: ISO 8601 UTC timestamp STRINGS, e.g. "2026-07-23T00:00:00Z"
 
 ### `reject_pending_device`
 
+**Access:** Destructive
+
 Reject a pending device, preventing it from joining the site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3633,6 +4243,8 @@ device_id: device ID from list_pending_devices to reject.
 `dict[str, Any]`
 
 ### `relay_activate_output`
+
+**Access:** Destructive
 
 Switch a relay output (POST /v1/relays/{id}/outputs/{outputId}/activate).
 
@@ -3661,6 +4273,8 @@ confirm: must be true to execute. state: 'on'|'off' (omit to toggle).
 
 ### `resume_carrier_subscriber`
 
+**Access:** Write
+
 Resume a suspended subscriber's service (POST .../subscribers/{id}/resume). Guarded.
 
 Not testable against the maintainer's live hardware; hermetic/spec-conformance
@@ -3686,6 +4300,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `siren_play`
 
+**Access:** Destructive
+
 Sound a siren (POST /v1/sirens/{id}/play). WARNING: physical alarm sound.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3708,6 +4324,8 @@ confirm: must be true to execute. duration: seconds (5/10/20/30; defaults to 5
 
 ### `siren_stop`
 
+**Access:** Destructive
+
 Stop a sounding siren (POST /v1/sirens/{id}/stop). WARNING: physical action.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3727,6 +4345,8 @@ confirm: must be true to execute. Governed by UNIFI_PROTECT_MUTATIONS_ENABLED.
 `dict[str, Any]`
 
 ### `siren_test_sound`
+
+**Access:** Destructive
 
 Test a siren's sound (POST /v1/sirens/{id}/test-sound). WARNING: physical sound.
 
@@ -3750,6 +4370,8 @@ confirm: must be true to execute. volume: 1-100 (defaults to device volume upstr
 
 ### `speaker_test_sound`
 
+**Access:** Destructive
+
 Test a speaker's sound (POST /v1/speakers/{id}/test-sound). WARNING: physical sound.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3771,6 +4393,8 @@ confirm: must be true to execute. volume: 0-100 (defaults to device volume upstr
 `dict[str, Any]`
 
 ### `suspend_carrier_subscriber`
+
+**Access:** Destructive
 
 Suspend a subscriber's service (POST .../subscribers/{id}/suspend). Guarded write.
 
@@ -3806,6 +4430,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `get_account`
 
+**Access:** Read
+
 Get a single RADIUS account by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3826,6 +4452,8 @@ Returned verbatim, including plaintext x_password credential fields.
 
 ### `get_acl_rule`
 
+**Access:** Read
+
 Get a single ACL rule by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3845,6 +4473,8 @@ rule_id: REQUIRED. The rule's id; obtain it from `list_acl_rules` (its id field)
 
 ### `get_acl_rule_ordering`
 
+**Access:** Read
+
 Get the ordering of ACL rules for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -3861,6 +4491,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `dict[str, Any]`
 
 ### `get_alarm_hub`
+
+**Access:** Read
 
 Get one alarm hub by id (GET /v1/alarm-hubs/{id}).
 
@@ -3880,6 +4512,8 @@ alarm_hub_id: REQUIRED. Obtain it from `list_alarm_hubs` (its id field).
 
 ### `get_arm_profile`
 
+**Access:** Read
+
 Get one arm profile by id (filters GET /v1/arm-profiles; no GET-by-id exists upstream).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3897,6 +4531,8 @@ arm_profile_id: REQUIRED. Obtain it from `list_arm_profiles` (its id field).
 `dict[str, Any]`
 
 ### `get_bridge`
+
+**Access:** Read
 
 Get one bridge by id (GET /v1/bridges/{id}).
 
@@ -3916,6 +4552,8 @@ bridge_id: REQUIRED. Obtain it from `list_bridges` (its id field).
 
 ### `get_camera`
 
+**Access:** Read
+
 Get details for a single Protect camera by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3934,6 +4572,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 
 ### `get_camera_snapshot`
 
+**Access:** Read
+
 Get a snapshot from a Protect camera. Returns base64-encoded JPEG image data.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -3951,6 +4591,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 `dict[str, Any]`
 
 ### `get_carrier_service_plan`
+
+**Access:** Read
 
 Get one Carrier / ISP Fabric service plan by ID.
 
@@ -3973,6 +4615,8 @@ key_label: optional configured API-key label to route on a specific key.
 `dict[str, Any]`
 
 ### `get_carrier_subscriber`
+
+**Access:** Read
 
 Get one Carrier / ISP Fabric subscriber by ID.
 
@@ -3997,6 +4641,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `get_channel_plan`
 
+**Access:** Read
+
 Get RF channel assignments and DFS status for a site.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4013,6 +4659,8 @@ host: console name, ID, or composite ID (MAC:numericId format). site: site name 
 `Any`
 
 ### `get_chime`
+
+**Access:** Read
 
 Get details for a single Protect chime by ID.
 
@@ -4032,6 +4680,8 @@ chime_id: REQUIRED. Obtain it from `list_chimes` (its id field).
 
 ### `get_client`
 
+**Access:** Read
+
 Get details for a single client.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4050,6 +4700,8 @@ client_id: REQUIRED. Obtain it from `list_clients` (its id field).
 `dict[str, Any]`
 
 ### `get_client_link_diagnostics`
+
+**Access:** Read
 
 Get first-class per-client link/policy diagnostics for one or more clients.
 
@@ -4083,6 +4735,8 @@ client_ids: a bounded, explicit list of client selectors (max 64) for multi-clie
 
 ### `get_device`
 
+**Access:** Read
+
 Get details for a single adopted device.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4102,6 +4756,8 @@ AABBCCDDEEFF, aa-bb-cc-dd-ee-ff).
 `dict[str, Any]`
 
 ### `get_device_port_state`
+
+**Access:** Read
 
 Get switch port health, PoE, optics, and LLDP telemetry for a device.
 
@@ -4136,6 +4792,8 @@ port_idx: optional 1-based port number. Omit it for the device view (verbatim
 
 ### `get_device_statistics`
 
+**Access:** Read
+
 Get latest statistics for a device.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4155,6 +4813,8 @@ AABBCCDDEEFF, aa-bb-cc-dd-ee-ff).
 `dict[str, Any]`
 
 ### `get_device_stp_state`
+
+**Access:** Read
 
 Get per-device STP/RSTP state and per-port STP role/state/path-cost.
 
@@ -4184,6 +4844,8 @@ device_id: device selector — its /stat/device _id, id, or mac (case- and
 
 ### `get_dns_policy`
 
+**Access:** Read
+
 Get a single DNS policy by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4202,6 +4864,8 @@ policy_id: REQUIRED. The policy's id; obtain it from `list_dns_policies` (its id
 `dict[str, Any]`
 
 ### `get_dynamic_dns`
+
+**Access:** Read
 
 Get a single Dynamic DNS configuration by ID.
 
@@ -4223,6 +4887,8 @@ ddns_id: REQUIRED. Obtain it from `list_dynamic_dns` (its id field).
 
 ### `get_firewall_group`
 
+**Access:** Read
+
 Get a single firewall group by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4242,6 +4908,8 @@ group_id: firewall group ID.
 
 ### `get_firewall_policy`
 
+**Access:** Read
+
 Get a single firewall policy by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4260,6 +4928,8 @@ policy_id: REQUIRED. The policy's id; obtain it from `list_firewall_policies` (i
 `dict[str, Any]`
 
 ### `get_firewall_policy_ordering`
+
+**Access:** Read
 
 Get the ordering of firewall policies for a site filtered by source and destination zone.
 
@@ -4282,6 +4952,8 @@ destination_zone_id: UUID of the destination firewall zone (required by the API)
 
 ### `get_firewall_rule`
 
+**Access:** Read
+
 Get a single classic firewall rule by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4300,6 +4972,8 @@ rule_id: firewall rule ID.
 `Any`
 
 ### `get_firewall_zone_proxy`
+
+**Access:** Read
 
 Get a single firewall zone by ID via connector proxy.
 
@@ -4320,6 +4994,8 @@ zone_id: REQUIRED. Obtain it from `list_firewall_zones_proxy` (its id field).
 
 ### `get_fleet_summary`
 
+**Access:** Read
+
 Get a high-level fleet summary: host, site, and device counts with status breakdowns.
 
 Useful for a quick overview of the entire UniFi deployment.
@@ -4338,6 +5014,8 @@ several keys configured: totals over every key, plus a per-key breakdown (byKey)
 
 ### `get_fob`
 
+**Access:** Read
+
 Get one fob by id (GET /v1/fobs/{id}).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4355,6 +5033,8 @@ fob_id: REQUIRED. Obtain it from `list_fobs` (its id field).
 `dict[str, Any]`
 
 ### `get_historical_stats`
+
+**Access:** Read
 
 Get bucketed historical statistics from the Classic REST /stat/report endpoint.
 
@@ -4390,6 +5070,8 @@ The response is passed through verbatim.
 
 ### `get_host`
 
+**Access:** Read
+
 Get details for a single UniFi console by name or ID.
 
 host: console name, ID, or composite ID (MAC:numericId format for cloud consoles).
@@ -4406,6 +5088,8 @@ Host record is returned verbatim, including reportedState GPS coordinates.
 `dict[str, Any]`
 
 ### `get_hotspot_package`
+
+**Access:** Read
 
 Get a single hotspot billing package by ID.
 
@@ -4426,6 +5110,8 @@ package_id: hotspot package ID.
 
 ### `get_hotspot_voucher`
 
+**Access:** Read
+
 Get a single hotspot voucher by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4444,6 +5130,8 @@ voucher_id: REQUIRED. Obtain it from `list_hotspot_vouchers` (its id field).
 `dict[str, Any]`
 
 ### `get_innerspace_asset`
+
+**Access:** Read
 
 Download a floor-plan asset (image) from a console's InnerSpace project.
 
@@ -4476,6 +5164,8 @@ filename: the asset filename as published in the floor plan's image_url.
 
 ### `get_innerspace_project`
 
+**Access:** Read
+
 Return the full InnerSpace floor-plan project geometry for a console.
 
 The complete (~66 KB) project document: shapes, plans, products, wall types,
@@ -4499,6 +5189,8 @@ mode: '3D' (default; device shapes carry real metric mounting heights) or '2D'
 `dict[str, Any]`
 
 ### `get_innerspace_summary`
+
+**Access:** Read
 
 Inventory a console's InnerSpace floor-plan project without the full payload.
 
@@ -4524,6 +5216,8 @@ mode: '3D' (default; device shapes carry real metric mounting heights) or '2D'.
 
 ### `get_isp_metrics`
 
+**Access:** Read
+
 Get WAN health metrics (speed, latency, packet loss, uptime).
 
 This is the simple, unfiltered variant (interval only). To scope by console/site or a
@@ -4544,6 +5238,8 @@ Returns a dict with a 'periods' list containing WAN speed, latency, packet loss,
 
 ### `get_lag`
 
+**Access:** Read
+
 Get one Link Aggregation Group.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4563,6 +5259,8 @@ lag_id: LAG UUID from list_lags.
 
 ### `get_light`
 
+**Access:** Read
+
 Get details for a single Protect light by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4580,6 +5278,8 @@ light_id: REQUIRED. Obtain it from `list_lights` (its id field).
 `dict[str, Any]`
 
 ### `get_link_station`
+
+**Access:** Read
 
 Get one link station by id (GET /v1/link-stations/{id}).
 
@@ -4599,6 +5299,8 @@ link_station_id: REQUIRED. Obtain it from `list_link_stations` (its id field).
 
 ### `get_liveview`
 
+**Access:** Read
+
 Get details for a single Protect liveview by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4616,6 +5318,8 @@ liveview_id: REQUIRED. Obtain it from `list_liveviews` (its id field).
 `dict[str, Any]`
 
 ### `get_mc_lag_domain`
+
+**Access:** Read
 
 Get one Multi-Chassis Link Aggregation domain.
 
@@ -4635,6 +5339,8 @@ mc_lag_domain_id: domain UUID from list_mc_lag_domains.
 `dict[str, Any]`
 
 ### `get_mobility_device`
+
+**Access:** Read
 
 Get full detail for one UMR device in a Mobility workspace.
 
@@ -4659,6 +5365,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `get_network`
 
+**Access:** Read
+
 Get a single network/VLAN by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4678,6 +5386,8 @@ network_id: REQUIRED. Obtain it from `list_networks` (its id field).
 
 ### `get_network_application_info`
 
+**Access:** Read
+
 Get the UniFi Network application version reported by a console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4693,6 +5403,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `get_network_references`
+
+**Access:** Read
 
 Get all resources referencing a network — useful before deleting to check dependencies.
 
@@ -4714,6 +5426,8 @@ network_id: network UUID from list_networks.
 
 ### `get_nvr`
 
+**Access:** Read
+
 Get NVR details from a Protect console.
 
 Returns NVR hardware info, storage status, firmware version, and system health.
@@ -4730,6 +5444,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `get_port_profile`
+
+**Access:** Read
 
 Get a single switch port profile by ID.
 
@@ -4750,6 +5466,8 @@ profile_id: port profile ID.
 
 ### `get_protect_application_info`
 
+**Access:** Read
+
 Get Protect application metadata (GET /v1/meta/info via Fabric proxy). Read-only.
 
 Reports the Protect application version and Integration-API capabilities — the
@@ -4767,6 +5485,8 @@ host: console name, ID, or composite ID (MAC:numericId format).
 `dict[str, Any]`
 
 ### `get_protect_user`
+
+**Access:** Read
 
 Get one Protect user by id (GET /v1/users/{id}). Read-only.
 
@@ -4786,6 +5506,8 @@ user_id: REQUIRED. Obtain it from `list_protect_users` (its id field).
 
 ### `get_radius_profile`
 
+**Access:** Read
+
 Get a single RADIUS authentication profile by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -4804,6 +5526,8 @@ profile_id: RADIUS profile ID.
 `dict[str, Any]`
 
 ### `get_recognition_group_counts`
+
+**Access:** Read
 
 Get aggregate recognition-group counts for a Protect console.
 
@@ -4827,6 +5551,8 @@ type: recognition type. Use 'face' or 'vehicle' (singular — plural forms
 
 ### `get_recognition_group_image`
 
+**Access:** Read
+
 Get a recognition group's reference crop. Returns base64-encoded JPEG image data.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4848,6 +5574,8 @@ group_id: the group's stable id, e.g. face_90.
 
 ### `get_relay`
 
+**Access:** Read
+
 Get one relay by id (GET /v1/relays/{id}).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4866,6 +5594,8 @@ relay_id: REQUIRED. Obtain it from `list_relays` (its id field).
 
 ### `get_rtsps_stream`
 
+**Access:** Read
+
 Get existing RTSPS stream URLs for a Protect camera.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -4883,6 +5613,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 `dict[str, Any]`
 
 ### `get_scheduled_task`
+
+**Access:** Read
 
 Get a single scheduled task by ID.
 
@@ -4903,6 +5635,8 @@ task_id: scheduled task ID.
 
 ### `get_sdwan_config`
 
+**Access:** Read
+
 Get a single SD-WAN configuration by ID.
 
 config_id: REQUIRED. Obtain it from `list_sdwan_configs` (its id field).
@@ -4919,6 +5653,8 @@ config_id: REQUIRED. Obtain it from `list_sdwan_configs` (its id field).
 
 ### `get_sdwan_config_status`
 
+**Access:** Read
+
 Get the status of an SD-WAN configuration by ID.
 
 config_id: REQUIRED. Obtain it from `list_sdwan_configs` (its id field).
@@ -4934,6 +5670,8 @@ config_id: REQUIRED. Obtain it from `list_sdwan_configs` (its id field).
 `dict[str, Any]`
 
 ### `get_sensor`
+
+**Access:** Read
 
 Get details for a single Protect sensor by ID.
 
@@ -4952,6 +5690,8 @@ sensor_id: REQUIRED. Obtain it from `list_sensors` (its id field).
 `dict[str, Any]`
 
 ### `get_setting`
+
+**Access:** Read
 
 Get a controller setting group by key.
 
@@ -4982,6 +5722,8 @@ Fields prefixed 'x_' hold credentials/secrets and are returned verbatim.
 
 ### `get_siren`
 
+**Access:** Read
+
 Get one siren by id (GET /v1/sirens/{id}).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5000,6 +5742,8 @@ siren_id: REQUIRED. Obtain it from `list_sirens` (its id field).
 
 ### `get_site_health_summary`
 
+**Access:** Read
+
 Get health summary for a single site: uptime, alerts, and device counts.
 
 site: site name or ID.
@@ -5016,6 +5760,8 @@ site: site name or ID.
 
 ### `get_site_inventory`
 
+**Access:** Read
+
 Get full inventory for a site: all devices and connected clients.
 
 site: site name or ID.
@@ -5031,6 +5777,8 @@ site: site name or ID.
 `dict[str, Any]`
 
 ### `get_site_statistics`
+
+**Access:** Read
 
 Get site health statistics: latency, throughput, and client counts per subsystem.
 
@@ -5050,6 +5798,8 @@ Returns a list of subsystem health objects from the Classic REST /stat/health en
 
 ### `get_speaker`
 
+**Access:** Read
+
 Get one speaker by id (GET /v1/speakers/{id}).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5067,6 +5817,8 @@ speaker_id: REQUIRED. Obtain it from `list_speakers` (its id field).
 `dict[str, Any]`
 
 ### `get_switch_stack`
+
+**Access:** Read
 
 Get one switch stack.
 
@@ -5087,6 +5839,8 @@ switch_stack_id: switch-stack UUID from list_switch_stacks.
 
 ### `get_system_info`
 
+**Access:** Read
+
 Get controller/console system info: version, uptime, and memory.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5105,6 +5859,8 @@ Returns system info objects from the Classic REST /stat/sysinfo endpoint.
 
 ### `get_thumbnail`
 
+**Access:** Read
+
 Get a detection thumbnail crop. Returns base64-encoded JPEG image data.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5122,6 +5878,8 @@ thumbnail_id: the thumbnailId from a detection record.
 `dict[str, Any]`
 
 ### `get_traffic_matching_list`
+
+**Access:** Read
 
 Get a single traffic matching list by ID.
 
@@ -5142,6 +5900,8 @@ list_id: REQUIRED. Obtain it from `list_traffic_matching_lists` (its id field).
 
 ### `get_traffic_route`
 
+**Access:** Read
+
 Get a single traffic route by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5161,6 +5921,8 @@ route_id: REQUIRED. Obtain it from `list_traffic_routes` (its id field).
 
 ### `get_ulp_user`
 
+**Access:** Read
+
 Get one ULP (UniFi account) user by id (GET /v1/ulp-users/{id}). Read-only.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5178,6 +5940,8 @@ ulp_user_id: REQUIRED. Obtain it from `list_ulp_users` (its id field).
 `dict[str, Any]`
 
 ### `get_user`
+
+**Access:** Read
 
 Get a single DHCP/client-alias entry by ID.
 
@@ -5198,6 +5962,8 @@ user_id: REQUIRED. Obtain it from `list_users` (its id field).
 
 ### `get_viewer`
 
+**Access:** Read
+
 Get details for a single Protect viewer by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5215,6 +5981,8 @@ viewer_id: REQUIRED. Obtain it from `list_viewers` (its id field).
 `dict[str, Any]`
 
 ### `get_vpn_server`
+
+**Access:** Read
 
 Get a single VPN server configuration by ID.
 
@@ -5235,6 +6003,8 @@ server_id: VPN server ID.
 
 ### `get_wifi_broadcast`
 
+**Access:** Read
+
 Get a single WiFi broadcast SSID by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5253,6 +6023,8 @@ broadcast_id: REQUIRED. Obtain it from `list_wifi_broadcasts` (its id field).
 `dict[str, Any]`
 
 ### `get_wlan_config`
+
+**Access:** Read
 
 Get a single WLAN (SSID) configuration by ID.
 
@@ -5273,6 +6045,8 @@ Returned verbatim, including plaintext x_passphrase credential fields.
 `Any`
 
 ### `get_wlan_group`
+
+**Access:** Read
 
 Get a single WLAN group by ID.
 
@@ -5300,6 +6074,8 @@ group_id: WLAN group ID.
 
 ### `search_across_sites`
 
+**Access:** Read
+
 Search for devices or clients matching a query across all sites.
 
 query: search term matched against name, MAC address, IP, or model.
@@ -5315,6 +6091,8 @@ query: search term matched against name, MAC address, IP, or model.
 `dict[str, Any]`
 
 ### `search_device_fleet`
+
+**Access:** Read
 
 Search for a device by name, MAC address, or model across the entire fleet.
 
@@ -5343,6 +6121,8 @@ query: REQUIRED. Search string matched against device name, model, and MAC acros
 
 ### `patch_firewall_policy`
 
+**Access:** Destructive
+
 Partially update a firewall policy by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5363,6 +6143,8 @@ policy_id: REQUIRED. The policy's id; obtain it from `list_firewall_policies` (i
 `dict[str, Any]`
 
 ### `update_acl_rule`
+
+**Access:** Destructive (idempotent)
 
 Update an existing ACL rule by ID.
 
@@ -5385,6 +6167,8 @@ rule_id: REQUIRED. The rule's id; obtain it from `list_acl_rules` (its id field)
 
 ### `update_alarm_hub`
 
+**Access:** Destructive (idempotent)
+
 Update alarm-hub settings (PATCH /v1/alarm-hubs/{id}) with read-before/no-op/read-after.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5405,6 +6189,8 @@ settings: fields to change. No write when all match. Governed by
 `dict[str, Any]`
 
 ### `update_arm_profile`
+
+**Access:** Destructive (idempotent)
 
 Update an arm profile (PATCH /v1/arm-profiles/{id}) with read-before/no-op/read-after.
 
@@ -5427,6 +6213,8 @@ settings: fields to change. If all already match, no write is sent (status=noop)
 
 ### `update_arm_profile_settings`
 
+**Access:** Destructive (idempotent)
+
 Select the active arm profile (PATCH /v1/arm-profiles/settings).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5446,6 +6234,8 @@ arm_profile_id: REQUIRED. Obtain it from `list_arm_profiles` (its id field); thi
 `dict[str, Any]`
 
 ### `update_bridge`
+
+**Access:** Destructive (idempotent)
 
 Update bridge settings (PATCH /v1/bridges/{id}) with read-before/no-op/read-after.
 
@@ -5468,6 +6258,8 @@ settings: fields to change. No write when all match. Governed by
 
 ### `update_camera`
 
+**Access:** Destructive (idempotent)
+
 Update settings for a Protect camera (name, recording mode, etc.).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5487,6 +6279,8 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 `dict[str, Any]`
 
 ### `update_carrier_subscriber`
+
+**Access:** Destructive (idempotent)
 
 Update a Carrier / ISP Fabric subscriber (PATCH .../subscribers/{id}). Guarded write.
 
@@ -5524,6 +6318,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `update_chime`
 
+**Access:** Destructive (idempotent)
+
 Update settings for a Protect chime (volume, ringtone, etc.).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5543,6 +6339,8 @@ chime_id: REQUIRED. Obtain it from `list_chimes` (its id field).
 `dict[str, Any]`
 
 ### `update_device_tag`
+
+**Access:** Destructive (idempotent)
 
 Update a device tag by ID.
 
@@ -5565,6 +6363,8 @@ tag: fields to update (name, color, etc.).
 
 ### `update_dns_policy`
 
+**Access:** Destructive (idempotent)
+
 Update a DNS policy by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5586,6 +6386,8 @@ policy_id: REQUIRED. The policy's id; obtain it from `list_dns_policies` (its id
 
 ### `update_dynamic_dns`
 
+**Access:** Destructive (idempotent)
+
 Update a Dynamic DNS configuration by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5606,6 +6408,8 @@ ddns_id: REQUIRED. Obtain it from `list_dynamic_dns` (its id field).
 `Any`
 
 ### `update_firewall_policy`
+
+**Access:** Destructive (idempotent)
 
 Full-replace a firewall policy by ID.
 
@@ -5642,6 +6446,8 @@ runtime warning when a source PORT filter is combined with an any-destination AL
 
 ### `update_firewall_zone_proxy`
 
+**Access:** Destructive (idempotent)
+
 Update a firewall zone by ID via connector proxy.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5662,6 +6468,8 @@ zone_id: REQUIRED. Obtain it from `list_firewall_zones_proxy` (its id field).
 `dict[str, Any]`
 
 ### `update_fob`
+
+**Access:** Destructive (idempotent)
 
 Update fob settings (PATCH /v1/fobs/{id}) with read-before/no-op/read-after.
 
@@ -5684,6 +6492,8 @@ settings: fields to change. No write when all match. Governed by
 
 ### `update_hotspot_operator`
 
+**Access:** Destructive (idempotent)
+
 Update a hotspot operator by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5705,6 +6515,8 @@ fields: fields to update (name, x_password, note, etc.).
 
 ### `update_light`
 
+**Access:** Destructive (idempotent)
+
 Update settings for a Protect light (brightness, sensitivity, etc.).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5724,6 +6536,8 @@ light_id: REQUIRED. Obtain it from `list_lights` (its id field).
 `dict[str, Any]`
 
 ### `update_link_station`
+
+**Access:** Destructive (idempotent)
 
 Update link-station settings (PATCH /v1/link-stations/{id}) with read/no-op/read-after.
 
@@ -5746,6 +6560,8 @@ settings: fields to change. No write when all match. Governed by
 
 ### `update_liveview`
 
+**Access:** Destructive (idempotent)
+
 Update a liveview on a Protect console.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5765,6 +6581,8 @@ liveview_id: REQUIRED. Obtain it from `list_liveviews` (its id field).
 `dict[str, Any]`
 
 ### `update_mobility_device_name`
+
+**Access:** Destructive (idempotent)
 
 Rename a UMR device (guarded write). WARNING: mutates live device config.
 
@@ -5795,6 +6613,8 @@ key_label: optional configured API-key label to route on a specific key.
 `dict[str, Any]`
 
 ### `update_mobility_device_network`
+
+**Access:** Destructive (idempotent)
 
 Update a UMR device's LAN / DHCP settings (guarded write). Mutates live config.
 
@@ -5836,6 +6656,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `update_mobility_device_wireless`
 
+**Access:** Destructive (idempotent)
+
 Update a UMR device's WiFi SSID + password (guarded write). Mutates live config.
 
 Both fields are required by the API (channel/TX power/security protocol are not
@@ -5868,6 +6690,8 @@ key_label: optional configured API-key label to route on a specific key.
 
 ### `update_network`
 
+**Access:** Destructive (idempotent)
+
 Update an existing network/VLAN.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5889,6 +6713,8 @@ network_id: REQUIRED. Obtain it from `list_networks` (its id field).
 
 ### `update_port_forward`
 
+**Access:** Destructive (idempotent)
+
 Update a port forwarding rule by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -5909,6 +6735,8 @@ payload: fields to update.
 `dict[str, Any]`
 
 ### `update_port_profile`
+
+**Access:** Destructive (idempotent)
 
 Update a switch port profile by ID.
 
@@ -5940,6 +6768,8 @@ payload: fields to update (e.g. speed, native_networkconf_id, op_mode, poe_mode)
 
 ### `update_relay`
 
+**Access:** Destructive (idempotent)
+
 Update relay settings (PATCH /v1/relays/{id}) with read-before/no-op/read-after.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5961,6 +6791,8 @@ settings: fields to change. No write when all match. Governed by
 
 ### `update_sensor`
 
+**Access:** Destructive (idempotent)
+
 Update settings for a Protect sensor.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -5980,6 +6812,8 @@ sensor_id: REQUIRED. Obtain it from `list_sensors` (its id field).
 `dict[str, Any]`
 
 ### `update_setting`
+
+**Access:** Destructive (idempotent)
 
 Update a controller setting group by key.
 
@@ -6008,6 +6842,8 @@ field and pointing you back at get_setting.
 
 ### `update_siren`
 
+**Access:** Destructive (idempotent)
+
 Update siren settings (PATCH /v1/sirens/{id}) with read-before/no-op/read-after.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -6028,6 +6864,8 @@ settings: fields to change (name, volume 1-100, ledSettings). No write when all 
 `dict[str, Any]`
 
 ### `update_site_to_site_tunnel`
+
+**Access:** Destructive (idempotent)
 
 Update a site-to-site VPN tunnel by ID.
 
@@ -6050,6 +6888,8 @@ tunnel: fields to update (remoteIp, psk, networks, enabled, etc.).
 
 ### `update_speaker`
 
+**Access:** Destructive (idempotent)
+
 Update speaker settings (PATCH /v1/speakers/{id}) with read-before/no-op/read-after.
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -6070,6 +6910,8 @@ settings: fields to change. No write when all match. Governed by
 `dict[str, Any]`
 
 ### `update_traffic_matching_list`
+
+**Access:** Destructive (idempotent)
 
 Update a traffic matching list by ID.
 
@@ -6092,6 +6934,8 @@ list_id: REQUIRED. Obtain it from `list_traffic_matching_lists` (its id field).
 
 ### `update_traffic_route`
 
+**Access:** Destructive (idempotent)
+
 Update a traffic route by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -6112,6 +6956,8 @@ route_id: REQUIRED. Obtain it from `list_traffic_routes` (its id field).
 `Any`
 
 ### `update_traffic_rule`
+
+**Access:** Destructive (idempotent)
 
 Update a traffic rule by ID.
 
@@ -6134,6 +6980,8 @@ payload: fields to update.
 
 ### `update_user`
 
+**Access:** Destructive (idempotent)
+
 Update a DHCP/client-alias entry by ID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -6155,6 +7003,8 @@ user_id: REQUIRED. Obtain it from `list_users` (its id field).
 
 ### `update_viewer`
 
+**Access:** Destructive (idempotent)
+
 Update settings for a Protect viewer (liveview assignment, etc.).
 
 host: console name, ID, or composite ID (MAC:numericId format).
@@ -6174,6 +7024,8 @@ viewer_id: REQUIRED. Obtain it from `list_viewers` (its id field).
 `dict[str, Any]`
 
 ### `update_vpn_server`
+
+**Access:** Destructive (idempotent)
 
 Update a VPN server configuration by ID.
 
@@ -6196,6 +7048,8 @@ fields: fields to update (name, type, subnet, enabled, etc.).
 
 ### `update_wan_interface`
 
+**Access:** Destructive (idempotent)
+
 Update a WAN interface configuration.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -6217,6 +7071,8 @@ wan: fields to update (name, ip, gateway, dns, etc.).
 
 ### `update_wifi_broadcast`
 
+**Access:** Destructive (idempotent)
+
 Update an existing WiFi broadcast SSID.
 
 host: console name, ID, or composite ID (MAC:numericId format). site: site name or ID.
@@ -6237,6 +7093,8 @@ broadcast_id: REQUIRED. Obtain it from `list_wifi_broadcasts` (its id field).
 `dict[str, Any]`
 
 ### `update_wlan_config`
+
+**Access:** Destructive (idempotent)
 
 Update a WLAN (SSID) configuration by ID.
 

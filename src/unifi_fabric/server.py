@@ -38,6 +38,7 @@ from .tools import (
     statistics,
     vpn,
 )
+from .tools._annotations import TOOL_CLASS
 
 _settings: Settings | None = None
 _client: UniFiClient | None = None
@@ -428,7 +429,7 @@ def _require() -> tuple[UniFiClient, Registry]:
 # --- Site Manager Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_hosts"])
 async def list_hosts(
     page_token: str | None = None,
 ) -> dict[str, Any]:
@@ -444,7 +445,7 @@ async def list_hosts(
     return await site_manager.list_hosts(client, registry, page_token=page_token)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_host"])
 async def get_host(
     host: str,
 ) -> dict[str, Any]:
@@ -457,7 +458,7 @@ async def get_host(
     return await site_manager.get_host(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_sites"])
 async def list_sites(
     page_token: str | None = None,
 ) -> dict[str, Any]:
@@ -478,7 +479,7 @@ async def list_sites(
     return await site_manager.list_sites(client, registry, page_token=page_token)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_devices"])
 async def list_devices(
     host: str | None = None,
     page_token: str | None = None,
@@ -495,7 +496,7 @@ async def list_devices(
     return await site_manager.list_devices(client, registry, host=host, page_token=page_token)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_isp_metrics"])
 async def get_isp_metrics(
     interval: str,
 ) -> dict[str, Any]:
@@ -511,7 +512,7 @@ async def get_isp_metrics(
     return await site_manager.get_isp_metrics(client, interval)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["query_isp_metrics"])
 async def query_isp_metrics(
     interval: str,
     host: str | None = None,
@@ -555,7 +556,7 @@ async def query_isp_metrics(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_sdwan_configs"])
 async def list_sdwan_configs(
     page_token: str | None = None,
 ) -> dict[str, Any]:
@@ -570,7 +571,7 @@ async def list_sdwan_configs(
     return await site_manager.list_sdwan_configs(client, page_token=page_token)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_sdwan_config"])
 async def get_sdwan_config(
     config_id: str,
 ) -> dict[str, Any]:
@@ -582,7 +583,7 @@ async def get_sdwan_config(
     return await site_manager.get_sdwan_config(client, config_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_sdwan_config_status"])
 async def get_sdwan_config_status(
     config_id: str,
 ) -> dict[str, Any]:
@@ -594,7 +595,7 @@ async def get_sdwan_config_status(
     return await site_manager.get_sdwan_config_status(client, config_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_all_sites_aggregated"])
 async def list_all_sites_aggregated() -> dict[str, Any]:
     """List all sites with aggregated health stats from the /v1/sites/ API.
 
@@ -605,7 +606,7 @@ async def list_all_sites_aggregated() -> dict[str, Any]:
     return await site_manager.list_all_sites_aggregated(client, registry)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_site_health_summary"])
 async def get_site_health_summary(
     site: str,
 ) -> dict[str, Any]:
@@ -617,7 +618,7 @@ async def get_site_health_summary(
     return await site_manager.get_site_health_summary(client, registry, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["compare_site_performance"])
 async def compare_site_performance(
     sites: list[str],
 ) -> dict[str, Any]:
@@ -629,7 +630,7 @@ async def compare_site_performance(
     return await site_manager.compare_site_performance(client, registry, sites)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["search_across_sites"])
 async def search_across_sites(
     query: str,
 ) -> dict[str, Any]:
@@ -641,7 +642,7 @@ async def search_across_sites(
     return await site_manager.search_across_sites(client, registry, query)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_site_inventory"])
 async def get_site_inventory(
     site: str,
 ) -> dict[str, Any]:
@@ -656,7 +657,7 @@ async def get_site_inventory(
 # --- Network Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_network_application_info"])
 async def get_network_application_info(
     host: str,
 ) -> dict[str, Any]:
@@ -668,7 +669,7 @@ async def get_network_application_info(
     return await network.get_network_application_info(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_local_sites"])
 async def list_local_sites(
     host: str,
     offset: int | None = None,
@@ -694,7 +695,7 @@ async def list_local_sites(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_networks"])
 async def list_networks(
     host: str,
     site: str,
@@ -719,7 +720,7 @@ async def list_networks(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_network"])
 async def create_network(
     host: str,
     site: str,
@@ -759,7 +760,7 @@ async def create_network(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_network"])
 async def get_network(
     host: str,
     site: str,
@@ -774,7 +775,7 @@ async def get_network(
     return await network.get_network(client, registry, host, site, network_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_network"])
 async def update_network(
     host: str,
     site: str,
@@ -791,7 +792,7 @@ async def update_network(
     return await network.update_network(client, registry, host, site, network_id, network_config)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_network"])
 async def delete_network(
     host: str,
     site: str,
@@ -807,7 +808,7 @@ async def delete_network(
     return f"Network {network_id} deleted."
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_network_references"])
 async def get_network_references(
     host: str,
     site: str,
@@ -823,7 +824,7 @@ async def get_network_references(
     return await network.get_network_references(client, registry, host, site, network_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_lags"])
 async def list_lags(
     host: str,
     site: str,
@@ -850,7 +851,7 @@ async def list_lags(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_lag"])
 async def get_lag(
     host: str,
     site: str,
@@ -865,7 +866,7 @@ async def get_lag(
     return await network.get_lag(client, registry, host, site, lag_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_mc_lag_domains"])
 async def list_mc_lag_domains(
     host: str,
     site: str,
@@ -892,7 +893,7 @@ async def list_mc_lag_domains(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_mc_lag_domain"])
 async def get_mc_lag_domain(
     host: str,
     site: str,
@@ -907,7 +908,7 @@ async def get_mc_lag_domain(
     return await network.get_mc_lag_domain(client, registry, host, site, mc_lag_domain_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_switch_stacks"])
 async def list_switch_stacks(
     host: str,
     site: str,
@@ -934,7 +935,7 @@ async def list_switch_stacks(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_switch_stack"])
 async def get_switch_stack(
     host: str,
     site: str,
@@ -949,7 +950,7 @@ async def get_switch_stack(
     return await network.get_switch_stack(client, registry, host, site, switch_stack_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_wifi_broadcasts"])
 async def list_wifi_broadcasts(
     host: str,
     site: str,
@@ -966,7 +967,7 @@ async def list_wifi_broadcasts(
     return await network.list_wifi_broadcasts(client, registry, host, site, filter=filter)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_wifi_broadcast"])
 async def create_wifi_broadcast(
     host: str,
     site: str,
@@ -986,7 +987,7 @@ async def create_wifi_broadcast(
     return await network.create_wifi_broadcast(client, registry, host, site, broadcast)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_wifi_broadcast"])
 async def get_wifi_broadcast(
     host: str,
     site: str,
@@ -1001,7 +1002,7 @@ async def get_wifi_broadcast(
     return await network.get_wifi_broadcast(client, registry, host, site, broadcast_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_wifi_broadcast"])
 async def update_wifi_broadcast(
     host: str,
     site: str,
@@ -1020,7 +1021,7 @@ async def update_wifi_broadcast(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_wifi_broadcast"])
 async def delete_wifi_broadcast(
     host: str,
     site: str,
@@ -1036,7 +1037,7 @@ async def delete_wifi_broadcast(
     return f"WiFi broadcast {broadcast_id} deleted."
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_wan_interfaces"])
 async def list_wan_interfaces(
     host: str,
     site: str,
@@ -1049,7 +1050,7 @@ async def list_wan_interfaces(
     return await network.list_wan_interfaces(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_wan_interface"])
 async def update_wan_interface(
     host: str,
     site: str,
@@ -1073,7 +1074,7 @@ clients.register(mcp, _require)
 # --- Firewall Policy Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_firewall_policies"])
 async def list_firewall_policies(
     host: str,
     site: str,
@@ -1099,7 +1100,7 @@ async def list_firewall_policies(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_firewall_policy"])
 async def create_firewall_policy(
     host: str,
     site: str,
@@ -1138,7 +1139,7 @@ async def create_firewall_policy(
     return await firewall_proxy.create_firewall_policy(client, registry, host, site, policy)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_firewall_policy"])
 async def get_firewall_policy(
     host: str,
     site: str,
@@ -1153,7 +1154,7 @@ async def get_firewall_policy(
     return await firewall_proxy.get_firewall_policy(client, registry, host, site, policy_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_firewall_policy"])
 async def update_firewall_policy(
     host: str,
     site: str,
@@ -1186,7 +1187,7 @@ async def update_firewall_policy(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["patch_firewall_policy"])
 async def patch_firewall_policy(
     host: str,
     site: str,
@@ -1205,7 +1206,7 @@ async def patch_firewall_policy(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_firewall_policy"])
 async def delete_firewall_policy(
     host: str,
     site: str,
@@ -1221,7 +1222,7 @@ async def delete_firewall_policy(
     return f"Firewall policy {policy_id} deleted."
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_firewall_policy_ordering"])
 async def get_firewall_policy_ordering(
     host: str,
     site: str,
@@ -1240,7 +1241,7 @@ async def get_firewall_policy_ordering(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["set_firewall_policy_ordering"])
 async def set_firewall_policy_ordering(
     host: str,
     site: str,
@@ -1266,7 +1267,7 @@ async def set_firewall_policy_ordering(
 # --- Firewall Zone Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_firewall_zones_proxy"])
 async def list_firewall_zones_proxy(
     host: str,
     site: str,
@@ -1286,7 +1287,7 @@ async def list_firewall_zones_proxy(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_firewall_zone_proxy"])
 async def create_firewall_zone_proxy(
     host: str,
     site: str,
@@ -1303,7 +1304,7 @@ async def create_firewall_zone_proxy(
     return await firewall_proxy.create_firewall_zone(client, registry, host, site, zone)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_firewall_zone_proxy"])
 async def get_firewall_zone_proxy(
     host: str,
     site: str,
@@ -1318,7 +1319,7 @@ async def get_firewall_zone_proxy(
     return await firewall_proxy.get_firewall_zone(client, registry, host, site, zone_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_firewall_zone_proxy"])
 async def update_firewall_zone_proxy(
     host: str,
     site: str,
@@ -1335,7 +1336,7 @@ async def update_firewall_zone_proxy(
     return await firewall_proxy.update_firewall_zone(client, registry, host, site, zone_id, zone)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_firewall_zone_proxy"])
 async def delete_firewall_zone_proxy(
     host: str,
     site: str,
@@ -1354,7 +1355,7 @@ async def delete_firewall_zone_proxy(
 # --- ACL Rule Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_acl_rules"])
 async def list_acl_rules(
     host: str,
     site: str,
@@ -1367,7 +1368,7 @@ async def list_acl_rules(
     return await firewall_proxy.list_acl_rules(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_acl_rule"])
 async def create_acl_rule(
     host: str,
     site: str,
@@ -1390,7 +1391,7 @@ async def create_acl_rule(
     return await firewall_proxy.create_acl_rule(client, registry, host, site, rule)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_acl_rule"])
 async def get_acl_rule(
     host: str,
     site: str,
@@ -1405,7 +1406,7 @@ async def get_acl_rule(
     return await firewall_proxy.get_acl_rule(client, registry, host, site, rule_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_acl_rule"])
 async def update_acl_rule(
     host: str,
     site: str,
@@ -1422,7 +1423,7 @@ async def update_acl_rule(
     return await firewall_proxy.update_acl_rule(client, registry, host, site, rule_id, rule)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_acl_rule"])
 async def delete_acl_rule(
     host: str,
     site: str,
@@ -1438,7 +1439,7 @@ async def delete_acl_rule(
     return f"ACL rule {rule_id} deleted."
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_acl_rule_ordering"])
 async def get_acl_rule_ordering(
     host: str,
     site: str,
@@ -1451,7 +1452,7 @@ async def get_acl_rule_ordering(
     return await firewall_proxy.get_acl_rule_ordering(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["set_acl_rule_ordering"])
 async def set_acl_rule_ordering(
     host: str,
     site: str,
@@ -1469,7 +1470,7 @@ async def set_acl_rule_ordering(
 # --- DNS Policy Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_dns_policies"])
 async def list_dns_policies(
     host: str,
     site: str,
@@ -1489,7 +1490,7 @@ async def list_dns_policies(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_dns_policy"])
 async def create_dns_policy(
     host: str,
     site: str,
@@ -1509,7 +1510,7 @@ async def create_dns_policy(
     return await network_services_proxy.create_dns_policy(client, registry, host, site, policy)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_dns_policy"])
 async def get_dns_policy(
     host: str,
     site: str,
@@ -1524,7 +1525,7 @@ async def get_dns_policy(
     return await network_services_proxy.get_dns_policy(client, registry, host, site, policy_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_dns_policy"])
 async def update_dns_policy(
     host: str,
     site: str,
@@ -1543,7 +1544,7 @@ async def update_dns_policy(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_dns_policy"])
 async def delete_dns_policy(
     host: str,
     site: str,
@@ -1562,7 +1563,7 @@ async def delete_dns_policy(
 # --- Traffic Matching List Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_traffic_matching_lists"])
 async def list_traffic_matching_lists(
     host: str,
     site: str,
@@ -1575,7 +1576,7 @@ async def list_traffic_matching_lists(
     return await network_services_proxy.list_traffic_matching_lists(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_traffic_matching_list"])
 async def create_traffic_matching_list(
     host: str,
     site: str,
@@ -1596,7 +1597,7 @@ async def create_traffic_matching_list(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_traffic_matching_list"])
 async def get_traffic_matching_list(
     host: str,
     site: str,
@@ -1613,7 +1614,7 @@ async def get_traffic_matching_list(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_traffic_matching_list"])
 async def update_traffic_matching_list(
     host: str,
     site: str,
@@ -1632,7 +1633,7 @@ async def update_traffic_matching_list(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_traffic_matching_list"])
 async def delete_traffic_matching_list(
     host: str,
     site: str,
@@ -1651,7 +1652,7 @@ async def delete_traffic_matching_list(
 # --- VPN Server Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_vpn_servers"])
 async def list_vpn_servers(
     host: str,
     site: str,
@@ -1671,7 +1672,7 @@ async def list_vpn_servers(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_site_to_site_tunnels"])
 async def list_site_to_site_tunnels(
     host: str,
     site: str,
@@ -1687,7 +1688,7 @@ async def list_site_to_site_tunnels(
 # --- RADIUS Profile Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_radius_profiles"])
 async def list_radius_profiles(
     host: str,
     site: str,
@@ -1710,7 +1711,7 @@ async def list_radius_profiles(
 # --- Hotspot Voucher Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_hotspot_vouchers"])
 async def list_hotspot_vouchers(
     host: str,
     site: str,
@@ -1735,7 +1736,7 @@ async def list_hotspot_vouchers(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_hotspot_vouchers"])
 async def create_hotspot_vouchers(
     host: str,
     site: str,
@@ -1755,7 +1756,7 @@ async def create_hotspot_vouchers(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_hotspot_voucher"])
 async def get_hotspot_voucher(
     host: str,
     site: str,
@@ -1772,7 +1773,7 @@ async def get_hotspot_voucher(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_hotspot_voucher"])
 async def delete_hotspot_voucher(
     host: str,
     site: str,
@@ -1788,7 +1789,7 @@ async def delete_hotspot_voucher(
     return f"Hotspot voucher {voucher_id} deleted."
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["bulk_delete_hotspot_vouchers"])
 async def bulk_delete_hotspot_vouchers(
     host: str,
     site: str,
@@ -1809,7 +1810,7 @@ async def bulk_delete_hotspot_vouchers(
 # --- Supporting Resources Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_device_tags"])
 async def list_device_tags(
     host: str,
     site: str,
@@ -1822,7 +1823,7 @@ async def list_device_tags(
     return await network_services_proxy.list_device_tags(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_countries"])
 async def list_countries(
     host: str,
 ) -> dict[str, Any]:
@@ -1837,7 +1838,7 @@ async def list_countries(
 # --- Protect Camera Management Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_cameras"])
 async def list_cameras(
     host: str,
 ) -> dict[str, Any]:
@@ -1849,7 +1850,7 @@ async def list_cameras(
     return await protect.list_cameras(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_camera"])
 async def get_camera(
     host: str,
     camera_id: str,
@@ -1863,7 +1864,7 @@ async def get_camera(
     return await protect.get_camera(client, registry, host, camera_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_camera"])
 async def update_camera(
     host: str,
     camera_id: str,
@@ -1879,7 +1880,7 @@ async def update_camera(
     return await protect.update_camera(client, registry, host, camera_id, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_camera_snapshot"])
 async def get_camera_snapshot(
     host: str,
     camera_id: str,
@@ -1893,7 +1894,7 @@ async def get_camera_snapshot(
     return await protect.get_camera_snapshot(client, registry, host, camera_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_rtsps_stream"])
 async def get_rtsps_stream(
     host: str,
     camera_id: str,
@@ -1907,7 +1908,7 @@ async def get_rtsps_stream(
     return await protect.get_rtsps_stream(client, registry, host, camera_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_rtsps_stream"])
 async def create_rtsps_stream(
     host: str,
     camera_id: str,
@@ -1930,7 +1931,7 @@ async def create_rtsps_stream(
     return await protect.create_rtsps_stream(client, registry, host, camera_id, qualities)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_rtsps_stream"])
 async def delete_rtsps_stream(
     host: str,
     camera_id: str,
@@ -1951,7 +1952,7 @@ async def delete_rtsps_stream(
     return f"RTSPS stream for camera {camera_id} deleted."
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["start_talkback_session"])
 async def start_talkback_session(
     host: str,
     camera_id: str,
@@ -1965,7 +1966,7 @@ async def start_talkback_session(
     return await protect.talkback_start(client, registry, host, camera_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["disable_camera_mic_permanently"])
 async def disable_camera_mic_permanently(
     host: str,
     camera_id: str,
@@ -1979,7 +1980,7 @@ async def disable_camera_mic_permanently(
     return await protect.disable_mic_permanently(client, registry, host, camera_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["ptz_goto_preset"])
 async def ptz_goto_preset(
     host: str,
     camera_id: str,
@@ -1995,7 +1996,7 @@ async def ptz_goto_preset(
     return await protect.ptz_goto(client, registry, host, camera_id, slot)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["ptz_patrol_start"])
 async def ptz_patrol_start(
     host: str,
     camera_id: str,
@@ -2011,7 +2012,7 @@ async def ptz_patrol_start(
     return await protect.ptz_patrol_start(client, registry, host, camera_id, slot)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["ptz_patrol_stop"])
 async def ptz_patrol_stop(
     host: str,
     camera_id: str,
@@ -2028,7 +2029,7 @@ async def ptz_patrol_stop(
 # --- Protect Sensor Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_sensors"])
 async def list_sensors(
     host: str,
 ) -> dict[str, Any]:
@@ -2040,7 +2041,7 @@ async def list_sensors(
     return await protect.list_sensors(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_sensor"])
 async def get_sensor(
     host: str,
     sensor_id: str,
@@ -2054,7 +2055,7 @@ async def get_sensor(
     return await protect.get_sensor(client, registry, host, sensor_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_sensor"])
 async def update_sensor(
     host: str,
     sensor_id: str,
@@ -2073,7 +2074,7 @@ async def update_sensor(
 # --- Protect Historical Events ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_protect_events"])
 async def list_protect_events(
     host: str,
     start: int,
@@ -2159,7 +2160,7 @@ async def list_protect_events(
 # --- Protect Face/Vehicle Recognition (private REST path) ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_recognition_groups"])
 async def list_recognition_groups(
     host: str,
     type: str,
@@ -2206,7 +2207,7 @@ async def list_recognition_groups(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_recognition_group_counts"])
 async def get_recognition_group_counts(
     host: str,
     type: str,
@@ -2224,7 +2225,7 @@ async def get_recognition_group_counts(
     return await recognition.get_recognition_group_counts(client, registry, host, type)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_recognition_group_image"])
 async def get_recognition_group_image(
     host: str,
     type: str,
@@ -2241,7 +2242,7 @@ async def get_recognition_group_image(
     return await recognition.get_recognition_group_image(client, registry, host, type, group_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_recognition_detections"])
 async def list_recognition_detections(
     host: str,
     type: str,
@@ -2288,7 +2289,7 @@ async def list_recognition_detections(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_thumbnail"])
 async def get_thumbnail(
     host: str,
     thumbnail_id: str,
@@ -2305,7 +2306,7 @@ async def get_thumbnail(
 # --- Protect Light Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_lights"])
 async def list_lights(
     host: str,
 ) -> dict[str, Any]:
@@ -2317,7 +2318,7 @@ async def list_lights(
     return await protect.list_lights(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_light"])
 async def get_light(
     host: str,
     light_id: str,
@@ -2331,7 +2332,7 @@ async def get_light(
     return await protect.get_light(client, registry, host, light_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_light"])
 async def update_light(
     host: str,
     light_id: str,
@@ -2350,7 +2351,7 @@ async def update_light(
 # --- Protect Chime Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_chimes"])
 async def list_chimes(
     host: str,
 ) -> dict[str, Any]:
@@ -2362,7 +2363,7 @@ async def list_chimes(
     return await protect.list_chimes(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_chime"])
 async def get_chime(
     host: str,
     chime_id: str,
@@ -2376,7 +2377,7 @@ async def get_chime(
     return await protect.get_chime(client, registry, host, chime_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_chime"])
 async def update_chime(
     host: str,
     chime_id: str,
@@ -2395,7 +2396,7 @@ async def update_chime(
 # --- Protect Viewer Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_viewers"])
 async def list_viewers(
     host: str,
 ) -> dict[str, Any]:
@@ -2407,7 +2408,7 @@ async def list_viewers(
     return await protect.list_viewers(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_viewer"])
 async def get_viewer(
     host: str,
     viewer_id: str,
@@ -2421,7 +2422,7 @@ async def get_viewer(
     return await protect.get_viewer(client, registry, host, viewer_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_viewer"])
 async def update_viewer(
     host: str,
     viewer_id: str,
@@ -2440,7 +2441,7 @@ async def update_viewer(
 # --- Protect Liveview Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_liveviews"])
 async def list_liveviews(
     host: str,
 ) -> dict[str, Any]:
@@ -2452,7 +2453,7 @@ async def list_liveviews(
     return await protect.list_liveviews(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_liveview"])
 async def get_liveview(
     host: str,
     liveview_id: str,
@@ -2466,7 +2467,7 @@ async def get_liveview(
     return await protect.get_liveview(client, registry, host, liveview_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_liveview"])
 async def create_liveview(
     host: str,
     name: str,
@@ -2483,7 +2484,7 @@ async def create_liveview(
     return await protect.create_liveview(client, registry, host, name, **extra)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_liveview"])
 async def update_liveview(
     host: str,
     liveview_id: str,
@@ -2502,7 +2503,7 @@ async def update_liveview(
 # --- Protect NVR Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_nvr"])
 async def get_nvr(
     host: str,
 ) -> dict[str, Any]:
@@ -2518,7 +2519,7 @@ async def get_nvr(
 # --- Protect File Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_protect_files"])
 async def list_protect_files(
     host: str,
     file_type: str,
@@ -2535,7 +2536,7 @@ async def list_protect_files(
     return await protect.list_protect_files(client, registry, host, file_type)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["upload_protect_file"])
 async def upload_protect_file(
     host: str,
     file_type: str,
@@ -2561,7 +2562,7 @@ async def upload_protect_file(
 # --- Protect Alarm Manager Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["trigger_alarm_webhook"])
 async def trigger_alarm_webhook(
     host: str,
     webhook_id: str,
@@ -2593,7 +2594,7 @@ async def trigger_alarm_webhook(
 # (default ON); physical/irreversible actions additionally require confirm=true.
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_arm_profiles"])
 async def list_arm_profiles(
     host: str,
 ) -> dict[str, Any]:
@@ -2606,7 +2607,7 @@ async def list_arm_profiles(
     return await protect.list_arm_profiles(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_arm_profile"])
 async def get_arm_profile(
     host: str,
     arm_profile_id: str,
@@ -2620,7 +2621,7 @@ async def get_arm_profile(
     return await protect.get_arm_profile(client, registry, host, arm_profile_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_arm_profile"])
 async def create_arm_profile(
     host: str,
     name: str,
@@ -2637,7 +2638,7 @@ async def create_arm_profile(
     return await protect.create_arm_profile(client, registry, host, name, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_arm_profile"])
 async def update_arm_profile(
     host: str,
     arm_profile_id: str,
@@ -2654,7 +2655,7 @@ async def update_arm_profile(
     return await protect.update_arm_profile(client, registry, host, arm_profile_id, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_arm_profile"])
 async def delete_arm_profile(
     host: str,
     arm_profile_id: str,
@@ -2670,7 +2671,7 @@ async def delete_arm_profile(
     return await protect.delete_arm_profile(client, registry, host, arm_profile_id, confirm=confirm)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_arm_profile_settings"])
 async def update_arm_profile_settings(
     host: str,
     arm_profile_id: str,
@@ -2686,7 +2687,7 @@ async def update_arm_profile_settings(
     return await protect.update_arm_profile_settings(client, registry, host, arm_profile_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["enable_arm"])
 async def enable_arm(
     host: str,
     confirm: bool = False,
@@ -2701,7 +2702,7 @@ async def enable_arm(
     return await protect.enable_arm(client, registry, host, confirm=confirm)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["disable_arm"])
 async def disable_arm(
     host: str,
     confirm: bool = False,
@@ -2719,7 +2720,7 @@ async def disable_arm(
 # --- Protect Siren Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_sirens"])
 async def list_sirens(
     host: str,
 ) -> dict[str, Any]:
@@ -2731,7 +2732,7 @@ async def list_sirens(
     return await protect.list_sirens(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_siren"])
 async def get_siren(
     host: str,
     siren_id: str,
@@ -2745,7 +2746,7 @@ async def get_siren(
     return await protect.get_siren(client, registry, host, siren_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_siren"])
 async def update_siren(
     host: str,
     siren_id: str,
@@ -2762,7 +2763,7 @@ async def update_siren(
     return await protect.update_siren(client, registry, host, siren_id, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["siren_play"])
 async def siren_play(
     host: str,
     siren_id: str,
@@ -2782,7 +2783,7 @@ async def siren_play(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["siren_stop"])
 async def siren_stop(
     host: str,
     siren_id: str,
@@ -2798,7 +2799,7 @@ async def siren_stop(
     return await protect.siren_stop(client, registry, host, siren_id, confirm=confirm)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["siren_test_sound"])
 async def siren_test_sound(
     host: str,
     siren_id: str,
@@ -2821,7 +2822,7 @@ async def siren_test_sound(
 # --- Protect Fob Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_fobs"])
 async def list_fobs(
     host: str,
 ) -> dict[str, Any]:
@@ -2833,7 +2834,7 @@ async def list_fobs(
     return await protect.list_fobs(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_fob"])
 async def get_fob(
     host: str,
     fob_id: str,
@@ -2847,7 +2848,7 @@ async def get_fob(
     return await protect.get_fob(client, registry, host, fob_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_fob"])
 async def update_fob(
     host: str,
     fob_id: str,
@@ -2867,7 +2868,7 @@ async def update_fob(
 # --- Protect Relay Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_relays"])
 async def list_relays(
     host: str,
 ) -> dict[str, Any]:
@@ -2879,7 +2880,7 @@ async def list_relays(
     return await protect.list_relays(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_relay"])
 async def get_relay(
     host: str,
     relay_id: str,
@@ -2893,7 +2894,7 @@ async def get_relay(
     return await protect.get_relay(client, registry, host, relay_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_relay"])
 async def update_relay(
     host: str,
     relay_id: str,
@@ -2910,7 +2911,7 @@ async def update_relay(
     return await protect.update_relay(client, registry, host, relay_id, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["relay_activate_output"])
 async def relay_activate_output(
     host: str,
     relay_id: str,
@@ -2945,7 +2946,7 @@ async def relay_activate_output(
 # --- Protect Speaker Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_speakers"])
 async def list_speakers(
     host: str,
 ) -> dict[str, Any]:
@@ -2957,7 +2958,7 @@ async def list_speakers(
     return await protect.list_speakers(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_speaker"])
 async def get_speaker(
     host: str,
     speaker_id: str,
@@ -2971,7 +2972,7 @@ async def get_speaker(
     return await protect.get_speaker(client, registry, host, speaker_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_speaker"])
 async def update_speaker(
     host: str,
     speaker_id: str,
@@ -2988,7 +2989,7 @@ async def update_speaker(
     return await protect.update_speaker(client, registry, host, speaker_id, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["speaker_test_sound"])
 async def speaker_test_sound(
     host: str,
     speaker_id: str,
@@ -3011,7 +3012,7 @@ async def speaker_test_sound(
 # --- Protect Bridge Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_bridges"])
 async def list_bridges(
     host: str,
 ) -> dict[str, Any]:
@@ -3023,7 +3024,7 @@ async def list_bridges(
     return await protect.list_bridges(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_bridge"])
 async def get_bridge(
     host: str,
     bridge_id: str,
@@ -3037,7 +3038,7 @@ async def get_bridge(
     return await protect.get_bridge(client, registry, host, bridge_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_bridge"])
 async def update_bridge(
     host: str,
     bridge_id: str,
@@ -3057,7 +3058,7 @@ async def update_bridge(
 # --- Protect Link Station Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_link_stations"])
 async def list_link_stations(
     host: str,
 ) -> dict[str, Any]:
@@ -3069,7 +3070,7 @@ async def list_link_stations(
     return await protect.list_link_stations(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_link_station"])
 async def get_link_station(
     host: str,
     link_station_id: str,
@@ -3083,7 +3084,7 @@ async def get_link_station(
     return await protect.get_link_station(client, registry, host, link_station_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_link_station"])
 async def update_link_station(
     host: str,
     link_station_id: str,
@@ -3103,7 +3104,7 @@ async def update_link_station(
 # --- Protect Alarm Hub Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_alarm_hubs"])
 async def list_alarm_hubs(
     host: str,
 ) -> dict[str, Any]:
@@ -3115,7 +3116,7 @@ async def list_alarm_hubs(
     return await protect.list_alarm_hubs(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_alarm_hub"])
 async def get_alarm_hub(
     host: str,
     alarm_hub_id: str,
@@ -3129,7 +3130,7 @@ async def get_alarm_hub(
     return await protect.get_alarm_hub(client, registry, host, alarm_hub_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_alarm_hub"])
 async def update_alarm_hub(
     host: str,
     alarm_hub_id: str,
@@ -3146,7 +3147,7 @@ async def update_alarm_hub(
     return await protect.update_alarm_hub(client, registry, host, alarm_hub_id, **settings)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["alarm_hub_trigger_output"])
 async def alarm_hub_trigger_output(
     host: str,
     alarm_hub_id: str,
@@ -3183,7 +3184,7 @@ async def alarm_hub_trigger_output(
 # --- Protect User Tools (read-only) ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_protect_users"])
 async def list_protect_users(
     host: str,
 ) -> dict[str, Any]:
@@ -3195,7 +3196,7 @@ async def list_protect_users(
     return await protect.list_protect_users(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_protect_user"])
 async def get_protect_user(
     host: str,
     user_id: str,
@@ -3212,7 +3213,7 @@ async def get_protect_user(
 # --- Protect Application Metadata ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_protect_application_info"])
 async def get_protect_application_info(
     host: str,
 ) -> dict[str, Any]:
@@ -3229,7 +3230,7 @@ async def get_protect_application_info(
 # --- Protect ULP User Tools (read-only) ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_ulp_users"])
 async def list_ulp_users(
     host: str,
 ) -> dict[str, Any]:
@@ -3242,7 +3243,7 @@ async def list_ulp_users(
     return await protect.list_ulp_users(client, registry, host)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_ulp_user"])
 async def get_ulp_user(
     host: str,
     ulp_user_id: str,
@@ -3259,7 +3260,7 @@ async def get_ulp_user(
 # --- Protect POS Transaction Ingestion ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["pos_ingest_transaction"])
 async def pos_ingest_transaction(
     host: str,
     camera_id: str,
@@ -3288,7 +3289,7 @@ async def pos_ingest_transaction(
 # --- Port Forwarding Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_port_forwards"])
 async def list_port_forwards(
     host: str,
     site: str,
@@ -3301,7 +3302,7 @@ async def list_port_forwards(
     return await network_services_proxy.list_port_forwards(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_port_forward"])
 async def create_port_forward(
     host: str,
     site: str,
@@ -3322,7 +3323,7 @@ async def create_port_forward(
     return await network_services_proxy.create_port_forward(client, registry, host, site, payload)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_port_forward"])
 async def update_port_forward(
     host: str,
     site: str,
@@ -3341,7 +3342,7 @@ async def update_port_forward(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_port_forward"])
 async def delete_port_forward(
     host: str,
     site: str,
@@ -3360,7 +3361,7 @@ async def delete_port_forward(
 # --- Traffic Rule Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_traffic_rules"])
 async def list_traffic_rules(
     host: str,
     site: str,
@@ -3373,7 +3374,7 @@ async def list_traffic_rules(
     return await network_services_proxy.list_traffic_rules(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_traffic_rule"])
 async def create_traffic_rule(
     host: str,
     site: str,
@@ -3398,7 +3399,7 @@ async def create_traffic_rule(
     return await network_services_proxy.create_traffic_rule(client, registry, host, site, payload)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_traffic_rule"])
 async def update_traffic_rule(
     host: str,
     site: str,
@@ -3417,7 +3418,7 @@ async def update_traffic_rule(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_traffic_rule"])
 async def delete_traffic_rule(
     host: str,
     site: str,
@@ -3442,7 +3443,7 @@ statistics.register(mcp, _require)
 # --- User / DHCP Reservation Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_users"])
 async def list_users(
     host: str,
     site: str,
@@ -3456,7 +3457,7 @@ async def list_users(
     return await network_services_proxy.list_users(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_user"])
 async def get_user(
     host: str,
     site: str,
@@ -3471,7 +3472,7 @@ async def get_user(
     return await network_services_proxy.get_user(client, registry, host, site, user_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_user"])
 async def update_user(
     host: str,
     site: str,
@@ -3491,7 +3492,7 @@ async def update_user(
 # --- Traffic Route Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_traffic_routes"])
 async def list_traffic_routes(
     host: str,
     site: str,
@@ -3504,7 +3505,7 @@ async def list_traffic_routes(
     return await network_services_proxy.list_traffic_routes(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_traffic_route"])
 async def create_traffic_route(
     host: str,
     site: str,
@@ -3525,7 +3526,7 @@ async def create_traffic_route(
     return await network_services_proxy.create_traffic_route(client, registry, host, site, payload)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_traffic_route"])
 async def get_traffic_route(
     host: str,
     site: str,
@@ -3540,7 +3541,7 @@ async def get_traffic_route(
     return await network_services_proxy.get_traffic_route(client, registry, host, site, route_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_traffic_route"])
 async def update_traffic_route(
     host: str,
     site: str,
@@ -3559,7 +3560,7 @@ async def update_traffic_route(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["delete_traffic_route"])
 async def delete_traffic_route(
     host: str,
     site: str,
@@ -3578,7 +3579,7 @@ async def delete_traffic_route(
 # --- Controller Settings Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_settings"])
 async def list_settings(
     host: str,
     site: str,
@@ -3592,7 +3593,7 @@ async def list_settings(
     return await network_services_proxy.list_settings(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_setting"])
 async def get_setting(
     host: str,
     site: str,
@@ -3617,7 +3618,7 @@ async def get_setting(
     return await network_services_proxy.get_setting(client, registry, host, site, setting_key)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_setting"])
 async def update_setting(
     host: str,
     site: str,
@@ -3645,7 +3646,7 @@ async def update_setting(
 # --- Dynamic DNS Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_dynamic_dns"])
 async def list_dynamic_dns(
     host: str,
     site: str,
@@ -3659,7 +3660,7 @@ async def list_dynamic_dns(
     return await network_services_proxy.list_dynamic_dns(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_dynamic_dns"])
 async def get_dynamic_dns(
     host: str,
     site: str,
@@ -3675,7 +3676,7 @@ async def get_dynamic_dns(
     return await network_services_proxy.get_dynamic_dns(client, registry, host, site, ddns_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_dynamic_dns"])
 async def update_dynamic_dns(
     host: str,
     site: str,
@@ -3697,7 +3698,7 @@ async def update_dynamic_dns(
 # --- Port Profile Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_port_profiles"])
 async def list_port_profiles(
     host: str,
     site: str,
@@ -3710,7 +3711,7 @@ async def list_port_profiles(
     return await network_services_proxy.list_port_profiles(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_port_profile"])
 async def get_port_profile(
     host: str,
     site: str,
@@ -3725,7 +3726,7 @@ async def get_port_profile(
     return await network_services_proxy.get_port_profile(client, registry, host, site, profile_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_port_profile"])
 async def update_port_profile(
     host: str,
     site: str,
@@ -3753,7 +3754,7 @@ async def update_port_profile(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["allow_network_on_port_profile"])
 async def allow_network_on_port_profile(
     host: str,
     site: str,
@@ -3792,7 +3793,7 @@ async def allow_network_on_port_profile(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["exclude_network_on_port_profile"])
 async def exclude_network_on_port_profile(
     host: str,
     site: str,
@@ -3832,7 +3833,7 @@ async def exclude_network_on_port_profile(
 # --- Routing Table Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_routing_entries"])
 async def list_routing_entries(
     host: str,
     site: str,
@@ -3848,7 +3849,7 @@ async def list_routing_entries(
 # --- WLAN Config Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_wlan_configs"])
 async def list_wlan_configs(
     host: str,
     site: str,
@@ -3862,7 +3863,7 @@ async def list_wlan_configs(
     return await network_services_proxy.list_wlan_configs(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_wlan_config"])
 async def get_wlan_config(
     host: str,
     site: str,
@@ -3878,7 +3879,7 @@ async def get_wlan_config(
     return await network_services_proxy.get_wlan_config(client, registry, host, site, wlan_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_wlan_config"])
 async def update_wlan_config(
     host: str,
     site: str,
@@ -3900,7 +3901,7 @@ async def update_wlan_config(
 # --- WLAN Group Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_wlan_groups"])
 async def list_wlan_groups(
     host: str,
     site: str,
@@ -3913,7 +3914,7 @@ async def list_wlan_groups(
     return await network_services_proxy.list_wlan_groups(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_wlan_group"])
 async def get_wlan_group(
     host: str,
     site: str,
@@ -3931,7 +3932,7 @@ async def get_wlan_group(
 # --- Channel Plan Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_channel_plan"])
 async def get_channel_plan(
     host: str,
     site: str,
@@ -3947,7 +3948,7 @@ async def get_channel_plan(
 # --- Rogue AP Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_rogue_aps"])
 async def list_rogue_aps(
     host: str,
     site: str,
@@ -3971,7 +3972,7 @@ async def list_rogue_aps(
 # --- Classic Firewall Rule Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_firewall_rules"])
 async def list_firewall_rules(
     host: str,
     site: str,
@@ -3984,7 +3985,7 @@ async def list_firewall_rules(
     return await network_services_proxy.list_firewall_rules(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_firewall_rule"])
 async def get_firewall_rule(
     host: str,
     site: str,
@@ -4002,7 +4003,7 @@ async def get_firewall_rule(
 # --- Firewall Group Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_firewall_groups"])
 async def list_firewall_groups(
     host: str,
     site: str,
@@ -4015,7 +4016,7 @@ async def list_firewall_groups(
     return await network_services_proxy.list_firewall_groups(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_firewall_group"])
 async def get_firewall_group(
     host: str,
     site: str,
@@ -4033,7 +4034,7 @@ async def get_firewall_group(
 # --- RADIUS Account Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_accounts"])
 async def list_accounts(
     host: str,
     site: str,
@@ -4047,7 +4048,7 @@ async def list_accounts(
     return await network_services_proxy.list_accounts(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_account"])
 async def get_account(
     host: str,
     site: str,
@@ -4066,7 +4067,7 @@ async def get_account(
 # --- Hotspot Package Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_hotspot_packages"])
 async def list_hotspot_packages(
     host: str,
     site: str,
@@ -4079,7 +4080,7 @@ async def list_hotspot_packages(
     return await network_services_proxy.list_hotspot_packages(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_hotspot_package"])
 async def get_hotspot_package(
     host: str,
     site: str,
@@ -4099,7 +4100,7 @@ async def get_hotspot_package(
 # --- Scheduled Task Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_scheduled_tasks"])
 async def list_scheduled_tasks(
     host: str,
     site: str,
@@ -4112,7 +4113,7 @@ async def list_scheduled_tasks(
     return await network_services_proxy.list_scheduled_tasks(client, registry, host, site)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_scheduled_task"])
 async def get_scheduled_task(
     host: str,
     site: str,
@@ -4130,7 +4131,7 @@ async def get_scheduled_task(
 # --- DPI Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_dpi_categories"])
 async def list_dpi_categories(
     host: str,
     site: str = "",
@@ -4151,7 +4152,7 @@ async def list_dpi_categories(
     return await network_services_proxy.list_dpi_categories(client, registry, host, offset, limit)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_dpi_applications"])
 async def list_dpi_applications(
     host: str,
     site: str = "",
@@ -4175,7 +4176,7 @@ async def list_dpi_applications(
 # --- InnerSpace Floor-Plan Tools ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_innerspace_summary"])
 async def get_innerspace_summary(
     host: str,
     mode: str = "3D",
@@ -4195,7 +4196,7 @@ async def get_innerspace_summary(
     return await innerspace.get_innerspace_summary(client, registry, host, mode)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_innerspace_project"])
 async def get_innerspace_project(
     host: str,
     mode: str = "3D",
@@ -4215,7 +4216,7 @@ async def get_innerspace_project(
     return await innerspace.get_innerspace_project(client, registry, host, mode)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_innerspace_devices"])
 async def list_innerspace_devices(
     host: str,
     mode: str = "3D",
@@ -4234,7 +4235,7 @@ async def list_innerspace_devices(
     return await innerspace.list_innerspace_devices(client, registry, host, mode)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_innerspace_floor_plans"])
 async def list_innerspace_floor_plans(
     host: str,
     site_id: str | None = None,
@@ -4253,7 +4254,7 @@ async def list_innerspace_floor_plans(
     return await innerspace.list_innerspace_floor_plans(client, registry, host, site_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_innerspace_access_points"])
 async def list_innerspace_access_points(
     host: str,
     site_id: str | None = None,
@@ -4272,7 +4273,7 @@ async def list_innerspace_access_points(
     return await innerspace.list_innerspace_access_points(client, registry, host, site_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_innerspace_switches"])
 async def list_innerspace_switches(
     host: str,
     site_id: str | None = None,
@@ -4290,7 +4291,7 @@ async def list_innerspace_switches(
     return await innerspace.list_innerspace_switches(client, registry, host, site_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_innerspace_inventory"])
 async def list_innerspace_inventory(
     host: str,
     site_id: str | None = None,
@@ -4308,7 +4309,7 @@ async def list_innerspace_inventory(
     return await innerspace.list_innerspace_inventory(client, registry, host, site_id)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_innerspace_asset"])
 async def get_innerspace_asset(
     host: str,
     plan_id: str,
@@ -4348,7 +4349,7 @@ async def get_innerspace_asset(
 # kill-switch (OFF by default).
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_carrier_subscribers"])
 async def list_carrier_subscribers(
     plan_id: str | None = None,
     suspended: bool | None = None,
@@ -4372,7 +4373,7 @@ async def list_carrier_subscribers(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_carrier_subscriber"])
 async def get_carrier_subscriber(
     subscriber_id: str,
     key_label: str | None = None,
@@ -4391,7 +4392,7 @@ async def get_carrier_subscriber(
     return await carrier_fabric.get_carrier_subscriber(client, subscriber_id, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_carrier_service_plans"])
 async def list_carrier_service_plans(
     key_label: str | None = None,
 ) -> dict[str, Any]:
@@ -4407,7 +4408,7 @@ async def list_carrier_service_plans(
     return await carrier_fabric.list_carrier_service_plans(client, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_carrier_service_plan"])
 async def get_carrier_service_plan(
     plan_id: str,
     key_label: str | None = None,
@@ -4425,7 +4426,7 @@ async def get_carrier_service_plan(
     return await carrier_fabric.get_carrier_service_plan(client, plan_id, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["create_carrier_subscriber"])
 async def create_carrier_subscriber(
     subscriber_number: str,
     name: str | None = None,
@@ -4465,7 +4466,7 @@ async def create_carrier_subscriber(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_carrier_subscriber"])
 async def update_carrier_subscriber(
     subscriber_id: str,
     subscriber_number: str | None = None,
@@ -4514,7 +4515,7 @@ async def update_carrier_subscriber(
     return await carrier_fabric.update_carrier_subscriber(client, subscriber_id, **kwargs)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["attach_carrier_subscriber_host"])
 async def attach_carrier_subscriber_host(
     subscriber_id: str,
     host_id: str,
@@ -4539,7 +4540,7 @@ async def attach_carrier_subscriber_host(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["detach_carrier_subscriber_host"])
 async def detach_carrier_subscriber_host(
     subscriber_id: str,
     confirm: bool = False,
@@ -4562,7 +4563,7 @@ async def detach_carrier_subscriber_host(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["assign_carrier_subscriber_plan"])
 async def assign_carrier_subscriber_plan(
     subscriber_id: str,
     plan_id: str,
@@ -4587,7 +4588,7 @@ async def assign_carrier_subscriber_plan(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["suspend_carrier_subscriber"])
 async def suspend_carrier_subscriber(
     subscriber_id: str,
     reason: str | None = None,
@@ -4612,7 +4613,7 @@ async def suspend_carrier_subscriber(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["resume_carrier_subscriber"])
 async def resume_carrier_subscriber(
     subscriber_id: str,
     confirm: bool = False,
@@ -4644,7 +4645,7 @@ async def resume_carrier_subscriber(
 # write/read-after, scope guard, credential redaction, structured audit).
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["fabric_connector_get"])
 async def fabric_connector_get(
     host: str,
     path: str,
@@ -4678,7 +4679,7 @@ async def fabric_connector_get(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["fabric_connector_post"])
 async def fabric_connector_post(
     host: str,
     path: str,
@@ -4713,7 +4714,7 @@ async def fabric_connector_post(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["fabric_connector_put"])
 async def fabric_connector_put(
     host: str,
     path: str,
@@ -4749,7 +4750,7 @@ async def fabric_connector_put(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["fabric_connector_patch"])
 async def fabric_connector_patch(
     host: str,
     path: str,
@@ -4784,7 +4785,7 @@ async def fabric_connector_patch(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["fabric_connector_delete"])
 async def fabric_connector_delete(
     host: str,
     path: str,
@@ -4820,7 +4821,7 @@ async def fabric_connector_delete(
 # --- Mobility Tools (workspace-scoped identity; no host/site resolution) ---
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_mobility_workspaces"])
 async def list_mobility_workspaces(
     key_label: str | None = None,
 ) -> dict[str, Any]:
@@ -4837,7 +4838,7 @@ async def list_mobility_workspaces(
     return await mobility.list_mobility_workspaces(client, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_mobility_admins"])
 async def list_mobility_admins(
     workspace_id: str,
     key_label: str | None = None,
@@ -4855,7 +4856,7 @@ async def list_mobility_admins(
     return await mobility.list_mobility_admins(client, workspace_id, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_mobility_devices"])
 async def list_mobility_devices(
     workspace_id: str,
     key_label: str | None = None,
@@ -4873,7 +4874,7 @@ async def list_mobility_devices(
     return await mobility.list_mobility_devices(client, workspace_id, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["get_mobility_device"])
 async def get_mobility_device(
     workspace_id: str,
     device_id: str,
@@ -4892,7 +4893,7 @@ async def get_mobility_device(
     return await mobility.get_mobility_device(client, workspace_id, device_id, key_label=key_label)
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["list_mobility_clients"])
 async def list_mobility_clients(
     workspace_id: str,
     device_id: str,
@@ -4914,7 +4915,7 @@ async def list_mobility_clients(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_mobility_device_name"])
 async def update_mobility_device_name(
     workspace_id: str,
     device_id: str,
@@ -4942,7 +4943,7 @@ async def update_mobility_device_name(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_mobility_device_network"])
 async def update_mobility_device_network(
     workspace_id: str,
     device_id: str,
@@ -4989,7 +4990,7 @@ async def update_mobility_device_network(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=TOOL_CLASS["update_mobility_device_wireless"])
 async def update_mobility_device_wireless(
     workspace_id: str,
     device_id: str,

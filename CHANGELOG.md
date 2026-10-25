@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Changed
+- Every tool now declares MCP tool annotations, so clients and gateways can tell reads from writes: 163 read tools carry `readOnlyHint=true`; 36 additive writes (`create_*`, `adopt_device`, `ptz_*`, `unblock_client`, `fabric_connector_post`, ...) carry `readOnlyHint=false, destructiveHint=false`; 84 destructive writes (`delete_*`, `update_*`, `patch_*`, `restart_device`, `block_client`, sirens and alarm outputs, `fabric_connector_put/patch/delete`, ...) carry `destructiveHint=true`, with `idempotentHint=true` on `update_*` / `set_*`. The classification is an explicit per-tool table (`tools/_annotations.py`), and `docs/TOOLS.md` gains a tool access index and a per-tool **Access** line. Metadata only: tool behaviour, arguments, responses and the existing `confirm` / `UNIFI_ENABLE_*` write gates are unchanged.
+
 ### Fixed
 - The `host` parameter of per-console tools now finds a console by the name Site Manager shows (`reportedState.name`), case- and whitespace-insensitively, so names with spaces, dots or parentheses work, and by its MAC address in any notation (`aa:bb:cc:dd:ee:ff`, `AABBCCDDEEFF`, ...). Previously such names were rejected as an invalid host id, and with several API keys a bare MAC was routed to the first key ("403 host not found" for consoles owned by another key). An unknown name now fails with "not found" and points to `list_hosts`.
 - The `site` parameter also matches a site's `internalReference` slug, so `site="default"` keeps working on consoles whose only site was renamed in the UI.
