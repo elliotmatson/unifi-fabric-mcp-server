@@ -214,7 +214,25 @@ async def list_devices(
     Pass page_token to fetch a single page manually (the response then carries a
     nextToken cursor to continue). A capped drain returns the devices gathered
     so far with incomplete=true rather than truncating silently.
+
+    MSP multi-key: without ``host`` and with more than one API key configured,
+    devices are aggregated across every key's org, each record annotated with
+    its source ``_keyLabel``; pagination tokens do not apply in that mode.
     """
+    labels = client.list_key_labels()
+    if not host and page_token is None and len(labels) > 1:
+        devices, errors = await _aggregate_lists_over_keys(
+            client, labels, lambda key: client.paginate("/v1/devices", key=key)
+        )
+        mk_result: dict[str, Any] = {
+            "devices": devices,
+            "count": len(devices),
+            "key_labels": labels,
+        }
+        if errors:
+            mk_result["errors"] = errors
+        return mk_result
+
     params: dict[str, Any] = {}
     key: APIKeyConfig | None = None
     if host:
@@ -308,7 +326,7 @@ async def query_isp_metrics(
             if end_time:
                 entry.setdefault("endTimestamp", end_time)
 
-    data = await client.post(f"/v1/isp-metrics/{interval}/query", json=body)
+    data = await client.post(f"/v1/isp-metrics/{interval}/query", json=body, read_only=True)
     result = data.get("data", data) if isinstance(data, dict) else data
     if isinstance(result, list):
         return {"periods": result}

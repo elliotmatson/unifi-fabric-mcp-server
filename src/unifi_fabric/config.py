@@ -319,6 +319,32 @@ class Settings(BaseSettings):
         "DEBUG, INFO, WARNING, ERROR, CRITICAL. Logs go to stderr only — no file handlers. "
         "Request/response bodies are never logged.",
     )
+    read_only: bool = Field(
+        default=False,
+        description="Read-only mode. Env: UNIFI_READ_ONLY. When true, only read tools "
+        "(readOnlyHint=true) are listed and callable; every write tool is hidden and refused. "
+        "Default off.",
+    )
+    tool_families: str = Field(
+        default="",
+        description="Comma-separated tool families to expose (e.g. 'network,protect'). "
+        "Env: UNIFI_TOOL_FAMILIES. Empty (default) exposes every family. Families: "
+        "site_manager, network, firewall, devices, clients, hotspot, vpn, statistics, protect, "
+        "innerspace, mobility, carrier, connector.",
+    )
+    disabled_tool_families: str = Field(
+        default="",
+        description="Comma-separated tool families to hide (e.g. 'connector,carrier'). "
+        "Env: UNIFI_DISABLED_TOOL_FAMILIES. Applied after UNIFI_TOOL_FAMILIES.",
+    )
+    dry_run: bool = Field(
+        default=False,
+        description="Dry-run mode. Env: UNIFI_DRY_RUN. When true, no mutating request "
+        "(POST/PUT/PATCH/DELETE) is sent to the UniFi API: a write tool runs its reads and "
+        "validation, then stops at its first write and returns the request it would have "
+        "sent (method, path, API key label, query params, JSON body). Read tools, including "
+        "POST-based queries, run normally. Default off.",
+    )
     redact_secrets: bool = Field(
         default=False,
         description="Mask credential field values (Wi-Fi passphrases, RADIUS/VPN secrets, "

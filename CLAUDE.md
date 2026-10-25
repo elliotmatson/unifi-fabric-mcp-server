@@ -162,10 +162,10 @@ owning disjoint host sets). The multi-key test must assert the correct key is se
   (enforced by `gitleaks` and `check_fixtures_sanitization.py`).
 - A multi-key routing test for any tool that calls `client.request()` or uses the registry.
 
-**Known gap (strict-xfail):** Per-host tools in `network`/`clients`/`device_mgmt`/`protect`
-are not yet wired to `Registry.resolve_key_for_host`. Strict `xfail` tests in
-`tests/test_multikey_routing.py` track this gap and will flip to hard failures once the
-wiring lands.
+**Per-host key routing:** Per-host tools resolve the owning API key with
+`Registry.resolve_key_for_host` before host/site resolution and the data request.
+`tests/test_multikey_routing.py` asserts that a `beta`-owned host routes on the `beta` key;
+keep new per-host tools wired the same way.
 
 **Fresh-AI validation:**
 - Tools must be usable with zero prior context — descriptions alone must guide correct usage.
@@ -195,7 +195,8 @@ The `changelog-check` CI job skips the file check for PRs with that label.
 **Public issue references only.** The changelog text is published verbatim in public release
 history. Private PR/issue numbers (from this repo or internal trackers) are meaningless on
 the public repository and 404 when followed. Use this exact format for public issues:
-`([#N](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/N))`
+`([#N](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues/N))`, and for an issue on the upstream repository
+`([swkstudios#N](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/N))`
 
 Drop all other parenthetical `(#NNN)` references — let the description stand on its own.
 

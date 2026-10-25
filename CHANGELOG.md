@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-<!-- Post-0.6.2 (0.6.3+) work goes here. -->
+## [0.7.0] - 2026-10-25
+
+### Added
+- `list_traffic_flows` — read a site's traffic flow log (Insights > Flows). The console serves flows only as a POST search, so reading them previously needed the write-gated `fabric_connector_post`; this tool performs that search read-only and returns the response verbatim. Time window in epoch seconds (default: the last hour), console-side `direction` / `action` / `risk` filters, and paging (`page_size` up to 5000; one query returns at most 10,000 flows). Requires flow logging to be enabled on the console. Annotated `readOnlyHint=true`.
+
+### Added
+- Server-side tool selection. `UNIFI_READ_ONLY=true` exposes only read tools; `UNIFI_TOOL_FAMILIES` (e.g. `network,protect`) and `UNIFI_DISABLED_TOOL_FAMILIES` (e.g. `connector`) choose tool families: `site_manager`, `network`, `firewall`, `devices`, `clients`, `hotspot`, `vpn`, `statistics`, `protect`, `innerspace`, `mobility`, `carrier`, `connector`. Hidden tools are left out of `tools/list` and refused if called; unknown family names stop the server at startup. Default unchanged: every tool is exposed. `docs/TOOLS.md` shows each tool's family. ([#27](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/27))
+
+### Changed
+- This repository is now a maintained fork of `swkstudios/unifi-fabric-mcp-server`. Container images are published to `ghcr.io/elliotmatson/unifi-fabric-mcp-server` (`:vX.Y.Z` and `:latest`), each release is tagged and published as a GitHub Release, and the README documents running a release straight from git with `uvx --from git+https://github.com/elliotmatson/unifi-fabric-mcp-server@vX.Y.Z unifi-fabric-mcp`. Docs, CODEOWNERS and issue links point to the fork; the upstream-only public-language PR lint is removed.
+- Releases are cut by a single **Release** workflow, started by pushing a `vX.Y.Z` tag or by a manual run with that tag. It verifies the tag against `pyproject.toml` and `CHANGELOG.md`, runs the full CI gates on the release commit, creates the tag if missing, publishes the multi-arch image to `ghcr.io/<owner>/<repo>` (`:vX.Y.Z` and `:latest`, image name derived from the repository instead of hard-coded), and creates a GitHub Release with the changelog section as its notes.
+- Every tool now declares MCP tool annotations, so clients and gateways can tell reads from writes: 164 read tools carry `readOnlyHint=true`; 36 additive writes (`create_*`, `adopt_device`, `ptz_*`, `unblock_client`, `fabric_connector_post`, ...) carry `readOnlyHint=false, destructiveHint=false`; 84 destructive writes (`delete_*`, `update_*`, `patch_*`, `restart_device`, `block_client`, sirens and alarm outputs, `fabric_connector_put/patch/delete`, ...) carry `destructiveHint=true`, with `idempotentHint=true` on `update_*` / `set_*`. The classification is an explicit per-tool table (`tools/_annotations.py`), and `docs/TOOLS.md` gains a tool access index and a per-tool **Access** line. Metadata only: tool behaviour, arguments, responses and the existing `confirm` / `UNIFI_ENABLE_*` write gates are unchanged.
+- The refusal from `fabric_connector_post/put/patch/delete` while connector writes are disabled now says where an operator sets `UNIFI_ENABLE_CONNECTOR_WRITE=1` (the server's docker-compose `environment:` block or `docker run -e`), that the server must be restarted, and that each mutation still needs `confirm=true`; the README gains an "Enabling or disabling connector writes" section with compose examples. The default stays off. ([swkstudios#29](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/29))
+
+### Fixed
+- The `host` parameter of per-console tools now finds a console by the name Site Manager shows (`reportedState.name`), case- and whitespace-insensitively, so names with spaces, dots or parentheses work, and by its MAC address in any notation (`aa:bb:cc:dd:ee:ff`, `AABBCCDDEEFF`, ...). Previously such names were rejected as an invalid host id, and with several API keys a bare MAC was routed to the first key ("403 host not found" for consoles owned by another key). An unknown name now fails with "not found" and points to `list_hosts`.
+- The `site` parameter also matches a site's `internalReference` slug, so `site="default"` keeps working on consoles whose only site was renamed in the UI.
+- With several API keys configured (one per Fabric / org), the fleet tools `list_all_devices`, `list_all_clients`, `get_fleet_summary`, `search_device_fleet` and `list_devices` (without `host`) now cover every key's org when no `key_label` is given, instead of silently querying only the first key. Records are tagged with `_keyLabel`, `get_fleet_summary` adds a per-key `byKey` breakdown, and a failing key is reported under `errors` without hiding the others (all keys failing raises). Passing `key_label` still scopes to one key; single-key deployments are unchanged.
+- Docker examples in `README.md` and `docs/AUTH-OAUTH.md` referenced image tags that are never published (`:0.6.1`, `:0.5.0`, and `:dev` / `:X.Y` aliases), so the documented `docker run` commands failed to pull. They now use the published `:vX.Y.Z` form, and the tag guidance describes what releases actually publish (`:vX.Y.Z` and `:latest`).
 
 ### Added
 - Write audit log (`UNIFI_AUDIT_WRITES`, default `true`): every call to a tool that is not read-only logs one structured INFO line (`tool-write-audit {json}` on the `unifi_fabric.audit` logger) with the tool, outcome (`ok` / `error` / `dry_run`), duration, host, site and arguments. Credential values in the logged arguments are always masked and large payloads are capped; response bodies and API keys are never logged. Lines go to stderr with the rest of the server log, so the server stays stateless.
@@ -18,6 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Connector relay writes that changed only a credential field (e.g. a Wi-Fi passphrase) were reported as `noOp: true, changed: false`, because the before/after bodies were compared after masking. They are now compared raw.
+
+### Added
+- `UNIFI_DRY_RUN` (default `false`): dry-run mode. No mutating request (POST/PUT/PATCH/DELETE) is sent to the UniFi API; a write tool runs its validation, gates and reads as usual, then stops at its first write and returns `{dryRun: true, sent: false, tool, request}` with the method, resolved path, API key label, query params and JSON body it would have sent. Read tools, including POST-based queries, are unaffected. The preview fits each tool's declared output schema. ([#28](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/28))
 
 ## [0.6.2] - 2026-08-16
 

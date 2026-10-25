@@ -264,6 +264,31 @@ class TestMutationGating:
         client.request.assert_not_called()
         registry.resolve_host_id.assert_not_called()
 
+    async def test_write_flag_off_message_says_where_to_enable(self, client, registry):
+        """The refusal tells an operator where the flag goes and that a restart is needed."""
+        with pytest.raises(ValueError) as excinfo:
+            await connector_write(
+                client,
+                registry,
+                "h",
+                "POST",
+                "network/api/s/{site}/cmd/devmgr",
+                site="Office",
+                confirm=True,
+                write_enabled=False,
+            )
+        message = str(excinfo.value)
+        for expected in (
+            "UNIFI_ENABLE_CONNECTOR_WRITE=1",
+            "`environment:`",
+            "docker run -e UNIFI_ENABLE_CONNECTOR_WRITE=1",
+            "restarting the server",
+            "confirm=true",
+            "Enabling or disabling connector writes",
+        ):
+            assert expected in message
+        client.request.assert_not_called()
+
     async def test_write_without_confirm_rejected_before_network(self, client, registry):
         with pytest.raises(ValueError, match="confirm=true"):
             await connector_write(
