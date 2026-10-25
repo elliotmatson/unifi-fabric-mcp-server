@@ -1,50 +1,159 @@
-name: Publish
+name: Release
+
+# One release path, two ways to start it:
+#   - Actions → Release → Run workflow, with tag "vX.Y.Z" (run from the default branch), or
+#   - push a "vX.Y.Z" tag.
+# Either way the run: checks pyproject.toml's version and the CHANGELOG.md section match
+# the tag, runs the full CI gates (ci.yml) on the exact commit, creates and pushes the tag
+# if it does not exist yet, builds and pushes the multi-arch image to
+# ghcr.io/<owner>/<repo> (":vX.Y.Z" and ":latest"), and creates the GitHub Release with
+# the matching CHANGELOG.md section as its notes.
+#
+# A tag pushed by this workflow uses GITHUB_TOKEN, which by design does not start another
+# workflow run, so a dispatch never triggers a second, duplicate release.
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g., v0.3.10)'
+        description: "Release tag (vX.Y.Z). Must equal 'v' + pyproject.toml version."
         required: true
+        type: string
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: swkstudios/unifi-fabric-mcp-server
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  prepare:
+    name: Validate release
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      version: ${{ steps.resolve.outputs.version }}
+      sha: ${{ steps.resolve.outputs.sha }}
+      create_tag: ${{ steps.resolve.outputs.create_tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Resolve tag, commit and version
+        id: resolve
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid tag '$TAG'. Must match vX.Y.Z (no pre-release suffix)."
+            exit 1
+          fi
+
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            # Tag already exists (tag push, or re-running a release): release that commit.
+            SHA="$(git rev-parse "$TAG^{commit}")"
+            CREATE_TAG=false
+          else
+            SHA="$GITHUB_SHA"
+            CREATE_TAG=true
+          fi
+
+          if ! git merge-base --is-ancestor "$SHA" "origin/$DEFAULT_BRANCH"; then
+            echo "::error::$SHA is not on $DEFAULT_BRANCH. Release only from $DEFAULT_BRANCH."
+            exit 1
+          fi
+
+          git checkout -q "$SHA"
+          VERSION="$(python3 -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          if [[ "v$VERSION" != "$TAG" ]]; then
+            echo "::error::pyproject.toml version is $VERSION but the tag is $TAG."
+            exit 1
+          fi
+          # Fails (and prints why) when CHANGELOG.md has no non-empty section for VERSION.
+          python3 scripts/changelog_section.py "$VERSION" > /dev/null
+
+          {
+            echo "tag=$TAG"
+            echo "version=$VERSION"
+            echo "sha=$SHA"
+            echo "create_tag=$CREATE_TAG"
+          } >> "$GITHUB_OUTPUT"
+          echo "Releasing $TAG from $SHA (create tag: $CREATE_TAG)"
+
+  ci:
+    name: CI gates
+    needs: prepare
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
+
+  tag:
+    name: Create tag
+    needs: [prepare, ci]
+    if: needs.prepare.outputs.create_tag == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+      - name: Create and push tag
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" "$SHA" -m "Release $TAG"
+          git push origin "refs/tags/$TAG"
+
+  image:
+    name: Build and push image
+    needs: [prepare, ci, tag]
+    # `tag` is skipped when the tag already existed; that is fine, a failure is not.
+    if: >-
+      !cancelled() && needs.ci.result == 'success' &&
+      (needs.tag.result == 'success' || needs.tag.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Validate tag format
-        run: |
-          if [[ ! "${{ github.event.inputs.tag }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid tag format. Must match vX.Y.Z"
-            exit 1
-          fi
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.inputs.tag }}
+          ref: ${{ needs.prepare.outputs.sha }}
+      - name: Image name (GHCR requires lowercase)
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
       - name: Log in to GHCR
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE }}
           tags: |
-            type=raw,value=${{ github.event.inputs.tag }}
-            type=raw,value=latest,enable=${{ !contains(github.event.inputs.tag, '-') }}
+            type=raw,value=${{ needs.prepare.outputs.tag }}
+            type=raw,value=latest
+          labels: |
+            org.opencontainers.image.version=${{ needs.prepare.outputs.version }}
+            org.opencontainers.image.revision=${{ needs.prepare.outputs.sha }}
       - name: Build and push
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
           push: true
@@ -53,3 +162,29 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  release:
+    name: GitHub Release
+    needs: [prepare, image]
+    if: ${{ !cancelled() && needs.image.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          python3 scripts/changelog_section.py "$VERSION" > "$RUNNER_TEMP/notes.md"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
+          else
+            gh release create "$TAG" --verify-tag --title "$TAG" \
+              --notes-file "$RUNNER_TEMP/notes.md"
+          fi

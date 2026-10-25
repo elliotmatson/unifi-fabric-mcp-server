@@ -2,7 +2,7 @@
 
 # UniFi Fabric MCP Server
 
-[![CI](https://github.com/swkstudios/unifi-fabric-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/swkstudios/unifi-fabric-mcp-server/actions/workflows/ci.yml)
+[![CI](https://github.com/elliotmatson/unifi-fabric-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/elliotmatson/unifi-fabric-mcp-server/actions/workflows/ci.yml)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -10,12 +10,15 @@
 
 An MCP (Model Context Protocol) server that exposes the UniFi Site Manager API as tools for AI assistants. Built with [FastMCP](https://github.com/PrefectHQ/fastmcp), it lets Claude Code, Cline, and other MCP clients manage UniFi network infrastructure through natural language.
 
+> **Fork notice:** This is a maintained fork of [swkstudios/unifi-fabric-mcp-server](https://github.com/swkstudios/unifi-fabric-mcp-server), which has had no activity since its v0.6.2 release. It carries fixes and features that are also offered back upstream, and publishes its own releases and container images (`ghcr.io/elliotmatson/unifi-fabric-mcp-server`). It remains MIT-licensed; see [LICENSE](LICENSE) and [NOTICE](NOTICE) for the original attribution.
+
 > **Disclaimer:** This project is not affiliated with, endorsed by, or sponsored by Ubiquiti Inc. UniFi is a trademark of Ubiquiti Inc.
 
 **Highlights:**
 
-- 283 tools across Fleet, Network, Firewall, Protect, VPN, InnerSpace, History, and more
 - Faithful pass-through — tools return complete upstream payloads including credential fields (WLAN passphrases, RADIUS secrets, API tokens), GPS coordinates, and Protect recognition data. The `include_secrets` and `include_gps` parameters have been removed; all fields are always returned. Callers upgrading from 0.4.x or earlier should drop those parameters. Deployments that must not expose credentials to their MCP clients can opt in to masking them with `UNIFI_REDACT_SECRETS=true` (see [Environment Variables](#environment-variables)).
+- 284 tools across Fleet, Network, Firewall, Protect, VPN, InnerSpace, History, and more
+- Faithful pass-through — tools return complete upstream payloads including credential fields (WLAN passphrases, RADIUS secrets, API tokens), GPS coordinates, and Protect recognition data. The `include_secrets` and `include_gps` parameters have been removed; all fields are always returned. Callers upgrading from 0.4.x or earlier should drop those parameters.
 - Configurable authentication: `none` (loopback/dev) / `bearer` (LAN/VPN) / `oauth` (resource-server, JWT-verified via JWKS)
 - Configurable TLS: plain HTTP / in-server HTTPS (`https`) / mutual TLS (`mtls`)
 - Stdio transport for local use; `streamable-http` / `sse` for containerized deployments
@@ -73,8 +76,31 @@ Install and run the server locally. The MCP client launches it as a subprocess o
 
 **Requires Python 3.12+**
 
+**Quickest: run a release straight from git with [uv](https://docs.astral.sh/uv/)** (no clone, no virtualenv):
+
 ```bash
-git clone https://github.com/swkstudios/unifi-fabric-mcp-server.git
+export UNIFI_API_KEY="your-api-key-here"
+uvx --from git+https://github.com/elliotmatson/unifi-fabric-mcp-server@v0.7.0 unifi-fabric-mcp
+```
+
+MCP client config for the same thing:
+
+```json
+{
+  "mcpServers": {
+    "unifi-fabric": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/elliotmatson/unifi-fabric-mcp-server@v0.7.0", "unifi-fabric-mcp"],
+      "env": { "UNIFI_API_KEY": "your-api-key-here" }
+    }
+  }
+}
+```
+
+**Or from a checkout:**
+
+```bash
+git clone https://github.com/elliotmatson/unifi-fabric-mcp-server.git
 cd unifi-fabric-mcp-server
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .          # -e is editable/dev mode; omit for a standard install
@@ -106,10 +132,10 @@ Add to `~/.claude/settings.json` or project `.mcp.json`:
 Run the server as a container. The MCP client connects over HTTP to the `/mcp` endpoint.
 
 ```bash
-docker run -e UNIFI_API_KEY="your-api-key-here" -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run -e UNIFI_API_KEY="your-api-key-here" -p 3000:3000 ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
 ```
 
-> **Tip:** `:0.6.1` pins to the last stable release. `:dev` is the moving alias for the current development build — it is updated by CI on every successful dev-branch push and is the fastest way to pull pre-release work. `:latest` and the short form `:X.Y` move **only** when a clean release tag (`vX.Y.Z`, no pre-release suffix) is published; they are never moved by a dev-branch push or a pre-release tag. For production deployments, pin by digest instead — see [Docker Deployment](#docker-deployment).
+> **Tip:** `:v0.7.0` pins to a release. Each release is published as `:vX.Y.Z` (note the leading `v`), and `:latest` moves to each new release. For production deployments, pin by digest instead — see [Docker Deployment](#docker-deployment).
 
 Add to `~/.claude/settings.json` or project `.mcp.json`:
 
@@ -265,7 +291,7 @@ The tool set was verified against a live deployment during a read-only sweep (12
 
 ## Available Tools
 
-The server exposes **283 tools** organized by domain for managing UniFi infrastructure:
+The server exposes **284 tools** organized by domain for managing UniFi infrastructure:
 
 | Domain | Tool Count | Purpose |
 |--------|-----------|---------|
@@ -275,7 +301,7 @@ The server exposes **283 tools** organized by domain for managing UniFi infrastr
 | **Device Management** | 21 | Device control, adoption, stats, actions, location, tagging, STP/port-state reads |
 | **Clients** | 8 | Client listing, stats, blocking, reconnection |
 | **Firewall** | 24 | Policies, zones, ACL rules, rule ordering |
-| **DNS & Traffic** | 24 | DNS policies, traffic rules, matching lists, routes, dynamic DNS, DPI app/category catalogue |
+| **DNS & Traffic** | 25 | DNS policies, traffic rules, matching lists, routes, dynamic DNS, DPI app/category catalogue, traffic flow log |
 | **Port Forwarding** | 4 | List, create, update, delete port forwards |
 | **WLAN** | 6 | WLAN configs, groups, security settings |
 | **Protect** | 79 | Cameras, sensors, lights, chimes, liveviews, PTZ, snapshots, historical events, face/vehicle recognition, arm profiles, sirens, fobs, relays, speakers, bridges, link stations, alarm hubs, Protect users, ULP users, application metadata, POS overlay ingestion |
@@ -335,6 +361,28 @@ Guards (all enforced, none optional):
 - **Read-before / write / read-after** — for PUT/PATCH/DELETE the resource is read before and after the write, with diff-based no-op detection (`noOp: true` when a same-value write changes nothing).
 - **Scope guard** — an optional `scope` (`device` / `site` / `global`) is cross-checked against the path so a site-global setting route (e.g. `global_switch.stp_version`) cannot be driven by a device-scoped request.
 - **Verbatim bodies + audit** — relayed bodies are returned exactly as the console sent them (masked only when the operator sets `UNIFI_REDACT_SECRETS`, like every other tool); every mutation attempt is written to a structured audit line (console, site, method, path, confirm, outcome) that **never** contains the API key or a body.
+
+#### Enabling or disabling connector writes
+
+Connector writes are **off by default** and are switched on per deployment, never from a tool call. Set the flag in the server's environment and restart it:
+
+```yaml
+# docker-compose.yml: enable the mutating relay (each call still needs confirm=true)
+services:
+  unifi-mcp:
+    image: ghcr.io/elliotmatson/unifi-fabric-mcp-server:latest
+    environment:
+      UNIFI_API_KEY: "your-api-key-here"
+      UNIFI_ENABLE_CONNECTOR_WRITE: "1"   # remove the line, or set "0", to disable again
+```
+
+```bash
+docker compose up -d unifi-mcp            # recreate the container with the new environment
+# or, without compose:
+docker run -e UNIFI_API_KEY="..." -e UNIFI_ENABLE_CONNECTOR_WRITE=1 -p 3000:3000 ghcr.io/elliotmatson/unifi-fabric-mcp-server:latest
+```
+
+The flag is read at startup, so a running server keeps its old setting until the container is recreated. If the server shares a network namespace with a sidecar (e.g. `network_mode: service:vpn`), recreate the whole compose group so the new container rejoins it. With the flag on, every `fabric_connector_post/put/patch/delete` call still requires `confirm=true`; `fabric_connector_get` is unaffected either way.
 
 A 4xx/5xx from the relay is returned as `status` (not raised), so an invalid-ID probe surfaces its own reachability status. Undocumented legacy routes remain **experimental** until persistence and rollback are proven against a live console.
 
@@ -445,7 +493,7 @@ To use a different transport, override the environment variable at runtime:
 
 ```bash
 # SSE transport
-docker run -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=sse -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=sse -p 3000:3000 ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
 ```
 
 MCP clients connect to the `/sse` endpoint — note the path differs from the streamable-http default (`/mcp`):
@@ -471,7 +519,7 @@ A `200` printed on stdout confirms the server is listening. (The SSE stream stay
 
 ```bash
 # Stdio transport
-docker run --no-healthcheck --rm -i -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=stdio ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run --no-healthcheck --rm -i -e UNIFI_API_KEY="your-api-key-here" -e FASTMCP_TRANSPORT=stdio ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
 ```
 
 With stdio transport the MCP client must **spawn** the container as a subprocess (analogous to Track A), not connect over HTTP. Pass `--rm -i` so the container receives stdin and is removed on exit. The corresponding client config uses `command`/`args`, not `type`/`url`:
@@ -484,7 +532,7 @@ With stdio transport the MCP client must **spawn** the container as a subprocess
       "args": ["run", "--rm", "-i",
                "-e", "UNIFI_API_KEY=your-api-key-here",
                "-e", "FASTMCP_TRANSPORT=stdio",
-               "ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1"]
+               "ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0"]
     }
   }
 }
@@ -497,7 +545,7 @@ With stdio transport the MCP client must **spawn** the container as a subprocess
 ```yaml
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+    image: ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
     environment:
       UNIFI_API_KEY: your-api-key-here
       FASTMCP_TRANSPORT: sse  # or stdio
@@ -520,12 +568,12 @@ When unset (the default), the server runs without transport-layer authentication
 
 ```bash
 # Docker
-docker run -e UNIFI_API_KEY="..." -e MCP_BEARER_TOKEN="my-secret-token" -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+docker run -e UNIFI_API_KEY="..." -e MCP_BEARER_TOKEN="my-secret-token" -p 3000:3000 ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
 
 # Docker Compose
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+    image: ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
     environment:
       UNIFI_API_KEY: your-api-key-here
       MCP_BEARER_TOKEN: my-secret-token
@@ -577,14 +625,14 @@ docker run \
   -e MCP_TLS_KEYFILE=/certs/key.pem \
   -v /path/to/certs:/certs:ro \
   -p 3000:3000 \
-  ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+  ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
 ```
 
 ```yaml
 # Docker Compose — bearer auth with in-server HTTPS
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+    image: ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
     environment:
       UNIFI_API_KEY: your-api-key-here
       MCP_BEARER_TOKEN: my-secret-token
@@ -644,7 +692,7 @@ docker run \
   -e MCP_TLS_CA_CERTS=/certs/ca-cert.pem \
   -v /path/to/certs:/certs:ro \
   -p 3000:3000 \
-  ghcr.io/swkstudios/unifi-fabric-mcp-server:0.6.1
+  ghcr.io/elliotmatson/unifi-fabric-mcp-server:v0.7.0
 ```
 
 Most MCP clients cannot present a client certificate directly. The recommended pattern is a TLS-terminating reverse proxy that presents the client certificate toward the server; downstream MCP clients connect to the proxy over standard HTTPS with the bearer token in the `Authorization` header:
@@ -919,7 +967,7 @@ These are considered non-transient and retrying would not help. See [Troubleshoo
 ### Getting Help
 
 - Check [developer.ui.com](https://developer.ui.com) for API documentation and latest firmware compatibility
-- Search existing [GitHub issues](https://github.com/swkstudios/unifi-fabric-mcp-server/issues) for your problem
+- Search existing [GitHub issues](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues) for your problem
 - Include the following in bug reports:
   - Tool name and parameters you were using
   - Full error message (redact your API key and sensitive IPs)
@@ -953,14 +1001,14 @@ and guard against tag mutation:
 
 ```bash
 # Pull by digest instead of :latest or a version tag
-docker pull ghcr.io/swkstudios/unifi-fabric-mcp-server@sha256:<digest>
+docker pull ghcr.io/elliotmatson/unifi-fabric-mcp-server@sha256:<digest>
 ```
 
 You can find the digest for a given release on the package page or via (the image must be present locally — run `docker pull` first):
 
 ```bash
-docker pull ghcr.io/swkstudios/unifi-fabric-mcp-server:latest
-docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/swkstudios/unifi-fabric-mcp-server:latest
+docker pull ghcr.io/elliotmatson/unifi-fabric-mcp-server:latest
+docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/elliotmatson/unifi-fabric-mcp-server:latest
 ```
 
 ### Stateless Design (No Persistent Volumes)

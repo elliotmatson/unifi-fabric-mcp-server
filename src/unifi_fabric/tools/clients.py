@@ -9,6 +9,7 @@ from fastmcp import FastMCP
 
 from ..client import UniFiClient, validate_id
 from ..registry import Registry, _assert_uuid
+from ._annotations import TOOL_CLASS
 from ._pagination import collect_offset, mark_incomplete
 from .network import _proxy
 
@@ -214,7 +215,7 @@ async def _reconnect_client(
 def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
     """Register all client management MCP tools."""
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_clients"])
     async def list_clients(
         host: str,
         site: str,
@@ -253,7 +254,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             filter=filter,
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_client"])
     async def get_client(
         host: str,
         site: str,
@@ -267,7 +268,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_client(client, registry, host, site, client_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["execute_client_action"])
     async def execute_client_action(
         host: str,
         site: str,
@@ -284,7 +285,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _execute_client_action(client, registry, host, site, client_id, action)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["block_client"])
     async def block_client(
         host: str,
         site: str,
@@ -298,7 +299,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _block_client(client, registry, host, site, client_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["unblock_client"])
     async def unblock_client(
         host: str,
         site: str,
@@ -312,7 +313,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _unblock_client(client, registry, host, site, client_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["reconnect_client"])
     async def reconnect_client(
         host: str,
         site: str,

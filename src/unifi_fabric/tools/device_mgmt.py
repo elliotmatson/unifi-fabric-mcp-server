@@ -11,6 +11,7 @@ from fastmcp import FastMCP
 from ..client import UniFiClient, validate_id
 from ..config import APIKeyConfig
 from ..registry import Registry, _assert_uuid
+from ._annotations import TOOL_CLASS
 from ._pagination import collect_offset, mark_incomplete
 from .network import _proxy
 
@@ -380,7 +381,7 @@ async def _reject_pending_device(
 def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
     """Register all device management MCP tools."""
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_site_devices"])
     async def list_site_devices(
         host: str,
         site: str,
@@ -405,7 +406,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             client, registry, host, site, offset=offset, limit=limit, filter=filter
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["adopt_device"])
     async def adopt_device(
         host: str,
         site: str,
@@ -422,7 +423,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _adopt_device(client, registry, host, site, device)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_device"])
     async def get_device(
         host: str,
         site: str,
@@ -437,7 +438,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_device(client, registry, host, site, device_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["unadopt_device"])
     async def unadopt_device(
         host: str,
         site: str,
@@ -455,7 +456,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         await _unadopt_device(client, registry, host, site, device_id)
         return f"Device {device_id} unadopted."
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["execute_device_action"])
     async def execute_device_action(
         host: str,
         site: str,
@@ -472,7 +473,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _execute_device_action(client, registry, host, site, device_id, action)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_device_statistics"])
     async def get_device_statistics(
         host: str,
         site: str,
@@ -487,7 +488,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_device_statistics(client, registry, host, site, device_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["execute_port_action"])
     async def execute_port_action(
         host: str,
         site: str,
@@ -519,7 +520,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _execute_port_action(client, registry, host, site, device_id, port_idx, action)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["restart_device"])
     async def restart_device(
         host: str,
         site: str,
@@ -533,7 +534,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _restart_device(client, registry, host, site, device_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["locate_device"])
     async def locate_device(
         host: str,
         site: str,
@@ -549,7 +550,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _locate_device(client, registry, host, site, device_id, enabled)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["upgrade_device"])
     async def upgrade_device(
         host: str,
         site: str,
@@ -563,7 +564,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _upgrade_device(client, registry, host, site, device_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_pending_devices"])
     async def list_pending_devices(
         host: str,
     ) -> dict[str, Any]:
@@ -574,7 +575,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _list_pending_devices(client, registry, host)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["create_device_tag"])
     async def create_device_tag(
         host: str,
         site: str,
@@ -591,7 +592,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _create_device_tag(client, registry, host, site, tag)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["update_device_tag"])
     async def update_device_tag(
         host: str,
         site: str,
@@ -607,7 +608,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _update_device_tag(client, registry, host, site, tag_id, tag)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["delete_device_tag"])
     async def delete_device_tag(
         host: str,
         site: str,
@@ -621,7 +622,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _delete_device_tag(client, registry, host, site, tag_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["approve_pending_device"])
     async def approve_pending_device(
         host: str,
         site: str,
@@ -635,7 +636,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _approve_pending_device(client, registry, host, site, device_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["reject_pending_device"])
     async def reject_pending_device(
         host: str,
         site: str,

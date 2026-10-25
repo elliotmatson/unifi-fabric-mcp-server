@@ -45,13 +45,14 @@ concerns. Do not conflate committed-fixture hygiene with runtime responses.
 
 ## Before you start
 
-- Search [existing issues](https://github.com/swkstudios/unifi-fabric-mcp-server/issues)
+- Search [existing issues](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues)
   before opening a new one — your problem or idea may already be tracked.
 - For security vulnerabilities, use the private reporting path in
   [SECURITY.md](.github/SECURITY.md). Do not open a public issue for
   security bugs.
-- Questions? Open a
-  [GitHub Discussion](https://github.com/swkstudios/unifi-fabric-mcp-server/discussions).
+- Questions? Open an [issue](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues).
+- This is a fork of [swkstudios/unifi-fabric-mcp-server](https://github.com/swkstudios/unifi-fabric-mcp-server). Changes
+  that are not fork-specific are written so they can also be offered upstream.
 
 ## Development setup
 
@@ -81,7 +82,6 @@ concerns. Do not conflate committed-fixture hygiene with runtime responses.
 ## Branch naming
 
 This guide is for external contributors working from the public mirror — branch off `main`.
-(Internal maintainers work off `dev`; see `CLAUDE.md` for that workflow.)
 
 Create branches off `main` with a descriptive type prefix:
 
@@ -181,7 +181,14 @@ number. Do not rely on individual PRs to keep the ordering perfect.
 Use **public issue numbers only**, formatted as a Markdown link:
 
 ```
-([#19](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/19))
+([#19](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues/19))
+```
+
+An issue filed on the upstream repository is referenced with its owner, so the link
+does not point at an unrelated issue in this fork:
+
+```
+([swkstudios#29](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/29))
 ```
 
 Private issue or PR numbers from forks or other trackers are meaningless to
@@ -211,6 +218,23 @@ Full CI gate matrix:
 | `gitleaks` | No secrets committed (file scan + PR diff scan) |
 | `fixtures-sanitization` | No real MACs, IPs, or API keys in fixtures |
 | `changelog-check` | `CHANGELOG.md` updated, or `skip-changelog` label set |
+
+## Releasing
+
+Releases are cut by `.github/workflows/publish.yml` (the **Release** workflow). Before
+starting one, merge a PR to `main` that:
+
+1. bumps `version` in `pyproject.toml` to `X.Y.Z`, and
+2. renames `## [Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD` (consolidated
+   as described above) and opens a fresh, empty `## [Unreleased]` above it.
+
+Then either run **Actions → Release → Run workflow** on `main` with tag `vX.Y.Z`, or push
+the tag yourself (`git tag vX.Y.Z && git push origin vX.Y.Z`). The workflow refuses to
+release unless the tag matches `pyproject.toml`, the commit is on `main`, and `CHANGELOG.md`
+has a non-empty `[X.Y.Z]` section. It then runs the full CI gates on that commit, creates
+the tag if needed, pushes the multi-arch image `ghcr.io/<owner>/<repo>:vX.Y.Z` (and
+`:latest`), and publishes a GitHub Release whose notes are the `[X.Y.Z]` section.
+Re-running it for an existing tag rebuilds the image and refreshes the release notes.
 
 ## Testing requirements
 
