@@ -39,8 +39,10 @@ Guard model (all enforced here, none optional):
 * **Scope guard.** ``scope`` (``device`` / ``site`` / ``global``), when supplied, is
   cross-checked against the path so a site-global setting route cannot be selected for
   a device-scoped request (and vice versa).
-* **Credential redaction.** Credential-bearing fields in the relayed body are redacted
-  before the body is returned or logged, and the API key value is never logged.
+* **Verbatim bodies.** Relayed bodies are returned as the console sent them, like every
+  other tool (credential masking, when wanted, is the opt-in ``UNIFI_REDACT_SECRETS``
+  result-layer setting, applied after the no-op comparison). Bodies and the API key value
+  are never logged.
 * **Structured audit.** Every mutation attempt is logged (console, site, method, path,
   confirm, outcome) — never the key value.
 
@@ -90,12 +92,6 @@ _RAW_PATH_RE = re.compile(r"^[A-Za-z0-9._~:{}/-]+$")
 #: means an unresolved placeholder).
 _FINAL_PATH_RE = re.compile(r"^[A-Za-z0-9._~:/-]+$")
 
-#: Keys whose values are credential-bearing and must be redacted before return/log.
-_CRED_KEY_RE = re.compile(
-    r"(password|passphrase|secret|psk|private[-_]?key|api[-_]?key|x_ca_|token)",
-    re.IGNORECASE,
-)
-
 #: Path markers used by the scope guard.
 _DEVICE_MARKERS = ("/rest/device", "/stat/device")
 _GLOBAL_SETTING_MARKERS = ("/rest/setting", "/set/setting", "global_switch")
@@ -103,8 +99,6 @@ _GLOBAL_SETTING_MARKERS = ("/rest/setting", "/set/setting", "global_switch")
 _MUTATION_METHODS = ("POST", "PUT", "PATCH", "DELETE")
 #: Methods with a GET twin at the same resource path (read-before / read-after).
 _TWIN_METHODS = ("PUT", "PATCH", "DELETE")
-
-_MAX_BODY_CHARS = 4000
 
 
 def _check_raw_charset(path: str) -> None:
@@ -227,37 +221,12 @@ def _check_final_charset(final_path: str) -> None:
         )
 
 
-def _redact_credentials(value: Any) -> Any:
-    """Recursively redact credential-bearing field *values* in a relayed body.
-
-    A key whose name matches the credential pattern (password/passphrase/secret/psk/
-    private key/api key/token/CA) has its value replaced with ``"[REDACTED]"``.
-    Non-credential values pass through verbatim (the server is a faithful access
-    layer — device config, UUIDs, etc. are not withheld). Redaction is deterministic,
-    so equality-based no-op detection is unaffected for non-credential changes.
-    """
-    if isinstance(value, dict):
-        return {
-            k: (
-                "[REDACTED]"
-                if isinstance(k, str) and _CRED_KEY_RE.search(k)
-                else _redact_credentials(v)
-            )
-            for k, v in value.items()
-        }
-    if isinstance(value, list):
-        return [_redact_credentials(item) for item in value]
-    return value
-
-
 def _decode_relay_body(resp: Any) -> Any:
-    """Decode the upstream response body, redacted. JSON when possible, else text."""
+    """Decode the upstream response body verbatim. JSON when possible, else full text."""
     try:
-        data = resp.json()
+        return resp.json()
     except Exception:
-        text = getattr(resp, "text", "") or ""
-        return {"text": text[:_MAX_BODY_CHARS]}
-    return _redact_credentials(data)
+        return {"text": getattr(resp, "text", "") or ""}
 
 
 async def _safe_get(client: UniFiClient, url: str, key: APIKeyConfig | None) -> dict[str, Any]:
@@ -311,7 +280,7 @@ async def connector_get(
 ) -> dict[str, Any]:
     """Relay a GET through the Fabric connector. Always available (no confirm).
 
-    Returns the upstream status and (redacted) body plus the resolved route class.
+    Returns the upstream status and body (verbatim) plus the resolved route class.
     A 4xx/5xx is reported as ``status`` rather than raised — a GET probe of an
     unknown route surfaces its own status.
     """
@@ -359,7 +328,7 @@ async def connector_write(
     Fail-closed gating: the mutation is refused — before any network call — unless
     BOTH ``write_enabled`` (the ``UNIFI_ENABLE_CONNECTOR_WRITE`` env flag) is set AND
     ``confirm=True``. For PUT/PATCH/DELETE the resource is read before and after the
-    write with diff-based no-op detection. The upstream status/body (redacted) and the
+    write with diff-based no-op detection. The upstream status/body (verbatim) and the
     resolved route class are returned; a 4xx/5xx is reported, not raised, so an
     invalid-ID probe surfaces its reachability status.
     """
@@ -371,9 +340,13 @@ async def connector_write(
     route_class = _validate_relay_path(path, scope)
     if not write_enabled:
         raise ValueError(
-            f"{method_u} connector relay is disabled. Connector writes are OFF by default; "
-            "set UNIFI_ENABLE_CONNECTOR_WRITE=1 in the server environment to enable them. "
-            "GET relay is always available."
+            f"{method_u} connector relay is disabled: connector writes are OFF by default. "
+            "An operator enables them by setting UNIFI_ENABLE_CONNECTOR_WRITE=1 in the MCP "
+            "server's own environment (e.g. the `environment:` block of its docker-compose "
+            "service, or `docker run -e UNIFI_ENABLE_CONNECTOR_WRITE=1`) and restarting the "
+            "server; it cannot be turned on from a tool call. Each mutation still requires "
+            "confirm=true. The GET relay (fabric_connector_get) is always available. See "
+            "README 'Enabling or disabling connector writes'."
         )
     if not confirm:
         raise ValueError(

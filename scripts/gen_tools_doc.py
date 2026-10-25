@@ -163,6 +163,18 @@ def _category(tool_name: str) -> str:
     return "Other"
 
 
+def _access(tool: Any) -> str:
+    """Read / Write / Destructive label from the tool's MCP annotations."""
+    hints = getattr(tool, "annotations", None)
+    if hints is None or hints.readOnlyHint is None:
+        return "Unclassified"
+    if hints.readOnlyHint:
+        return "Read"
+    if hints.destructiveHint is False:
+        return "Write"
+    return "Destructive (idempotent)" if hints.idempotentHint else "Destructive"
+
+
 async def _runtime_tools() -> list[Any]:
     sys.path.insert(0, str(SRC))
     from unifi_fabric.server import mcp
@@ -224,6 +236,36 @@ def render_markdown(tools: list[Any]) -> str:
     for category in sorted(categories):
         lines.append(f"- [{category}](#{_anchor(category)}) ({len(categories[category])})")
 
+    access_counts: dict[str, int] = {}
+    for tool in tools:
+        access_counts[_access(tool)] = access_counts.get(_access(tool), 0) + 1
+    lines.extend(
+        [
+            "",
+            "## Tool access index",
+            "",
+            (
+                "Access comes from each tool's MCP annotations (`readOnlyHint`, "
+                "`destructiveHint`, `idempotentHint`), which clients and gateways can use "
+                "to tell reads from writes. **Read**: reads only. **Write**: adds or starts "
+                "something without removing existing state. **Destructive**: deletes, "
+                "overwrites, interrupts or triggers something; *idempotent* means repeating "
+                "the same call has no further effect. Server-side write gates "
+                "(`confirm=true`, `UNIFI_ENABLE_*`) still apply."
+            ),
+            "",
+            ", ".join(f"{label}: {access_counts[label]}" for label in sorted(access_counts)),
+            "",
+            "| Tool | Category | Access |",
+            "| --- | --- | --- |",
+        ]
+    )
+    for tool in sorted(tools, key=_tool_name):
+        category = _category(_tool_name(tool))
+        lines.append(
+            f"| [`{_tool_name(tool)}`](#{_tool_name(tool)}) | {category} | {_access(tool)} |"
+        )
+
     for category in sorted(categories):
         category_tools = categories[category]
         lines.extend(["", "---", "", f"## {category}", "", f"**{len(category_tools)} tools**", ""])
@@ -232,6 +274,8 @@ def render_markdown(tools: list[Any]) -> str:
             lines.extend(
                 [
                     f"### `{_tool_name(tool)}`",
+                    "",
+                    f"**Access:** {_access(tool)}",
                     "",
                     description,
                     "",
