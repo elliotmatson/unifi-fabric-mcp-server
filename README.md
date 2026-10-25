@@ -470,6 +470,9 @@ All UniFi-specific settings are loaded from environment variables with the `UNIF
 | `UNIFI_PAGINATE_MAX_PAGES` | No | `None` (unlimited) | Hard cap on pages drained per call. By default list tools drain all pages automatically; set this to limit drain depth. When the cap is hit the response includes `"incomplete": true` and `"incompleteReason"`. |
 | `UNIFI_LOG_LEVEL` | No | `INFO` | Logging verbosity. Accepts standard Python levels: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Logs go to stderr only — request/response bodies are never logged. |
 | `UNIFI_ENABLE_CONNECTOR_WRITE` | No | `false` | Enable the mutating generic connector relay (`fabric_connector_post/put/patch/delete`). Fail-closed: default OFF, and even when ON each mutation still requires `confirm=true` on the tool call. The GET relay (`fabric_connector_get`) is always available and is unaffected. See [Generic Fabric Connector Relay](#generic-fabric-connector-relay-guarded). |
+| `UNIFI_READ_ONLY` | No | `false` | Read-only mode: only read tools (`readOnlyHint=true`) are listed and callable; every write tool is hidden and refused if called by name. See [Limiting the exposed tools](#limiting-the-exposed-tools). |
+| `UNIFI_TOOL_FAMILIES` | No | *(all)* | Comma-separated tool families to expose, e.g. `network,protect`. Unknown names stop the server at startup. |
+| `UNIFI_DISABLED_TOOL_FAMILIES` | No | *(none)* | Comma-separated tool families to hide, e.g. `connector,carrier`. Applied after `UNIFI_TOOL_FAMILIES`. |
 | `UNIFI_DRY_RUN` | No | `false` | Dry-run mode: no mutating request (POST/PUT/PATCH/DELETE) is sent. A write tool runs its input validation, gates and reads as usual, then stops at its first write and returns `{dryRun: true, sent: false, tool, request: {method, path, keyLabel, params, json, files}}` instead. Read tools, including POST-based queries (`query_isp_metrics`, `list_client_sessions`, `get_historical_stats`), run normally. Useful for checking what an assistant would change before allowing writes. |
 | `UNIFI_REDACT_SECRETS` | No | `false` | Mask credential field **values** in every tool result: Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens, and Classic-API `x_*` secret fields. Masked values read `[REDACTED: set UNIFI_REDACT_SECRETS=false to return credentials]`, and the result's `_meta.redactedFields` lists the masked paths. Booleans, numbers, pagination cursors and non-credential data are never masked; tool logic (read-before/after, no-op detection) always uses raw data. The exact field rules are in `src/unifi_fabric/_redaction.py`. Default off: tools return the complete upstream payload. |
 | `UNIFI_ENABLE_CARRIER_FABRIC_WRITE` | No | `false` | Enable the guarded Carrier / ISP Fabric write tools (`create_carrier_subscriber`, `update_carrier_subscriber`, `attach/detach_carrier_subscriber_host`, `assign_carrier_subscriber_plan`, `suspend/resume_carrier_subscriber`). Fail-closed: default OFF; each write also requires `confirm=true`. Reads are always available. |
@@ -799,6 +802,38 @@ Organization keys (`is_org_key: true`) cover all sites under the org. Personal k
 > for Docker.
 
 > **Per-host key routing:** Per-host operations (any tool that accepts a `host` parameter) resolve the API key that owns the target console and send the request on that key, so a console owned by any configured key in `UNIFI_API_KEYS` is reachable — not only one owned by the first key. `list_hosts`, `list_sites`, and `list_all_sites_aggregated` aggregate across every key. Single-key deployments are unaffected: with one configured key there is nothing to disambiguate and every request rides that key exactly as before. (The fleet-wide Site Manager query endpoints that take a list of `{hostId, siteId}` rather than a single `host` — e.g. `query_isp_metrics` — are scoped by the request body, not by per-host key routing.)
+
+
+### Limiting the exposed tools
+
+By default all tools are exposed. Three settings narrow that, and they combine: a tool is
+available when its family is enabled, not disabled, and (in read-only mode) it only reads.
+Hidden tools are left out of `tools/list` and refused if called by name.
+
+| Family | Covers |
+|---|---|
+| `site_manager` | Site Manager: consoles, sites, fleet views, ISP metrics, SD-WAN, API keys |
+| `network` | Network app: VLANs, Wi-Fi, WAN, switching, DNS, traffic, settings, ports, DPI |
+| `firewall` | Firewall policies and zones, ACL rules, classic firewall rules and groups |
+| `devices` | Device management: adopt, restart, upgrade, locate, pending devices, tags |
+| `clients` | Network clients: list, get, block/unblock, reconnect, client actions |
+| `hotspot` | Hotspot vouchers, operators and packages |
+| `vpn` | VPN servers, site-to-site tunnels, RADIUS profiles |
+| `statistics` | Historical statistics, device/client stats, sessions, reports |
+| `protect` | Protect: cameras, events, snapshots, PTZ, NVR, sensors, sirens, recognition |
+| `innerspace` | InnerSpace floor plans and assets (read-only API) |
+| `mobility` | UniFi Mobility (UMR mobile routers) |
+| `carrier` | Carrier / ISP Fabric subscribers and service plans |
+| `connector` | Generic Fabric connector relay (fabric_connector_*) |
+
+```bash
+UNIFI_READ_ONLY=true                       # reads only, every family
+UNIFI_TOOL_FAMILIES=network,protect        # just Network and Protect tools
+UNIFI_DISABLED_TOOL_FAMILIES=connector     # everything except the raw connector relay
+```
+
+`docs/TOOLS.md` lists every tool's family and access class. Large tool lists slow some MCP
+clients down; exposing only the families you use also helps there.
 
 ## Pagination Behavior
 
