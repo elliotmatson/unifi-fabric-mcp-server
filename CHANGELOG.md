@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Added
+- `list_traffic_flows` — read a site's traffic flow log (Insights > Flows). The console serves flows only as a POST search, so reading them previously needed the write-gated `fabric_connector_post`; this tool performs that search read-only and returns the response verbatim. Time window in epoch seconds (default: the last hour), console-side `direction` / `action` / `risk` filters, and paging (`page_size` up to 5000; one query returns at most 10,000 flows). Requires flow logging to be enabled on the console. Annotated `readOnlyHint=true`.
+
 ### Changed
 - Every tool now declares MCP tool annotations, so clients and gateways can tell reads from writes: 163 read tools carry `readOnlyHint=true`; 36 additive writes (`create_*`, `adopt_device`, `ptz_*`, `unblock_client`, `fabric_connector_post`, ...) carry `readOnlyHint=false, destructiveHint=false`; 84 destructive writes (`delete_*`, `update_*`, `patch_*`, `restart_device`, `block_client`, sirens and alarm outputs, `fabric_connector_put/patch/delete`, ...) carry `destructiveHint=true`, with `idempotentHint=true` on `update_*` / `set_*`. The classification is an explicit per-tool table (`tools/_annotations.py`), and `docs/TOOLS.md` gains a tool access index and a per-tool **Access** line. Metadata only: tool behaviour, arguments, responses and the existing `confirm` / `UNIFI_ENABLE_*` write gates are unchanged.
 

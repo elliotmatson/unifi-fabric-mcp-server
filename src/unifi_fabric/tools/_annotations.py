@@ -12,7 +12,8 @@ at runtime. A tool registered without an entry fails at import time with ``KeyEr
 Classes (``openWorldHint`` is deliberately left unset):
 
 - ``READ_ONLY``: reads only. Some reads are POST queries (``query_isp_metrics``,
-  ``list_client_sessions``, ``get_historical_stats``) that change nothing.
+  ``list_client_sessions``, ``get_historical_stats``, ``list_traffic_flows``) that
+  change nothing.
 - ``ADDITIVE``: writes that add or start something without removing or overwriting
   existing state (create, adopt, assign, attach, PTZ moves, unblock, ...).
 - ``DESTRUCTIVE``: writes that delete, overwrite, interrupt or trigger something
@@ -183,6 +184,7 @@ _READ_ONLY_TOOLS: tuple[str, ...] = (
     "list_sites",
     "list_speakers",
     "list_switch_stacks",
+    "list_traffic_flows",
     "list_traffic_matching_lists",
     "list_traffic_routes",
     "list_traffic_rules",

@@ -13,7 +13,7 @@ Several collection tools accept a `filter` expression forwarded unchanged to the
 - **A valid property with a non-matching value returns an empty set, not an error.** `{data: [], totalCount: 0}` can mean either "no records match" or "the value never matches this field"; it is not proof the filter is malformed. Only an *invalid property* raises HTTP 400.
 - Each tool's own docstring lists live-verified example expressions valid for that endpoint.
 
-Total tools: 283
+Total tools: 284
 
 ## Tool Categories
 
@@ -24,7 +24,7 @@ Total tools: 283
 - [Device Control](#device-control) (4)
 - [Device Management](#device-management) (4)
 - [Execute & Actions](#execute--actions) (7)
-- [Listing & Discovery](#listing--discovery) (83)
+- [Listing & Discovery](#listing--discovery) (84)
 - [Other](#other) (25)
 - [Reading & Inspection](#reading--inspection) (75)
 - [Search](#search) (2)
@@ -34,7 +34,7 @@ Total tools: 283
 
 Access comes from each tool's MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`), which clients and gateways can use to tell reads from writes. **Read**: reads only. **Write**: adds or starts something without removing existing state. **Destructive**: deletes, overwrites, interrupts or triggers something; *idempotent* means repeating the same call has no further effect. Server-side write gates (`confirm=true`, `UNIFI_ENABLE_*`) still apply.
 
-Destructive: 43, Destructive (idempotent): 41, Read: 163, Write: 36
+Destructive: 43, Destructive (idempotent): 41, Read: 164, Write: 36
 
 | Tool | Category | Access |
 | --- | --- | --- |
@@ -244,6 +244,7 @@ Destructive: 43, Destructive (idempotent): 41, Read: 163, Write: 36
 | [`list_sites`](#list_sites) | Listing & Discovery | Read |
 | [`list_speakers`](#list_speakers) | Listing & Discovery | Read |
 | [`list_switch_stacks`](#list_switch_stacks) | Listing & Discovery | Read |
+| [`list_traffic_flows`](#list_traffic_flows) | Listing & Discovery | Read |
 | [`list_traffic_matching_lists`](#list_traffic_matching_lists) | Listing & Discovery | Read |
 | [`list_traffic_routes`](#list_traffic_routes) | Listing & Discovery | Read |
 | [`list_traffic_rules`](#list_traffic_rules) | Listing & Discovery | Read |
@@ -1786,7 +1787,7 @@ confirm: must be True to execute. Prevents accidental triggers on live infrastru
 
 ## Listing & Discovery
 
-**83 tools**
+**84 tools**
 
 ### `list_accounts`
 
@@ -3506,6 +3507,40 @@ filter: optional UniFi Integration API filter expression.
 **Return type**
 
 `dict[str, Any]`
+
+### `list_traffic_flows`
+
+**Access:** Read
+
+Read the traffic flow log of a site (Insights > Flows). Read-only.
+
+host: console name, MAC or ID. site: site name or ID (default "default").
+start/end: epoch SECONDS; default window is the last hour.
+direction: any of "incoming", "outgoing", "local". action: "allowed", "blocked".
+risk: "low", "medium", "high". Filters run on the console.
+page_number (from 0) / page_size (1-5000, default 1000) page through the result;
+one query returns at most 10,000 flows, so narrow the window or filters on busy
+sites. Blocked flows carry policies[].type (e.g. INTRUSION_PREVENTION) and ips
+details. Flow logging must be enabled on the console (Settings > CyberSecure /
+Traffic Logging).
+
+**Parameters**
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `host` | `string` | yes |  | console name, MAC or ID. |
+| `site` | `string` | no | `default` | site name or ID (default "default"). |
+| `start` | `integer | null` | no | `null` |  |
+| `end` | `integer | null` | no | `null` |  |
+| `direction` | `array | null` | no | `null` | any of "incoming", "outgoing", "local". |
+| `action` | `array | null` | no | `null` | "allowed", "blocked". |
+| `risk` | `array | null` | no | `null` | "low", "medium", "high". Filters run on the console. |
+| `page_number` | `integer` | no | `0` |  |
+| `page_size` | `integer` | no | `1000` |  |
+
+**Return type**
+
+`Any`
 
 ### `list_traffic_matching_lists`
 
