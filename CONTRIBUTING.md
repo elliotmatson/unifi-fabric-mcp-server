@@ -36,13 +36,14 @@ concerns. Do not conflate committed-fixture hygiene with runtime responses.
 
 ## Before you start
 
-- Search [existing issues](https://github.com/swkstudios/unifi-fabric-mcp-server/issues)
+- Search [existing issues](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues)
   before opening a new one — your problem or idea may already be tracked.
 - For security vulnerabilities, use the private reporting path in
   [SECURITY.md](.github/SECURITY.md). Do not open a public issue for
   security bugs.
-- Questions? Open a
-  [GitHub Discussion](https://github.com/swkstudios/unifi-fabric-mcp-server/discussions).
+- Questions? Open an [issue](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues).
+- This is a fork of [swkstudios/unifi-fabric-mcp-server](https://github.com/swkstudios/unifi-fabric-mcp-server). Changes
+  that are not fork-specific are written so they can also be offered upstream.
 
 ## Development setup
 
@@ -72,7 +73,6 @@ concerns. Do not conflate committed-fixture hygiene with runtime responses.
 ## Branch naming
 
 This guide is for external contributors working from the public mirror — branch off `main`.
-(Internal maintainers work off `dev`; see `CLAUDE.md` for that workflow.)
 
 Create branches off `main` with a descriptive type prefix:
 
@@ -172,7 +172,14 @@ number. Do not rely on individual PRs to keep the ordering perfect.
 Use **public issue numbers only**, formatted as a Markdown link:
 
 ```
-([#19](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/19))
+([#19](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues/19))
+```
+
+An issue filed on the upstream repository is referenced with its owner, so the link
+does not point at an unrelated issue in this fork:
+
+```
+([swkstudios#29](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/29))
 ```
 
 Private issue or PR numbers from forks or other trackers are meaningless to

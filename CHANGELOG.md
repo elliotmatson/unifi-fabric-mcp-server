@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Changed
+- This repository is now a maintained fork of `swkstudios/unifi-fabric-mcp-server`. Container images are published to `ghcr.io/elliotmatson/unifi-fabric-mcp-server` (`:vX.Y.Z` and `:latest`), each release is tagged and published as a GitHub Release, and the README documents running a release straight from git with `uvx --from git+https://github.com/elliotmatson/unifi-fabric-mcp-server@vX.Y.Z unifi-fabric-mcp`. Docs, CODEOWNERS and issue links point to the fork; the upstream-only public-language PR lint is removed.
+
 ### Added
 - `list_traffic_flows` — read a site's traffic flow log (Insights > Flows). The console serves flows only as a POST search, so reading them previously needed the write-gated `fabric_connector_post`; this tool performs that search read-only and returns the response verbatim. Time window in epoch seconds (default: the last hour), console-side `direction` / `action` / `risk` filters, and paging (`page_size` up to 5000; one query returns at most 10,000 flows). Requires flow logging to be enabled on the console. Annotated `readOnlyHint=true`.
 
