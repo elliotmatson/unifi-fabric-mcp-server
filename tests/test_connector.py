@@ -32,7 +32,6 @@ from unifi_fabric.config import APIKeyConfig, Settings
 from unifi_fabric.tools import connector
 from unifi_fabric.tools.connector import (
     _check_final_charset,
-    _redact_credentials,
     _validate_relay_path,
     connector_get,
     connector_write,
@@ -584,32 +583,24 @@ class TestDeviceWriteProtocol:
 # --------------------------------------------------------------------------- #
 
 
-class TestRedaction:
-    def test_credential_keys_redacted(self):
-        raw = {
-            "name": "wlan1",
-            "x_passphrase": "hunter2",
-            "x_password": "s3cret",
-            "psk": "abc",
-            "nested": {"api_key": "zzz", "keep": "yes"},
-            "list": [{"password": "p"}, {"ok": 1}],
-        }
-        red = _redact_credentials(raw)
-        assert red["name"] == "wlan1"
-        assert red["x_passphrase"] == "[REDACTED]"
-        assert red["x_password"] == "[REDACTED]"
-        assert red["psk"] == "[REDACTED]"
-        assert red["nested"]["api_key"] == "[REDACTED]"
-        assert red["nested"]["keep"] == "yes"
-        assert red["list"][0]["password"] == "[REDACTED]"
-        assert red["list"][1]["ok"] == 1
+class TestVerbatimBodies:
+    """Relay bodies are returned as the console sent them (pass-through invariant).
 
-    def test_non_credential_values_preserved(self):
-        raw = {"id": SITE_UUID, "stp_priority": "32768", "vlan": 10}
-        assert _redact_credentials(raw) == raw
+    Credential masking is the opt-in, result-layer UNIFI_REDACT_SECRETS setting
+    (tests/test_redaction.py); the relay itself never alters a body.
+    """
 
-    async def test_write_body_is_redacted_in_result(self, client, registry):
-        client.request.return_value = FakeResp(200, {"x_passphrase": "leak-me", "ssid": "guest"})
+    async def test_get_body_keeps_credential_fields(self, client, registry):
+        body = {"data": [{"name": "wlan1", "x_passphrase": "synthetic-pass", "psk": "abc"}]}
+        client.request.return_value = FakeResp(200, body)
+        result = await connector_get(
+            client, registry, "h", "network/api/s/{site}/rest/wlanconf", site="Office"
+        )
+        assert result["body"] == body
+
+    async def test_write_body_keeps_credential_fields(self, client, registry):
+        body = {"x_passphrase": "synthetic-pass", "ssid": "guest"}
+        client.request.return_value = FakeResp(200, body)
         result = await connector_write(
             client,
             registry,
@@ -620,8 +611,40 @@ class TestRedaction:
             confirm=True,
             write_enabled=True,
         )
-        assert result["body"]["x_passphrase"] == "[REDACTED]"
-        assert result["body"]["ssid"] == "guest"
+        assert result["body"] == body
+
+    async def test_long_text_body_is_not_truncated(self, client, registry):
+        text = "line\n" * 5000
+        client.request.return_value = FakeResp(200, None, text=text)
+        result = await connector_get(
+            client, registry, "h", "network/api/s/{site}/stat/device", site="Office"
+        )
+        assert result["body"] == {"text": text}
+
+    async def test_credential_only_change_is_not_a_noop(self, client, registry):
+        """A passphrase-only write must report changed=true (raw bodies are compared)."""
+        before = {"data": [{"_id": DEVICE_ID, "x_passphrase": "synthetic-old"}]}
+        after = {"data": [{"_id": DEVICE_ID, "x_passphrase": "synthetic-new"}]}
+        client.request.side_effect = [
+            FakeResp(200, before),
+            FakeResp(200, {"meta": {"rc": "ok"}}),
+            FakeResp(200, after),
+        ]
+        result = await connector_write(
+            client,
+            registry,
+            "h",
+            "PUT",
+            f"network/api/s/{{site}}/rest/wlanconf/{DEVICE_ID}",
+            site="Office",
+            body={"x_passphrase": "synthetic-new"},
+            confirm=True,
+            write_enabled=True,
+        )
+        assert result["noOp"] is False
+        assert result["changed"] is True
+        assert result["readBefore"]["body"] == before
+        assert result["readAfter"]["body"] == after
 
 
 # --------------------------------------------------------------------------- #

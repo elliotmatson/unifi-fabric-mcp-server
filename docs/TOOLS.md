@@ -4080,7 +4080,7 @@ site: site name or UUID — REQUIRED only when path contains a site placeholder.
 params: optional query-string parameters.
 scope: optional 'device' / 'site' / 'global' — cross-checked against the path so a
   device route cannot be confused with a site-global setting route.
-Returns {method, routeClass, path, resolvedPath, status, body} (body credential-redacted).
+Returns {method, routeClass, path, resolvedPath, status, body} (body verbatim).
 
 **Parameters**
 
@@ -4135,7 +4135,7 @@ Relay a POST (create/command) through the Fabric connector. MUTATION — GATED.
 Refused unless BOTH confirm=true AND the server's UNIFI_ENABLE_CONNECTOR_WRITE flag are
 set (fail-closed; gating is checked before any network call). POST targets a collection
 or command route (e.g. ``network/api/s/{site}/cmd/...``); it has no GET twin, so no
-read-before/after is performed. The upstream status/body (redacted) and routeClass are
+read-before/after is performed. The upstream status/body (verbatim) and routeClass are
 returned; a 4xx/5xx is reported, not raised.
 
 See fabric_connector_get for host/path/site/scope semantics. body: the JSON request body.

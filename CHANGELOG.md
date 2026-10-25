@@ -24,6 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - With several API keys configured (one per Fabric / org), the fleet tools `list_all_devices`, `list_all_clients`, `get_fleet_summary`, `search_device_fleet` and `list_devices` (without `host`) now cover every key's org when no `key_label` is given, instead of silently querying only the first key. Records are tagged with `_keyLabel`, `get_fleet_summary` adds a per-key `byKey` breakdown, and a failing key is reported under `errors` without hiding the others (all keys failing raises). Passing `key_label` still scopes to one key; single-key deployments are unchanged.
 - Docker examples in `README.md` and `docs/AUTH-OAUTH.md` referenced image tags that are never published (`:0.6.1`, `:0.5.0`, and `:dev` / `:X.Y` aliases), so the documented `docker run` commands failed to pull. They now use the published `:vX.Y.Z` form, and the tag guidance describes what releases actually publish (`:vX.Y.Z` and `:latest`).
 
+### Added
+- `UNIFI_REDACT_SECRETS` (default `false`): opt-in masking of credential field values in every tool result — Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens and Classic-API `x_*` secret fields — for deployments that must not hand credentials to their MCP clients. It uses an explicit, documented field list (no pattern guessing): only string values are masked, so flags such as `x_ssh_auth_password_enabled`, counts and pagination cursors like `nextToken` are untouched. Masked values say how to turn masking off, and the result's `_meta.redactedFields` lists the masked paths. Masking runs on the finished result, so tool logic always works on raw data. Default behaviour is unchanged: complete upstream payloads. ([#26](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/26))
+
+### Changed
+- The Fabric connector relay (`fabric_connector_*`) no longer masks credential fields on its own or truncates non-JSON bodies at 4,000 characters: relayed bodies are returned verbatim like every other tool's, and masking follows `UNIFI_REDACT_SECRETS`. Deployments that relied on the relay's built-in masking should set `UNIFI_REDACT_SECRETS=true`.
+
+### Fixed
+- Connector relay writes that changed only a credential field (e.g. a Wi-Fi passphrase) were reported as `noOp: true, changed: false`, because the before/after bodies were compared after masking. They are now compared raw.
+
 ## [0.6.2] - 2026-08-16
 
 ### Added

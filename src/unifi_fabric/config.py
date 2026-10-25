@@ -319,6 +319,14 @@ class Settings(BaseSettings):
         "DEBUG, INFO, WARNING, ERROR, CRITICAL. Logs go to stderr only — no file handlers. "
         "Request/response bodies are never logged.",
     )
+    redact_secrets: bool = Field(
+        default=False,
+        description="Mask credential field values (Wi-Fi passphrases, RADIUS/VPN secrets, "
+        "private keys, API tokens, Classic-API x_* secret fields) in every tool result. "
+        "Env: UNIFI_REDACT_SECRETS. Default OFF: tools return the complete upstream payload. "
+        "Masking applies to results only; tool logic always works on raw data. See "
+        "src/unifi_fabric/_redaction.py for the exact field rules.",
+    )
     enable_connector_write: bool = Field(
         default=False,
         description="Enable the guarded generic Fabric connector WRITE relay "
