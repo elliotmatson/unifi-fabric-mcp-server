@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Connector relay writes that changed only a credential field (e.g. a Wi-Fi passphrase) were reported as `noOp: true, changed: false`, because the before/after bodies were compared after masking. They are now compared raw.
 
+### Added
+- `UNIFI_DRY_RUN` (default `false`): dry-run mode. No mutating request (POST/PUT/PATCH/DELETE) is sent to the UniFi API; a write tool runs its validation, gates and reads as usual, then stops at its first write and returns `{dryRun: true, sent: false, tool, request}` with the method, resolved path, API key label, query params and JSON body it would have sent. Read tools, including POST-based queries, are unaffected. The preview fits each tool's declared output schema. ([#28](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/28))
+
 ## [0.6.2] - 2026-08-16
 
 ### Added

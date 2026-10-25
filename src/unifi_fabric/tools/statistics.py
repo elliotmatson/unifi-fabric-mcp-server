@@ -94,7 +94,7 @@ async def _list_client_sessions(
     body = {"type": session_type, "start": start_s, "end": end_s}
     try:
         response = await client.post(
-            _classic_stat(host_id, site_slug, "/session"), key=key, json=body
+            _classic_stat(host_id, site_slug, "/session"), key=key, json=body, read_only=True
         )
     except UniFiConnectionError as exc:
         raise translate_host_not_found(exc, host) from exc
@@ -135,7 +135,10 @@ async def _get_historical_stats(
     }
     try:
         response = await client.post(
-            _classic_stat(host_id, site_slug, f"/report/{interval}.{scope}"), key=key, json=body
+            _classic_stat(host_id, site_slug, f"/report/{interval}.{scope}"),
+            key=key,
+            json=body,
+            read_only=True,
         )
     except UniFiConnectionError as exc:
         raise translate_host_not_found(exc, host) from exc

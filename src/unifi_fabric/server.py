@@ -17,6 +17,7 @@ from typing import Any
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
 
+from ._dry_run import DryRunMiddleware
 from ._redaction import CredentialMaskingMiddleware
 from .client import UniFiClient
 from .config import MCPTransportSettings, Settings
@@ -321,6 +322,9 @@ user specifically asks for ACL rules or classic rules.
 - **Security defaults for `create_network`**: new networks default to
   `internetAccessEnabled=true`, `isolationEnabled=false`. Set `isolationEnabled=true` for
   guest/IoT VLANs to prevent lateral movement between clients.
+- **Dry-run mode**: if the operator set `UNIFI_DRY_RUN`, write tools return
+  `{"dryRun": true, "sent": false, "request": {...}}` instead of changing anything. Report
+  the previewed request to the user; do not claim the change was made.
 - **Credential values**: results carry the complete upstream data, including
   passphrases and secrets, unless the operator enabled `UNIFI_REDACT_SECRETS`. Then each
   credential value is replaced by a REDACTED placeholder that names the setting, and the
@@ -425,6 +429,8 @@ mcp = FastMCP(
     lifespan=lifespan,
     auth=build_auth(_mcp_transport),
 )
+# UNIFI_DRY_RUN: report the first write a tool would send instead of sending it.
+mcp.add_middleware(DryRunMiddleware(mcp.get_tool))
 # Opt-in credential masking on tool results (UNIFI_REDACT_SECRETS, default off).
 mcp.add_middleware(CredentialMaskingMiddleware(lambda: get_settings().redact_secrets))
 
