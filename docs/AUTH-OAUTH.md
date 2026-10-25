@@ -76,7 +76,7 @@ export MCP_OAUTH_REQUIRED_SCOPES="fabric:read"
 ```yaml
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.5.0
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
     environment:
       UNIFI_API_KEY: "your-api-key"
       FASTMCP_TRANSPORT: streamable-http
@@ -90,7 +90,7 @@ services:
       - "3000:3000"
 ```
 
-> **Tip:** `:0.5.0` pins to this release. For production deployments, pin by digest instead — see the [Docker Deployment](../README.md#docker-deployment) section in the README.
+> **Tip:** `:v0.6.2` pins to a release (images are tagged `:vX.Y.Z`). For production deployments, pin by digest instead — see the [Docker Deployment](../README.md#docker-deployment) section in the README.
 
 ### Example — OAuth + in-server HTTPS (Recommended for internet-exposed)
 
@@ -100,7 +100,7 @@ The matrix labels `oauth + https` as the recommended public posture. Add the
 ```yaml
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.5.0
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
     environment:
       UNIFI_API_KEY: "your-api-key"
       FASTMCP_TRANSPORT: streamable-http
@@ -132,7 +132,7 @@ For the highest-assurance posture, combine OAuth JWT validation with mutual TLS:
 ```yaml
 services:
   unifi-fabric-mcp:
-    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:0.5.0
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:v0.6.2
     environment:
       UNIFI_API_KEY: "your-api-key"
       FASTMCP_TRANSPORT: streamable-http

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Fixed
+- Docker examples in `README.md` and `docs/AUTH-OAUTH.md` referenced image tags that are never published (`:0.6.1`, `:0.5.0`, and `:dev` / `:X.Y` aliases), so the documented `docker run` commands failed to pull. They now use the published `:vX.Y.Z` form, and the tag guidance describes what releases actually publish (`:vX.Y.Z` and `:latest`).
+
 ## [0.6.2] - 2026-08-16
 
 ### Added
