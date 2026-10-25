@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Changed
+- Every tool now declares MCP tool annotations, so clients and gateways can tell reads from writes: 163 read tools carry `readOnlyHint=true`; 36 additive writes (`create_*`, `adopt_device`, `ptz_*`, `unblock_client`, `fabric_connector_post`, ...) carry `readOnlyHint=false, destructiveHint=false`; 84 destructive writes (`delete_*`, `update_*`, `patch_*`, `restart_device`, `block_client`, sirens and alarm outputs, `fabric_connector_put/patch/delete`, ...) carry `destructiveHint=true`, with `idempotentHint=true` on `update_*` / `set_*`. The classification is an explicit per-tool table (`tools/_annotations.py`), and `docs/TOOLS.md` gains a tool access index and a per-tool **Access** line. Metadata only: tool behaviour, arguments, responses and the existing `confirm` / `UNIFI_ENABLE_*` write gates are unchanged.
+
 ## [0.6.2] - 2026-08-16
 
 ### Added

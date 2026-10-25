@@ -12,6 +12,7 @@ from fastmcp import FastMCP
 from ..client import UniFiClient, validate_host_id
 from ..config import APIKeyConfig
 from ..registry import Registry, _assert_uuid
+from ._annotations import TOOL_CLASS
 from .network import _proxy
 
 _logger = logging.getLogger(__name__)
@@ -304,7 +305,7 @@ async def _list_api_keys(client: UniFiClient) -> dict[str, Any]:
 def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
     """Register all aggregation MCP tools."""
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_configured_api_keys"])
     async def list_configured_api_keys() -> dict[str, Any]:
         """List all configured API keys with their labels and types.
 
@@ -314,7 +315,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, _ = deps_fn()
         return await _list_api_keys(client)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_all_devices"])
     async def list_all_devices(
         status_filter: str | None = None,
         key_label: str | None = None,
@@ -336,7 +337,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             client, status_filter=status_filter, key_label=key_label
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_all_clients"])
     async def list_all_clients(
         key_label: str | None = None,
     ) -> dict[str, Any]:
@@ -349,7 +350,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _list_all_clients_fleet(client, registry, key_label=key_label)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_fleet_summary"])
     async def get_fleet_summary(
         key_label: str | None = None,
     ) -> dict[str, Any]:
@@ -361,7 +362,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _fleet_summary(client, registry, key_label=key_label)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["search_device_fleet"])
     async def search_device_fleet(
         query: str,
         key_label: str | None = None,

@@ -15,6 +15,7 @@ from fastmcp import FastMCP
 
 from ..client import UniFiClient, validate_id
 from ..registry import Registry
+from ._annotations import TOOL_CLASS
 
 # Classic REST: /proxy/network/api/s/{site_slug}/rest
 _CLASSIC_REST_BASE = "/v1/connector/consoles/{host_id}/proxy/network/api/s/{site_slug}/rest"
@@ -125,7 +126,7 @@ async def _delete_hotspot_operator(
 def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
     """Register all hotspot MCP tools."""
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_hotspot_operators"])
     async def list_hotspot_operators(
         host: str,
         site: str,
@@ -137,7 +138,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _list_hotspot_operators(client, registry, host, site)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["create_hotspot_operator"])
     async def create_hotspot_operator(
         host: str,
         site: str,
@@ -161,7 +162,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             note=note,
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["update_hotspot_operator"])
     async def update_hotspot_operator(
         host: str,
         site: str,
@@ -177,7 +178,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _update_hotspot_operator(client, registry, host, site, operator_id, **fields)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["delete_hotspot_operator"])
     async def delete_hotspot_operator(
         host: str,
         site: str,

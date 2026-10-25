@@ -10,6 +10,7 @@ from fastmcp import FastMCP
 
 from ..client import UniFiClient, UniFiConnectionError
 from ..registry import Registry
+from ._annotations import TOOL_CLASS
 from ._history_common import (
     require_epoch_seconds,
     seconds_to_millis,
@@ -377,7 +378,7 @@ async def _get_device_stp_state(
 def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
     """Register all statistics MCP tools."""
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_site_statistics"])
     async def get_site_statistics(
         host: str,
         site: str,
@@ -390,7 +391,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_site_statistics(client, registry, host, site)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_system_info"])
     async def get_system_info(
         host: str,
         site: str,
@@ -403,7 +404,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_system_info(client, registry, host, site)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_active_clients_stats"])
     async def list_active_clients_stats(
         host: str,
         site: str,
@@ -416,7 +417,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _list_active_clients_stats(client, registry, host, site)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_device_stats"])
     async def list_device_stats(
         host: str,
         site: str,
@@ -429,7 +430,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _list_device_stats(client, registry, host, site)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_client_link_diagnostics"])
     async def get_client_link_diagnostics(
         host: str,
         site: str,
@@ -458,7 +459,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             client, registry, host, site, client_id, client_ids
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_device_port_state"])
     async def get_device_port_state(
         host: str,
         site: str,
@@ -486,7 +487,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_device_port_state(client, registry, host, site, device_id, port_idx)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_device_stp_state"])
     async def get_device_stp_state(
         host: str,
         site: str,
@@ -509,7 +510,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _get_device_stp_state(client, registry, host, site, device_id)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_client_sessions"])
     async def list_client_sessions(
         host: str,
         site: str,
@@ -546,7 +547,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
         client, registry = deps_fn()
         return await _list_client_sessions(client, registry, host, site, start, end, session_type)
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["get_historical_stats"])
     async def get_historical_stats(
         host: str,
         site: str,
@@ -577,7 +578,7 @@ def register(mcp: FastMCP, deps_fn: Callable[..., Any]) -> None:
             client, registry, host, site, interval, scope, start, end, attrs
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=TOOL_CLASS["list_known_clients"])
     async def list_known_clients(
         host: str,
         site: str,
