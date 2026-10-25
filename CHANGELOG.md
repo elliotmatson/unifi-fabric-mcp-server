@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Fixed
+- With several API keys configured (one per Fabric / org), the fleet tools `list_all_devices`, `list_all_clients`, `get_fleet_summary`, `search_device_fleet` and `list_devices` (without `host`) now cover every key's org when no `key_label` is given, instead of silently querying only the first key. Records are tagged with `_keyLabel`, `get_fleet_summary` adds a per-key `byKey` breakdown, and a failing key is reported under `errors` without hiding the others (all keys failing raises). Passing `key_label` still scopes to one key; single-key deployments are unchanged.
+
 ### Changed
 - The refusal from `fabric_connector_post/put/patch/delete` while connector writes are disabled now says where an operator sets `UNIFI_ENABLE_CONNECTOR_WRITE=1` (the server's docker-compose `environment:` block or `docker run -e`), that the server must be restarted, and that each mutation still needs `confirm=true`; the README gains an "Enabling or disabling connector writes" section with compose examples. The default stays off. ([#29](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/29))
 
