@@ -100,6 +100,7 @@ FAMILY_TOOLS: dict[str, tuple[str, ...]] = {
         "list_scheduled_tasks",
         "list_settings",
         "list_switch_stacks",
+        "list_traffic_flows",
         "list_traffic_matching_lists",
         "list_traffic_routes",
         "list_traffic_rules",

@@ -17,6 +17,8 @@ from typing import Any
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
 
+from ._dry_run import DryRunMiddleware
+from ._redaction import CredentialMaskingMiddleware
 from ._tool_selection import ToolSelectionMiddleware, validate_selection
 from .client import UniFiClient
 from .config import MCPTransportSettings, Settings
@@ -104,6 +106,7 @@ Site Manager (Fabric) API.
 - **Site**: A logical network partition within a host. Most single-console setups have
   one site called "Default".
 - Both `host` and `site` parameters accept human-readable names OR IDs. Prefer names.
+  `host` also accepts the console's MAC address.
 - **Device** (in UniFi terminology): network infrastructure hardware — APs, switches,
   gateways, cameras, sensors. Managed via `list_site_devices`, `get_device`, etc.
 - **Client**: an end-user device connected to the network (laptop, phone, IoT device).
@@ -137,6 +140,7 @@ user specifically asks for ACL rules or classic rules.
 - **DNS & Traffic**: DNS policies, traffic rules, traffic matching lists, traffic routes
 - **Traffic Routes**: `list_traffic_routes`, `create_traffic_route`,
   `update_traffic_route`, `delete_traffic_route`
+- **Traffic Flows**: `list_traffic_flows` (flow log / Insights > Flows, read-only)
 - **Traffic Rules**: `list_traffic_rules`, `create_traffic_rule`,
   `update_traffic_rule`, `delete_traffic_rule`
 - **Traffic Matching Lists**: `list_traffic_matching_lists`,
@@ -320,6 +324,14 @@ user specifically asks for ACL rules or classic rules.
 - **Security defaults for `create_network`**: new networks default to
   `internetAccessEnabled=true`, `isolationEnabled=false`. Set `isolationEnabled=true` for
   guest/IoT VLANs to prevent lateral movement between clients.
+- **Dry-run mode**: if the operator set `UNIFI_DRY_RUN`, write tools return
+  `{"dryRun": true, "sent": false, "request": {...}}` instead of changing anything. Report
+  the previewed request to the user; do not claim the change was made.
+- **Credential values**: results carry the complete upstream data, including
+  passphrases and secrets, unless the operator enabled `UNIFI_REDACT_SECRETS`. Then each
+  credential value is replaced by a REDACTED placeholder that names the setting, and the
+  result's `_meta.redactedFields` lists the masked paths. That is a server-side setting:
+  tell the user if they need a masked value; it cannot be changed from a call.
 """
 
 
@@ -421,6 +433,10 @@ mcp = FastMCP(
 )
 # UNIFI_READ_ONLY / UNIFI_TOOL_FAMILIES / UNIFI_DISABLED_TOOL_FAMILIES (default: all tools).
 mcp.add_middleware(ToolSelectionMiddleware(get_settings))
+# UNIFI_DRY_RUN: report the first write a tool would send instead of sending it.
+mcp.add_middleware(DryRunMiddleware(mcp.get_tool))
+# Opt-in credential masking on tool results (UNIFI_REDACT_SECRETS, default off).
+mcp.add_middleware(CredentialMaskingMiddleware(lambda: get_settings().redact_secrets))
 
 
 def _require() -> tuple[UniFiClient, Registry]:
@@ -3364,6 +3380,46 @@ async def delete_port_forward(
 # --- Traffic Rule Tools ---
 
 
+@mcp.tool(annotations=TOOL_CLASS["list_traffic_flows"])
+async def list_traffic_flows(
+    host: str,
+    site: str = "default",
+    start: int | None = None,
+    end: int | None = None,
+    direction: list[str] | None = None,
+    action: list[str] | None = None,
+    risk: list[str] | None = None,
+    page_number: int = 0,
+    page_size: int = 1000,
+) -> Any:
+    """Read the traffic flow log of a site (Insights > Flows). Read-only.
+
+    host: console name, MAC or ID. site: site name or ID (default "default").
+    start/end: epoch SECONDS; default window is the last hour.
+    direction: any of "incoming", "outgoing", "local". action: "allowed", "blocked".
+    risk: "low", "medium", "high". Filters run on the console.
+    page_number (from 0) / page_size (1-5000, default 1000) page through the result;
+    one query returns at most 10,000 flows, so narrow the window or filters on busy
+    sites. Blocked flows carry policies[].type (e.g. INTRUSION_PREVENTION) and ips
+    details. Flow logging must be enabled on the console (Settings > CyberSecure /
+    Traffic Logging).
+    """
+    client, registry = _require()
+    return await network_services_proxy.list_traffic_flows(
+        client,
+        registry,
+        host,
+        site,
+        start=start,
+        end=end,
+        direction=direction,
+        action=action,
+        risk=risk,
+        page_number=page_number,
+        page_size=page_size,
+    )
+
+
 @mcp.tool(annotations=TOOL_CLASS["list_traffic_rules"])
 async def list_traffic_rules(
     host: str,
@@ -4645,7 +4701,7 @@ async def resume_carrier_subscriber(
 # confirm=true AND the server-side UNIFI_ENABLE_CONNECTOR_WRITE flag (code default
 # OFF, fail-closed). See tools/connector.py for the full guard model (Registry-only
 # identity, namespace allowlist, positive-charset path validation, read-before/
-# write/read-after, scope guard, credential redaction, structured audit).
+# write/read-after, scope guard, structured audit; bodies verbatim).
 
 
 @mcp.tool(annotations=TOOL_CLASS["fabric_connector_get"])
@@ -4674,7 +4730,7 @@ async def fabric_connector_get(
     params: optional query-string parameters.
     scope: optional 'device' / 'site' / 'global' — cross-checked against the path so a
       device route cannot be confused with a site-global setting route.
-    Returns {method, routeClass, path, resolvedPath, status, body} (body credential-redacted).
+    Returns {method, routeClass, path, resolvedPath, status, body} (body verbatim).
     """
     client, registry = _require()
     return await connector.connector_get(
@@ -4696,7 +4752,7 @@ async def fabric_connector_post(
     Refused unless BOTH confirm=true AND the server's UNIFI_ENABLE_CONNECTOR_WRITE flag are
     set (fail-closed; gating is checked before any network call). POST targets a collection
     or command route (e.g. ``network/api/s/{site}/cmd/...``); it has no GET twin, so no
-    read-before/after is performed. The upstream status/body (redacted) and routeClass are
+    read-before/after is performed. The upstream status/body (verbatim) and routeClass are
     returned; a 4xx/5xx is reported, not raised.
 
     See fabric_connector_get for host/path/site/scope semantics. body: the JSON request body.

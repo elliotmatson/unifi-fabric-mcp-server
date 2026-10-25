@@ -33,6 +33,15 @@ written here before and had to be removed):
   tests are the check on that, and they
   are meant to fail such a change loudly.
 
+**One opt-in exception: `UNIFI_REDACT_SECRETS`.** A deployment that must not hand
+credentials to its MCP clients, and has no proxy to do it, can set
+`UNIFI_REDACT_SECRETS=true` (default **off**; see upstream issue #26). The masking lives
+in exactly one place, `src/unifi_fabric/_redaction.py`: FastMCP middleware that masks the
+values of an explicit, documented list of credential fields in the *finished* tool result.
+It is off unless the operator turns it on, tool logic always sees raw data, and
+non-credential data (identifiers, GPS, URLs) is never touched. Do not add masking anywhere
+else, and never inside an individual tool: the default response must stay complete.
+
 Scope note: this invariant is about tool *response bodies*. It is unrelated to
 (a) redacting identifiers inside *error-message text* (`client.py`), which stays,
 and (b) `.github/scripts/check_fixtures_sanitization.py`, which governs what
@@ -153,10 +162,10 @@ owning disjoint host sets). The multi-key test must assert the correct key is se
   (enforced by `gitleaks` and `check_fixtures_sanitization.py`).
 - A multi-key routing test for any tool that calls `client.request()` or uses the registry.
 
-**Known gap (strict-xfail):** Per-host tools in `network`/`clients`/`device_mgmt`/`protect`
-are not yet wired to `Registry.resolve_key_for_host`. Strict `xfail` tests in
-`tests/test_multikey_routing.py` track this gap and will flip to hard failures once the
-wiring lands.
+**Per-host key routing:** Per-host tools resolve the owning API key with
+`Registry.resolve_key_for_host` before host/site resolution and the data request.
+`tests/test_multikey_routing.py` asserts that a `beta`-owned host routes on the `beta` key;
+keep new per-host tools wired the same way.
 
 **Fresh-AI validation:**
 - Tools must be usable with zero prior context — descriptions alone must guide correct usage.
@@ -186,7 +195,8 @@ The `changelog-check` CI job skips the file check for PRs with that label.
 **Public issue references only.** The changelog text is published verbatim in public release
 history. Private PR/issue numbers (from this repo or internal trackers) are meaningless on
 the public repository and 404 when followed. Use this exact format for public issues:
-`([#N](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/N))`
+`([#N](https://github.com/elliotmatson/unifi-fabric-mcp-server/issues/N))`, and for an issue on the upstream repository
+`([swkstudios#N](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/N))`
 
 Drop all other parenthetical `(#NNN)` references — let the description stand on its own.
 

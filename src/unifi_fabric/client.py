@@ -19,6 +19,20 @@ class UniFiConnectionError(Exception):
     """Raised when a network-level error prevents reaching the UniFi API."""
 
 
+class DryRunIntercepted(Exception):  # noqa: N818 - a signal, not an error
+    """Raised instead of sending a mutating request while ``UNIFI_DRY_RUN`` is on.
+
+    Carries the request that would have been sent. ``DryRunMiddleware`` turns it into the
+    tool's result, so the tool stops at its first write and nothing is changed upstream.
+    Deliberately not a ``UniFiConnectionError``, so error handling around requests does
+    not mistake it for a failed call.
+    """
+
+    def __init__(self, preview: dict[str, Any]) -> None:
+        super().__init__(f"dry run: {preview['method']} {preview['path']} not sent")
+        self.preview = preview
+
+
 class RateLimitError(Exception):
     """Raised when rate limit is exceeded after all retries."""
 
@@ -156,6 +170,7 @@ class UniFiClient:
         files: dict[str, Any] | None = None,
         max_retries: int = 5,
         raise_on_error: bool = True,
+        read_only: bool = False,
     ) -> httpx.Response:
         """Make an HTTP request with exponential backoff + jitter on rate limits.
 
@@ -177,6 +192,8 @@ class UniFiClient:
                 inspect status/body itself — used by the guarded connector relay, whose
                 invalid-ID probes must read a 4xx as reachability evidence, not a failure.
                 The 429 retry/backoff loop is unaffected by this flag.
+            read_only: Mark a non-GET request that only reads (a POST query such as the
+                ISP-metrics or session/report searches) so it still runs in dry-run mode.
 
         Returns:
             httpx.Response with HTTP status 2xx or 3xx (or 4xx/5xx non-rate-limit errors)
@@ -204,6 +221,21 @@ class UniFiClient:
                 f"Unsafe API path {path!r}: contains traversal sequences or control characters"
             )
         key = key or self._default_key()
+        if (
+            self._settings.dry_run
+            and not read_only
+            and method.upper() not in ("GET", "HEAD", "OPTIONS")
+        ):
+            raise DryRunIntercepted(
+                {
+                    "method": method.upper(),
+                    "path": path,
+                    "keyLabel": key.label,
+                    "params": params,
+                    "json": json,
+                    "files": sorted(files) if files else None,
+                }
+            )
         client = await self._get_client(key)
 
         for attempt in range(max_retries + 1):
@@ -307,16 +339,24 @@ class UniFiClient:
         json: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
         max_retries: int = 5,
+        read_only: bool = False,
     ) -> dict[str, Any]:
         """POST request, return JSON body.
 
         ``max_retries`` threads through to :meth:`request`; pass ``0`` for a
         side-effecting call that must NOT be auto-retried (see the Protect POS
         ingestion / physical-action tools, where a 429 retry could duplicate an
-        effect that has no documented rollback).
+        effect that has no documented rollback). ``read_only=True`` marks a POST that
+        only queries data, so it still runs in dry-run mode.
         """
         resp = await self.request(
-            "POST", path, key=key, json=json, params=params, max_retries=max_retries
+            "POST",
+            path,
+            key=key,
+            json=json,
+            params=params,
+            max_retries=max_retries,
+            read_only=read_only,
         )
         return self._decode_json(resp)
 

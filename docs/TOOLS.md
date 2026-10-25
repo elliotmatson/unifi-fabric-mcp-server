@@ -13,7 +13,7 @@ Several collection tools accept a `filter` expression forwarded unchanged to the
 - **A valid property with a non-matching value returns an empty set, not an error.** `{data: [], totalCount: 0}` can mean either "no records match" or "the value never matches this field"; it is not proof the filter is malformed. Only an *invalid property* raises HTTP 400.
 - Each tool's own docstring lists live-verified example expressions valid for that endpoint.
 
-Total tools: 283
+Total tools: 284
 
 ## Tool Categories
 
@@ -24,7 +24,7 @@ Total tools: 283
 - [Device Control](#device-control) (4)
 - [Device Management](#device-management) (4)
 - [Execute & Actions](#execute--actions) (7)
-- [Listing & Discovery](#listing--discovery) (83)
+- [Listing & Discovery](#listing--discovery) (84)
 - [Other](#other) (25)
 - [Reading & Inspection](#reading--inspection) (75)
 - [Search](#search) (2)
@@ -34,7 +34,7 @@ Total tools: 283
 
 Access comes from each tool's MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`), which clients and gateways can use to tell reads from writes. **Read**: reads only. **Write**: adds or starts something without removing existing state. **Destructive**: deletes, overwrites, interrupts or triggers something; *idempotent* means repeating the same call has no further effect. Server-side write gates (`confirm=true`, `UNIFI_ENABLE_*`) still apply.
 
-Destructive: 43, Destructive (idempotent): 41, Read: 163, Write: 36
+Destructive: 43, Destructive (idempotent): 41, Read: 164, Write: 36
 
 | Tool | Family | Category | Access |
 | --- | --- | --- | --- |
@@ -244,6 +244,7 @@ Destructive: 43, Destructive (idempotent): 41, Read: 163, Write: 36
 | [`list_sites`](#list_sites) | site_manager | Listing & Discovery | Read |
 | [`list_speakers`](#list_speakers) | protect | Listing & Discovery | Read |
 | [`list_switch_stacks`](#list_switch_stacks) | network | Listing & Discovery | Read |
+| [`list_traffic_flows`](#list_traffic_flows) | network | Listing & Discovery | Read |
 | [`list_traffic_matching_lists`](#list_traffic_matching_lists) | network | Listing & Discovery | Read |
 | [`list_traffic_routes`](#list_traffic_routes) | network | Listing & Discovery | Read |
 | [`list_traffic_rules`](#list_traffic_rules) | network | Listing & Discovery | Read |
@@ -1786,7 +1787,7 @@ confirm: must be True to execute. Prevents accidental triggers on live infrastru
 
 ## Listing & Discovery
 
-**83 tools**
+**84 tools**
 
 ### `list_accounts`
 
@@ -1873,13 +1874,14 @@ List all connected clients across all sites.
 
 Fans out requests to every site and aggregates results with source
 host/site annotations on each client record.
-key_label: scope query to consoles visible to a specific API key.
+key_label: scope query to consoles visible to a specific API key. Omitted with
+several keys configured: every key's sites, each client tagged with _keyLabel.
 
 **Parameters**
 
 | Name | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `key_label` | `string | null` | no | `null` | scope query to consoles visible to a specific API key. |
+| `key_label` | `string | null` | no | `null` | scope query to consoles visible to a specific API key. Omitted with |
 
 **Return type**
 
@@ -1899,7 +1901,8 @@ nothing and returns an EMPTY device list, so a typo (e.g. 'ofline') looks like a
 healthy fleet with zero problem devices rather than an error. Omit status_filter to
 get the full fleet, then read the real status values off the returned records.
 key_label: scope query to a specific API key
-(use list_configured_api_keys to see available keys).
+(use list_configured_api_keys to see available keys). Omitted with several
+keys configured: every key's devices, each tagged with _keyLabel.
 
 **Parameters**
 
@@ -3507,6 +3510,40 @@ filter: optional UniFi Integration API filter expression.
 
 `dict[str, Any]`
 
+### `list_traffic_flows`
+
+**Access:** Read
+
+Read the traffic flow log of a site (Insights > Flows). Read-only.
+
+host: console name, MAC or ID. site: site name or ID (default "default").
+start/end: epoch SECONDS; default window is the last hour.
+direction: any of "incoming", "outgoing", "local". action: "allowed", "blocked".
+risk: "low", "medium", "high". Filters run on the console.
+page_number (from 0) / page_size (1-5000, default 1000) page through the result;
+one query returns at most 10,000 flows, so narrow the window or filters on busy
+sites. Blocked flows carry policies[].type (e.g. INTRUSION_PREVENTION) and ips
+details. Flow logging must be enabled on the console (Settings > CyberSecure /
+Traffic Logging).
+
+**Parameters**
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `host` | `string` | yes |  | console name, MAC or ID. |
+| `site` | `string` | no | `default` | site name or ID (default "default"). |
+| `start` | `integer | null` | no | `null` |  |
+| `end` | `integer | null` | no | `null` |  |
+| `direction` | `array | null` | no | `null` | any of "incoming", "outgoing", "local". |
+| `action` | `array | null` | no | `null` | "allowed", "blocked". |
+| `risk` | `array | null` | no | `null` | "low", "medium", "high". Filters run on the console. |
+| `page_number` | `integer` | no | `0` |  |
+| `page_size` | `integer` | no | `1000` |  |
+
+**Return type**
+
+`Any`
+
 ### `list_traffic_matching_lists`
 
 **Access:** Read
@@ -4043,7 +4080,7 @@ site: site name or UUID — REQUIRED only when path contains a site placeholder.
 params: optional query-string parameters.
 scope: optional 'device' / 'site' / 'global' — cross-checked against the path so a
   device route cannot be confused with a site-global setting route.
-Returns {method, routeClass, path, resolvedPath, status, body} (body credential-redacted).
+Returns {method, routeClass, path, resolvedPath, status, body} (body verbatim).
 
 **Parameters**
 
@@ -4098,7 +4135,7 @@ Relay a POST (create/command) through the Fabric connector. MUTATION — GATED.
 Refused unless BOTH confirm=true AND the server's UNIFI_ENABLE_CONNECTOR_WRITE flag are
 set (fail-closed; gating is checked before any network call). POST targets a collection
 or command route (e.g. ``network/api/s/{site}/cmd/...``); it has no GET twin, so no
-read-before/after is performed. The upstream status/body (redacted) and routeClass are
+read-before/after is performed. The upstream status/body (verbatim) and routeClass are
 returned; a 4xx/5xx is reported, not raised.
 
 See fabric_connector_get for host/path/site/scope semantics. body: the JSON request body.
@@ -4997,13 +5034,14 @@ zone_id: REQUIRED. Obtain it from `list_firewall_zones_proxy` (its id field).
 Get a high-level fleet summary: host, site, and device counts with status breakdowns.
 
 Useful for a quick overview of the entire UniFi deployment.
-key_label: scope summary to consoles visible to a specific API key.
+key_label: scope summary to consoles visible to a specific API key. Omitted with
+several keys configured: totals over every key, plus a per-key breakdown (byKey).
 
 **Parameters**
 
 | Name | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `key_label` | `string | null` | no | `null` | scope summary to consoles visible to a specific API key. |
+| `key_label` | `string | null` | no | `null` | scope summary to consoles visible to a specific API key. Omitted with |
 
 **Return type**
 
@@ -6094,7 +6132,8 @@ query: search term matched against name, MAC address, IP, or model.
 Search for a device by name, MAC address, or model across the entire fleet.
 
 Returns all matching devices from all consoles.
-key_label: scope search to consoles visible to a specific API key.
+key_label: scope search to consoles visible to a specific API key. Omitted with
+several keys configured: searches every key's devices.
 query: REQUIRED. Search string matched against device name, model, and MAC across the fleet.
 
 **Parameters**
@@ -6102,7 +6141,7 @@ query: REQUIRED. Search string matched against device name, model, and MAC acros
 | Name | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
 | `query` | `string` | yes |  | REQUIRED. Search string matched against device name, model, and MAC across the fleet. |
-| `key_label` | `string | null` | no | `null` | scope search to consoles visible to a specific API key. |
+| `key_label` | `string | null` | no | `null` | scope search to consoles visible to a specific API key. Omitted with |
 
 **Return type**
 
