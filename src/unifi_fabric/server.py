@@ -322,10 +322,10 @@ user specifically asks for ACL rules or classic rules.
   `internetAccessEnabled=true`, `isolationEnabled=false`. Set `isolationEnabled=true` for
   guest/IoT VLANs to prevent lateral movement between clients.
 - **Credential values**: results carry the complete upstream data, including
-  passphrases and secrets, unless the operator enabled `UNIFI_REDACT_SECRETS`. Then a
-  credential reads `[REDACTED: set UNIFI_REDACT_SECRETS=false to return credentials]`
-  and the result's `_meta.redactedFields` lists the masked paths. That is a server-side
-  setting: tell the user if they need a masked value; it cannot be changed from a call.
+  passphrases and secrets, unless the operator enabled `UNIFI_REDACT_SECRETS`. Then each
+  credential value is replaced by a REDACTED placeholder that names the setting, and the
+  result's `_meta.redactedFields` lists the masked paths. That is a server-side setting:
+  tell the user if they need a masked value; it cannot be changed from a call.
 """
 
 
