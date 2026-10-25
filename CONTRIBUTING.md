@@ -29,6 +29,15 @@ only holds if the reasoning does:
   the **data-survival tests** exist as the
   check on that and are meant to fail such a change loudly.
 
+**One opt-in exception: `UNIFI_REDACT_SECRETS`.** A deployment that must not hand
+credentials to its MCP clients, and has no proxy to do it, can set
+`UNIFI_REDACT_SECRETS=true` (default **off**; see [#26](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/26)). The masking lives
+in exactly one place, `src/unifi_fabric/_redaction.py`: FastMCP middleware that masks the
+values of an explicit, documented list of credential fields in the *finished* tool result.
+It is off unless the operator turns it on, tool logic always sees raw data, and
+non-credential data (identifiers, GPS, URLs) is never touched. Do not add masking anywhere
+else, and never inside an individual tool: the default response must stay complete.
+
 This is scoped to response *bodies*. Redacting identifiers inside error-message
 text stays, and the committed-fixture sanitisation check
 (`.github/scripts/check_fixtures_sanitization.py`) stays — those are separate

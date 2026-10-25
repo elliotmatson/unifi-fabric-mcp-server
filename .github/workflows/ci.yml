@@ -23,20 +23,28 @@ jobs:
       - run: pip install ruff
       - run: ruff check src/ tests/
       - run: ruff format --check src/ tests/
-      # Pass-through guard: the server returns complete upstream data (see CLAUDE.md).
-      # Fail if any removed response-filtering helper reappears in src/. This is an
-      # exact name-check, not a semantic proof; the data-survival unit tests are the
-      # behavioural backstop. It intentionally does NOT match client.py's error-message
-      # redaction or the committed-fixture sanitisation check — those are separate.
+      # Pass-through guard: the server returns complete upstream data by default (see
+      # CONTRIBUTING.md). The only masking allowed is the opt-in UNIFI_REDACT_SECRETS
+      # result-layer middleware in src/unifi_fabric/_redaction.py. Fail if a removed
+      # response-filtering helper reappears, or if a masking marker shows up anywhere else
+      # in src/ (client.py's error-message redaction is separate and stays). This is a
+      # name/marker check, not a semantic proof; the data-survival tests are the
+      # behavioural backstop.
       - name: No runtime response redaction
         run: |
-          if grep -rnE 'redact_identifiers|_redact_secrets|_sanitize_geometry|_filter_gps|_is_secret_field|_is_identifier_field' src/; then
+          if grep -rnE 'redact_identifiers|_redact_secrets|_redact_credentials|_sanitize_geometry|_filter_gps|_is_secret_field|_is_identifier_field' src/; then
             echo "::error::Runtime response-filtering helper found in src/. This server is a"
-            echo "::error::faithful pass-through (see CLAUDE.md 'Pass-through invariant'): tools must"
-            echo "::error::return complete upstream data. Restriction belongs in the deployment, not here."
+            echo "::error::faithful pass-through by default: tools must return complete upstream"
+            echo "::error::data. Opt-in masking belongs only in src/unifi_fabric/_redaction.py."
             exit 1
           fi
-          echo "No runtime response redaction helpers in src/ — pass-through invariant holds."
+          if grep -rnE '\[REDACTED|\*\*\*REDACTED' src/ --include='*.py' \
+              | grep -vE '^src/unifi_fabric/(_redaction|client)\.py:'; then
+            echo "::error::Masking marker found outside _redaction.py / client.py."
+            echo "::error::Only the opt-in UNIFI_REDACT_SECRETS middleware may mask tool results."
+            exit 1
+          fi
+          echo "No runtime response redaction outside the opt-in middleware — pass-through invariant holds."
 
   typecheck:
     runs-on: ubuntu-latest
