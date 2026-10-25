@@ -336,6 +336,28 @@ Guards (all enforced, none optional):
 - **Scope guard** — an optional `scope` (`device` / `site` / `global`) is cross-checked against the path so a site-global setting route (e.g. `global_switch.stp_version`) cannot be driven by a device-scoped request.
 - **Credential redaction + audit** — credential-bearing fields in the relayed body are redacted before return/log; every mutation attempt is written to a structured audit line (console, site, method, path, confirm, outcome) that **never** contains the API key.
 
+#### Enabling or disabling connector writes
+
+Connector writes are **off by default** and are switched on per deployment, never from a tool call. Set the flag in the server's environment and restart it:
+
+```yaml
+# docker-compose.yml: enable the mutating relay (each call still needs confirm=true)
+services:
+  unifi-mcp:
+    image: ghcr.io/swkstudios/unifi-fabric-mcp-server:latest
+    environment:
+      UNIFI_API_KEY: "your-api-key-here"
+      UNIFI_ENABLE_CONNECTOR_WRITE: "1"   # remove the line, or set "0", to disable again
+```
+
+```bash
+docker compose up -d unifi-mcp            # recreate the container with the new environment
+# or, without compose:
+docker run -e UNIFI_API_KEY="..." -e UNIFI_ENABLE_CONNECTOR_WRITE=1 -p 3000:3000 ghcr.io/swkstudios/unifi-fabric-mcp-server:latest
+```
+
+The flag is read at startup, so a running server keeps its old setting until the container is recreated. If the server shares a network namespace with a sidecar (e.g. `network_mode: service:vpn`), recreate the whole compose group so the new container rejoins it. With the flag on, every `fabric_connector_post/put/patch/delete` call still requires `confirm=true`; `fabric_connector_get` is unaffected either way.
+
 A 4xx/5xx from the relay is returned as `status` (not raised), so an invalid-ID probe surfaces its own reachability status. Undocumented legacy routes remain **experimental** until persistence and rollback are proven against a live console.
 
 **Live decision-closing probe procedures** (documented; each is deferred to a maintenance window and is covered only by hermetic tests in this repo, never run live here):
