@@ -371,9 +371,13 @@ async def connector_write(
     route_class = _validate_relay_path(path, scope)
     if not write_enabled:
         raise ValueError(
-            f"{method_u} connector relay is disabled. Connector writes are OFF by default; "
-            "set UNIFI_ENABLE_CONNECTOR_WRITE=1 in the server environment to enable them. "
-            "GET relay is always available."
+            f"{method_u} connector relay is disabled: connector writes are OFF by default. "
+            "An operator enables them by setting UNIFI_ENABLE_CONNECTOR_WRITE=1 in the MCP "
+            "server's own environment (e.g. the `environment:` block of its docker-compose "
+            "service, or `docker run -e UNIFI_ENABLE_CONNECTOR_WRITE=1`) and restarting the "
+            "server; it cannot be turned on from a tool call. Each mutation still requires "
+            "confirm=true. The GET relay (fabric_connector_get) is always available. See "
+            "README 'Enabling or disabling connector writes'."
         )
     if not confirm:
         raise ValueError(
