@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Post-0.6.2 (0.6.3+) work goes here. -->
 
+### Changed
+- The refusal from `fabric_connector_post/put/patch/delete` while connector writes are disabled now says where an operator sets `UNIFI_ENABLE_CONNECTOR_WRITE=1` (the server's docker-compose `environment:` block or `docker run -e`), that the server must be restarted, and that each mutation still needs `confirm=true`; the README gains an "Enabling or disabling connector writes" section with compose examples. The default stays off. ([#29](https://github.com/swkstudios/unifi-fabric-mcp-server/issues/29))
+
 ### Fixed
 - Docker examples in `README.md` and `docs/AUTH-OAUTH.md` referenced image tags that are never published (`:0.6.1`, `:0.5.0`, and `:dev` / `:X.Y` aliases), so the documented `docker run` commands failed to pull. They now use the published `:vX.Y.Z` form, and the tag guidance describes what releases actually publish (`:vX.Y.Z` and `:latest`).
 
