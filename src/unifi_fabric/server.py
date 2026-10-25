@@ -328,11 +328,11 @@ user specifically asks for ACL rules or classic rules.
 - **Dry-run mode**: if the operator set `UNIFI_DRY_RUN`, write tools return
   `{"dryRun": true, "sent": false, "request": {...}}` instead of changing anything. Report
   the previewed request to the user; do not claim the change was made.
-- **Credential values**: results carry the complete upstream data, including
-  passphrases and secrets, unless the operator enabled `UNIFI_REDACT_SECRETS`. Then each
-  credential value is replaced by a REDACTED placeholder that names the setting, and the
-  result's `_meta.redactedFields` lists the masked paths. That is a server-side setting:
-  tell the user if they need a masked value; it cannot be changed from a call.
+- **Credential values**: by default (`UNIFI_REDACT_SECRETS=true`) each credential value
+  (passphrases, shared secrets, private keys, tokens) is replaced by a REDACTED placeholder
+  that names the setting, and the result's `_meta.redactedFields` lists the masked paths.
+  All other data is complete. It is a server-side setting: if the user needs a masked
+  value, tell them the operator must set it to false; it cannot be changed from a call.
 """
 
 
@@ -434,10 +434,12 @@ mcp = FastMCP(
 )
 # UNIFI_READ_ONLY / UNIFI_TOOL_FAMILIES / UNIFI_DISABLED_TOOL_FAMILIES (default: all tools).
 mcp.add_middleware(ToolSelectionMiddleware(get_settings))
+# Credential masking on tool results (UNIFI_REDACT_SECRETS; on by default in this fork).
+# Must stay registered before DryRunMiddleware (outer) so previewed request bodies are
+# masked too; tests/test_middleware_order.py enforces this.
+mcp.add_middleware(CredentialMaskingMiddleware(lambda: get_settings().redact_secrets))
 # UNIFI_DRY_RUN: report the first write a tool would send instead of sending it.
 mcp.add_middleware(DryRunMiddleware(mcp.get_tool))
-# Opt-in credential masking on tool results (UNIFI_REDACT_SECRETS, default off).
-mcp.add_middleware(CredentialMaskingMiddleware(lambda: get_settings().redact_secrets))
 # One structured audit log line per write-tool call (UNIFI_AUDIT_WRITES, default on).
 mcp.add_middleware(WriteAuditMiddleware(lambda: get_settings().audit_writes, mcp.get_tool))
 

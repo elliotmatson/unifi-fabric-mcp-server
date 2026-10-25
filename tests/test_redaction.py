@@ -151,11 +151,11 @@ async def test_middleware_disabled_is_pass_through() -> None:
     assert not (result.meta or {}).get("redactedFields")
 
 
-def test_setting_defaults_off(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_setting_defaults_on_in_this_fork(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("UNIFI_API_KEY", "synthetic-key")
-    assert Settings().redact_secrets is False
-    monkeypatch.setenv("UNIFI_REDACT_SECRETS", "true")
     assert Settings().redact_secrets is True
+    monkeypatch.setenv("UNIFI_REDACT_SECRETS", "false")
+    assert Settings().redact_secrets is False
 
 
 def test_server_registers_masking_middleware() -> None:

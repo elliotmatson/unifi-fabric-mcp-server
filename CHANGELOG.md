@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **This fork masks credential values by default** (`UNIFI_REDACT_SECRETS=true`): Wi-Fi passphrases, RADIUS/VPN shared secrets, private keys, API tokens and Classic-API `x_*` secret fields in tool results are replaced by a placeholder naming the setting. Set `UNIFI_REDACT_SECRETS=false` to return the complete upstream payload, credentials included. Upstream's default stays off.
+
 ## [0.7.0] - 2026-10-25
 
 ### Added

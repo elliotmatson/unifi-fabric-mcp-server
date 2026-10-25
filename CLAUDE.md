@@ -40,7 +40,12 @@ in exactly one place, `src/unifi_fabric/_redaction.py`: FastMCP middleware that 
 values of an explicit, documented list of credential fields in the *finished* tool result.
 It is off unless the operator turns it on, tool logic always sees raw data, and
 non-credential data (identifiers, GPS, URLs) is never touched. Do not add masking anywhere
-else, and never inside an individual tool: the default response must stay complete.
+else, and never inside an individual tool: with the setting off, the response must stay complete.
+
+**This fork's default is on.** `elliotmatson/unifi-fabric-mcp-server` ships with
+`UNIFI_REDACT_SECRETS=true`: credential values are masked unless the operator sets it to
+`false`. Everything above still holds: masking happens only in that middleware, only on
+credential values, and the setting restores the complete payload. Upstream keeps it off.
 
 Scope note: this invariant is about tool *response bodies*. It is unrelated to
 (a) redacting identifiers inside *error-message text* (`client.py`), which stays,
