@@ -319,6 +319,14 @@ class Settings(BaseSettings):
         "DEBUG, INFO, WARNING, ERROR, CRITICAL. Logs go to stderr only — no file handlers. "
         "Request/response bodies are never logged.",
     )
+    dry_run: bool = Field(
+        default=False,
+        description="Dry-run mode. Env: UNIFI_DRY_RUN. When true, no mutating request "
+        "(POST/PUT/PATCH/DELETE) is sent to the UniFi API: a write tool runs its reads and "
+        "validation, then stops at its first write and returns the request it would have "
+        "sent (method, path, API key label, query params, JSON body). Read tools, including "
+        "POST-based queries, run normally. Default off.",
+    )
     enable_connector_write: bool = Field(
         default=False,
         description="Enable the guarded generic Fabric connector WRITE relay "

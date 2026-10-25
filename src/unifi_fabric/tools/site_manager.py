@@ -308,7 +308,7 @@ async def query_isp_metrics(
             if end_time:
                 entry.setdefault("endTimestamp", end_time)
 
-    data = await client.post(f"/v1/isp-metrics/{interval}/query", json=body)
+    data = await client.post(f"/v1/isp-metrics/{interval}/query", json=body, read_only=True)
     result = data.get("data", data) if isinstance(data, dict) else data
     if isinstance(result, list):
         return {"periods": result}
