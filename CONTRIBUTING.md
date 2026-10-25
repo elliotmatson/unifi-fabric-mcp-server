@@ -203,6 +203,23 @@ Full CI gate matrix:
 | `fixtures-sanitization` | No real MACs, IPs, or API keys in fixtures |
 | `changelog-check` | `CHANGELOG.md` updated, or `skip-changelog` label set |
 
+## Releasing
+
+Releases are cut by `.github/workflows/publish.yml` (the **Release** workflow). Before
+starting one, merge a PR to `main` that:
+
+1. bumps `version` in `pyproject.toml` to `X.Y.Z`, and
+2. renames `## [Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD` (consolidated
+   as described above) and opens a fresh, empty `## [Unreleased]` above it.
+
+Then either run **Actions → Release → Run workflow** on `main` with tag `vX.Y.Z`, or push
+the tag yourself (`git tag vX.Y.Z && git push origin vX.Y.Z`). The workflow refuses to
+release unless the tag matches `pyproject.toml`, the commit is on `main`, and `CHANGELOG.md`
+has a non-empty `[X.Y.Z]` section. It then runs the full CI gates on that commit, creates
+the tag if needed, pushes the multi-arch image `ghcr.io/<owner>/<repo>:vX.Y.Z` (and
+`:latest`), and publishes a GitHub Release whose notes are the `[X.Y.Z]` section.
+Re-running it for an existing tag rebuilds the image and refreshes the release notes.
+
 ## Testing requirements
 
 Every PR that modifies `src/` must:
