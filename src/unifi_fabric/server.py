@@ -4766,7 +4766,9 @@ async def fabric_connector_get(
 
     The escape hatch for a controller-supported route that has no typed tool yet. Always
     available — GET needs no confirm. A 4xx/5xx is returned as ``status`` (not raised), so
-    a probe of an unknown route surfaces its own reachability status.
+    a probe of an unknown route surfaces its own reachability status. GET routes that
+    change console state (Protect ``cameras/{id}/enable-control`` and
+    ``disable-control``) are refused, because this tool is read-only.
 
     host: console name or ID (resolved to the owning API key + host id via the Registry).
     path: the relay-relative application path AFTER ``/proxy/`` — e.g.

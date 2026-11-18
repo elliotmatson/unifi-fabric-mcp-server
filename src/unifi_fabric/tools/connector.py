@@ -29,7 +29,9 @@ Guard model (all enforced here, none optional):
 * **Positive-charset path validation.** ``..``, ``%`` (any percent-encoding),
   ``\\``, whitespace, control characters, ``//`` empty segments and a scheme (``://``)
   are rejected. This is the InnerSpace-allowlist lesson applied to the relay.
-* **Mutation gating (fail-closed).** GET is always available. POST/PUT/PATCH/DELETE
+* **Mutation gating (fail-closed).** GET is always available, except the few GET
+  routes that change state on the console (:data:`_STATE_CHANGING_GET_ROUTES`, e.g.
+  Protect's ``cameras/{id}/enable-control``); the read relay refuses those. POST/PUT/PATCH/DELETE
   require BOTH ``confirm=true`` AND the ``UNIFI_ENABLE_CONNECTOR_WRITE`` env flag
   (code default OFF). Either missing → the mutation is refused before any network
   call is made.
@@ -99,6 +101,24 @@ _GLOBAL_SETTING_MARKERS = ("/rest/setting", "/set/setting", "global_switch")
 _MUTATION_METHODS = ("POST", "PUT", "PATCH", "DELETE")
 #: Methods with a GET twin at the same resource path (read-before / read-after).
 _TWIN_METHODS = ("PUT", "PATCH", "DELETE")
+
+#: GET routes that change console state. A GET to one of these is a write in all but
+#: method, so the read relay (``fabric_connector_get``, annotated read-only) refuses it
+#: before any network call. Matched case-insensitively against the full resolved path.
+_STATE_CHANGING_GET_ROUTES: tuple[re.Pattern[str], ...] = (
+    re.compile(r"protect/api/cameras/[^/]+/(?:enable|disable)-control", re.IGNORECASE),
+)
+
+
+def _check_not_state_changing_get(path: str) -> None:
+    """Refuse a GET whose route changes console state (see _STATE_CHANGING_GET_ROUTES)."""
+    normalized = path.strip().strip("/")
+    if any(pattern.fullmatch(normalized) for pattern in _STATE_CHANGING_GET_ROUTES):
+        raise ValueError(
+            f"Connector path {normalized!r} changes console state even though it is a GET "
+            "(it turns Protect camera control on or off), so the read-only GET relay "
+            "refuses it. Make this change in the UniFi Protect app."
+        )
 
 
 def _check_raw_charset(path: str) -> None:
@@ -280,15 +300,20 @@ async def connector_get(
 ) -> dict[str, Any]:
     """Relay a GET through the Fabric connector. Always available (no confirm).
 
+    A GET route that changes console state (``_STATE_CHANGING_GET_ROUTES``) is refused
+    before any network call, because this relay is advertised as read-only.
+
     Returns the upstream status and body (verbatim) plus the resolved route class.
     A 4xx/5xx is reported as ``status`` rather than raised — a GET probe of an
     unknown route surfaces its own status.
     """
     route_class = _validate_relay_path(path, scope)
+    _check_not_state_changing_get(path)
     key = await registry.resolve_key_for_host(host)
     host_id = await registry.resolve_host_id(host, key=key)
     final_path = await _substitute_site(path, site, host_id, registry, key)
     _check_final_charset(final_path)
+    _check_not_state_changing_get(final_path)
     url = _RELAY_BASE.format(host_id=host_id) + final_path
     resp = await client.request("GET", url, key=key, params=params, raise_on_error=False)
     status = resp.status_code
