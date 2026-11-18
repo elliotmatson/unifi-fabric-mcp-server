@@ -19,6 +19,7 @@ from unifi_fabric.tools.protect import (
     get_light,
     get_liveview,
     get_nvr,
+    get_nvr_details,
     get_sensor,
     get_viewer,
     list_chimes,
@@ -270,6 +271,29 @@ class TestGetNvr:
         client.get.return_value = ["raw"]
         result = await get_nvr(client, registry, "h")
         assert result == {"data": ["raw"]}
+
+
+class TestGetNvrDetails:
+    async def test_reads_private_nvr_record(self, client, registry):
+        payload = {
+            "id": "nvr-1",
+            "storageInfo": {"totalSize": 8_000_000_000_000, "hardDrives": [{"status": "ok"}]},
+            "recordingRetentionDurationMs": 2_592_000_000,
+        }
+        client.get.return_value = payload
+        result = await get_nvr_details(client, registry, "h")
+        client.get.assert_called_once_with(f"{PRIVATE_BASE}/nvr", key=None)
+        assert result == payload
+
+    async def test_non_dict_wrapped(self, client, registry):
+        client.get.return_value = ["raw"]
+        result = await get_nvr_details(client, registry, "h")
+        assert result == {"data": ["raw"]}
+
+    async def test_host_not_found_is_translated(self, client, registry):
+        client.get.side_effect = UniFiConnectionError("403 forbidden: host not found")
+        with pytest.raises(UniFiConnectionError, match="rejected by the connector"):
+            await get_nvr_details(client, registry, "h")
 
 
 # --- Alarm Webhook ---

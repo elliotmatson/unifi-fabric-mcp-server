@@ -249,12 +249,22 @@ async def get_camera_snapshot(
     registry: Registry,
     host: str,
     camera_id: str,
+    high_quality: bool = False,
 ) -> dict[str, Any]:
-    """Request a snapshot from a Protect camera. Returns base64-encoded JPEG image data."""
+    """Request a snapshot from a Protect camera. Returns base64-encoded JPEG image data.
+
+    high_quality: when True, sends the Integration API's ``highQuality=true`` query
+    parameter, which asks the camera for a full-resolution (1080p or higher) frame. When
+    False (the default) no parameter is sent and the console returns its standard snapshot.
+    """
     validate_id(camera_id, "camera_id")
     key = await registry.resolve_key_for_host(host)
     host_id = await registry.resolve_host_id(host, key=key)
-    raw = await client.get_bytes(_proxy(host_id, f"/cameras/{camera_id}/snapshot"), key=key)
+    path = _proxy(host_id, f"/cameras/{camera_id}/snapshot")
+    if high_quality:
+        raw = await client.get_bytes(path, key=key, params={"highQuality": "true"})
+    else:
+        raw = await client.get_bytes(path, key=key)
     return {
         "image_base64": base64.b64encode(raw).decode(),
         "content_type": "image/jpeg",
@@ -655,6 +665,28 @@ async def get_nvr(
     key = await registry.resolve_key_for_host(host)
     host_id = await registry.resolve_host_id(host, key=key)
     data = await client.get(_proxy(host_id, "/nvrs"), key=key)
+    return data if isinstance(data, dict) else {"data": data}
+
+
+async def get_nvr_details(
+    client: UniFiClient,
+    registry: Registry,
+    host: str,
+) -> dict[str, Any]:
+    """Get the full NVR record from the private Protect API (``/proxy/protect/api/nvr``).
+
+    The Integration API's ``/nvrs`` (used by ``get_nvr``) returns only a few identity and
+    arm-mode fields. The private record is the one the Protect web UI reads, and is where
+    storage, disk and recording-retention state live. It is an unofficial, undocumented
+    path, so its field names can change between Protect releases; the payload is returned
+    unchanged.
+    """
+    key = await registry.resolve_key_for_host(host)
+    host_id = await registry.resolve_host_id(host, key=key)
+    try:
+        data = await client.get(_private(host_id, "/nvr"), key=key)
+    except UniFiConnectionError as exc:
+        raise translate_host_not_found(exc, host) from exc
     return data if isinstance(data, dict) else {"data": data}
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import ssl
@@ -16,6 +17,8 @@ from typing import Any
 
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
+from fastmcp.tools.tool import ToolResult
+from mcp import types as mt
 
 from ._audit import WriteAuditMiddleware
 from ._dry_run import DryRunMiddleware
@@ -231,7 +234,8 @@ user specifically asks for ACL rules or classic rules.
   `ptz_patrol_start`, `ptz_patrol_stop`, `list_sensors`, `get_sensor`, `update_sensor`,
   `list_lights`, `get_light`, `update_light`, `list_chimes`, `get_chime`, `update_chime`,
   `list_viewers`, `get_viewer`, `update_viewer`, `list_liveviews`, `get_liveview`,
-  `create_liveview`, `update_liveview`, `get_nvr`, `list_protect_files`, `upload_protect_file`,
+  `create_liveview`, `update_liveview`, `get_nvr`, `get_nvr_details`, `list_protect_files`,
+  `upload_protect_file`,
   `trigger_alarm_webhook`, `start_talkback_session`, `disable_camera_mic_permanently`,
   `list_protect_events`,
   `list_recognition_groups`, `get_recognition_group_counts`, `get_recognition_group_image`,
@@ -1908,14 +1912,38 @@ async def update_camera(
 async def get_camera_snapshot(
     host: str,
     camera_id: str,
-) -> dict[str, Any]:
-    """Get a snapshot from a Protect camera. Returns base64-encoded JPEG image data.
+    as_image: bool = False,
+    high_quality: bool = False,
+) -> dict[str, Any] | ToolResult:
+    """Get a snapshot from a Protect camera.
+
+    By default returns JSON with the JPEG as base64 text (image_base64, content_type,
+    size_bytes). Set as_image=true to receive the frame as an MCP image content block
+    instead, so a vision-capable assistant can look at it (e.g. to check a view for
+    obstruction, fog, water or a camera knocked off aim); a short JSON text block with
+    content_type and size_bytes accompanies the image.
 
     host: console name, ID, or composite ID (MAC:numericId format).
     camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
+    as_image: return an image content block instead of base64 text. Default false.
+    high_quality: request a full-resolution (1080p or higher) frame. Default false, which
+      returns the console's standard snapshot; full resolution costs far more tokens.
     """
     client, registry = _require()
-    return await protect.get_camera_snapshot(client, registry, host, camera_id)
+    result = await protect.get_camera_snapshot(
+        client, registry, host, camera_id, high_quality=high_quality
+    )
+    if not as_image:
+        return result
+    meta = {"content_type": result["content_type"], "size_bytes": result["size_bytes"]}
+    return ToolResult(
+        content=[
+            mt.ImageContent(
+                type="image", data=result["image_base64"], mimeType=result["content_type"]
+            ),
+            mt.TextContent(type="text", text=json.dumps(meta)),
+        ]
+    )
 
 
 @mcp.tool(annotations=TOOL_CLASS["get_rtsps_stream"])
@@ -2538,6 +2566,23 @@ async def get_nvr(
     """
     client, registry = _require()
     return await protect.get_nvr(client, registry, host)
+
+
+@mcp.tool(annotations=TOOL_CLASS["get_nvr_details"])
+async def get_nvr_details(
+    host: str,
+) -> dict[str, Any]:
+    """Get the full NVR record, including storage, disk and recording-retention state.
+
+    `get_nvr` uses the official Integration API, which returns only a few identity and
+    arm-mode fields. This tool reads the private Protect API record the Protect web UI
+    uses (GET /proxy/protect/api/nvr), which carries storage capacity and usage, disk
+    health and retention settings. The path is unofficial and its field names may change
+    between Protect releases; the payload is returned unchanged. Read-only.
+    host: console name, ID, or composite ID (MAC:numericId format).
+    """
+    client, registry = _require()
+    return await protect.get_nvr_details(client, registry, host)
 
 
 # --- Protect File Tools ---

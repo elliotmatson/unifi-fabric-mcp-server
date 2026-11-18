@@ -236,6 +236,7 @@ FAMILY_TOOLS: dict[str, tuple[str, ...]] = {
         "get_link_station",
         "get_liveview",
         "get_nvr",
+        "get_nvr_details",
         "get_protect_application_info",
         "get_protect_user",
         "get_recognition_group_counts",

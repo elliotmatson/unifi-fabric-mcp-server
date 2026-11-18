@@ -13,7 +13,7 @@ Several collection tools accept a `filter` expression forwarded unchanged to the
 - **A valid property with a non-matching value returns an empty set, not an error.** `{data: [], totalCount: 0}` can mean either "no records match" or "the value never matches this field"; it is not proof the filter is malformed. Only an *invalid property* raises HTTP 400.
 - Each tool's own docstring lists live-verified example expressions valid for that endpoint.
 
-Total tools: 284
+Total tools: 285
 
 ## Tool Categories
 
@@ -26,7 +26,7 @@ Total tools: 284
 - [Execute & Actions](#execute--actions) (7)
 - [Listing & Discovery](#listing--discovery) (84)
 - [Other](#other) (25)
-- [Reading & Inspection](#reading--inspection) (75)
+- [Reading & Inspection](#reading--inspection) (76)
 - [Search](#search) (2)
 - [Update](#update) (40)
 
@@ -34,7 +34,7 @@ Total tools: 284
 
 Access comes from each tool's MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`), which clients and gateways can use to tell reads from writes. **Read**: reads only. **Write**: adds or starts something without removing existing state. **Destructive**: deletes, overwrites, interrupts or triggers something; *idempotent* means repeating the same call has no further effect. Server-side write gates (`confirm=true`, `UNIFI_ENABLE_*`) still apply.
 
-Destructive: 43, Destructive (idempotent): 41, Read: 164, Write: 36
+Destructive: 43, Destructive (idempotent): 41, Read: 165, Write: 36
 
 | Tool | Family | Category | Access |
 | --- | --- | --- | --- |
@@ -142,6 +142,7 @@ Destructive: 43, Destructive (idempotent): 41, Read: 164, Write: 36
 | [`get_network_application_info`](#get_network_application_info) | network | Reading & Inspection | Read |
 | [`get_network_references`](#get_network_references) | network | Reading & Inspection | Read |
 | [`get_nvr`](#get_nvr) | protect | Reading & Inspection | Read |
+| [`get_nvr_details`](#get_nvr_details) | protect | Reading & Inspection | Read |
 | [`get_port_profile`](#get_port_profile) | network | Reading & Inspection | Read |
 | [`get_protect_application_info`](#get_protect_application_info) | protect | Reading & Inspection | Read |
 | [`get_protect_user`](#get_protect_user) | protect | Reading & Inspection | Read |
@@ -4461,7 +4462,7 @@ key_label: optional configured API-key label to route on a specific key.
 
 ## Reading & Inspection
 
-**75 tools**
+**76 tools**
 
 ### `get_account`
 
@@ -4609,10 +4610,19 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 
 **Access:** Read
 
-Get a snapshot from a Protect camera. Returns base64-encoded JPEG image data.
+Get a snapshot from a Protect camera.
+
+By default returns JSON with the JPEG as base64 text (image_base64, content_type,
+size_bytes). Set as_image=true to receive the frame as an MCP image content block
+instead, so a vision-capable assistant can look at it (e.g. to check a view for
+obstruction, fog, water or a camera knocked off aim); a short JSON text block with
+content_type and size_bytes accompanies the image.
 
 host: console name, ID, or composite ID (MAC:numericId format).
 camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
+as_image: return an image content block instead of base64 text. Default false.
+high_quality: request a full-resolution (1080p or higher) frame. Default false, which
+  returns the console's standard snapshot; full resolution costs far more tokens.
 
 **Parameters**
 
@@ -4620,10 +4630,12 @@ camera_id: REQUIRED. Obtain it from `list_cameras` (its id field).
 | --- | --- | --- | --- | --- |
 | `host` | `string` | yes |  | console name, ID, or composite ID (MAC:numericId format). |
 | `camera_id` | `string` | yes |  | REQUIRED. Obtain it from `list_cameras` (its id field). |
+| `as_image` | `boolean` | no | `false` | return an image content block instead of base64 text. Default false. |
+| `high_quality` | `boolean` | no | `false` | request a full-resolution (1080p or higher) frame. Default false, which |
 
 **Return type**
 
-`dict[str, Any]`
+`dict[str, Any] | fastmcp.tools.base.ToolResult`
 
 ### `get_carrier_service_plan`
 
@@ -5466,6 +5478,29 @@ network_id: network UUID from list_networks.
 Get NVR details from a Protect console.
 
 Returns NVR hardware info, storage status, firmware version, and system health.
+host: console name, ID, or composite ID (MAC:numericId format).
+
+**Parameters**
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `host` | `string` | yes |  | console name, ID, or composite ID (MAC:numericId format). |
+
+**Return type**
+
+`dict[str, Any]`
+
+### `get_nvr_details`
+
+**Access:** Read
+
+Get the full NVR record, including storage, disk and recording-retention state.
+
+`get_nvr` uses the official Integration API, which returns only a few identity and
+arm-mode fields. This tool reads the private Protect API record the Protect web UI
+uses (GET /proxy/protect/api/nvr), which carries storage capacity and usage, disk
+health and retention settings. The path is unofficial and its field names may change
+between Protect releases; the payload is returned unchanged. Read-only.
 host: console name, ID, or composite ID (MAC:numericId format).
 
 **Parameters**
