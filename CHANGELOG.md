@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-17
+
 ### Added
 - `get_camera_snapshot` takes `as_image` (default `false`). When `true`, the frame comes back as an MCP image content block, followed by a small JSON text block with `content_type` and `size_bytes`, so a vision-capable assistant can look at the view (for example to spot a blocked, fogged or water-streaked lens, or a camera knocked off aim). With the default, the response is unchanged: JSON with the JPEG as base64 text.
 - `get_camera_snapshot` takes `high_quality` (default `false`), which sends the Integration API's `highQuality=true` query parameter for a full-resolution frame. With the default, no parameter is sent.
