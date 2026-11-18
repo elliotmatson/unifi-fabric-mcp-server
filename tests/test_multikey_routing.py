@@ -31,7 +31,7 @@ from unifi_fabric.tools.hotspot import _list_hotspot_operators
 from unifi_fabric.tools.innerspace import get_innerspace_project
 from unifi_fabric.tools.network import list_networks
 from unifi_fabric.tools.network_services_proxy import list_traffic_matching_lists
-from unifi_fabric.tools.protect import list_cameras
+from unifi_fabric.tools.protect import get_nvr_details, list_cameras
 from unifi_fabric.tools.recognition import get_recognition_group_counts
 from unifi_fabric.tools.site_manager import get_host
 from unifi_fabric.tools.statistics import _get_site_statistics
@@ -116,6 +116,14 @@ async def test_list_cameras_routes_to_owning_key(multikey_client, multikey_regis
     multikey_registry.resolve_host_id = AsyncMock(return_value=_BETA_HOST_ID)
     captured = _capture_key_on_get(multikey_client)
     await list_cameras(multikey_client, multikey_registry, "Beta-Branch")
+    _assert_rode(captured, "beta")
+
+
+async def test_get_nvr_details_routes_to_owning_key(multikey_client, multikey_registry):
+    await _seed_host_caches(multikey_client, multikey_registry)
+    multikey_registry.resolve_host_id = AsyncMock(return_value=_BETA_HOST_ID)
+    captured = _capture_key_on_get(multikey_client)
+    await get_nvr_details(multikey_client, multikey_registry, "Beta-Branch")
     _assert_rode(captured, "beta")
 
 

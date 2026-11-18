@@ -140,6 +140,18 @@ class TestGetCameraSnapshot:
         await get_camera_snapshot(client, registry, "console-1", "cam-99")
         registry.resolve_host_id.assert_called_once_with("console-1", key=None)
 
+    async def test_high_quality_sends_query_param(self, client, registry):
+        client.get_bytes.return_value = b"\xff\xd8\xff"
+        await get_camera_snapshot(client, registry, "h", "cam-1", high_quality=True)
+        client.get_bytes.assert_called_once_with(
+            f"{BASE}/cameras/cam-1/snapshot", key=None, params={"highQuality": "true"}
+        )
+
+    async def test_rejects_invalid_camera_id(self, client, registry):
+        with pytest.raises(ValueError):
+            await get_camera_snapshot(client, registry, "h", "../nvr")
+        client.get_bytes.assert_not_called()
+
 
 # --- get_rtsps_stream ---
 

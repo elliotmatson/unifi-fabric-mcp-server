@@ -82,6 +82,7 @@ _READ_ONLY_TOOLS: tuple[str, ...] = (
     "get_network_application_info",
     "get_network_references",
     "get_nvr",
+    "get_nvr_details",
     "get_port_profile",
     "get_protect_application_info",
     "get_protect_user",

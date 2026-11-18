@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from fastmcp.tools.tool import ToolResult
+from mcp import types as mt
 
 import unifi_fabric.server as server_module
 from unifi_fabric import server
@@ -1491,8 +1494,42 @@ class TestGetCameraSnapshotWrapper:
             mock_fn.return_value = expected
             result = await server.get_camera_snapshot("h1", "cam-1")
 
-        mock_fn.assert_awaited_once_with(mock_client, mock_registry, "h1", "cam-1")
+        mock_fn.assert_awaited_once_with(
+            mock_client, mock_registry, "h1", "cam-1", high_quality=False
+        )
         assert result is expected
+
+    async def test_passes_high_quality(self, mock_globals):
+        mock_client, mock_registry = mock_globals
+        expected = {"image_base64": "AA==", "content_type": "image/jpeg", "size_bytes": 1}
+
+        with patch(
+            "unifi_fabric.server.protect.get_camera_snapshot", new_callable=AsyncMock
+        ) as mock_fn:
+            mock_fn.return_value = expected
+            await server.get_camera_snapshot("h1", "cam-1", high_quality=True)
+
+        mock_fn.assert_awaited_once_with(
+            mock_client, mock_registry, "h1", "cam-1", high_quality=True
+        )
+
+    async def test_as_image_returns_image_content(self, mock_globals):
+        expected = {"image_base64": "/9j/AA==", "content_type": "image/jpeg", "size_bytes": 4}
+
+        with patch(
+            "unifi_fabric.server.protect.get_camera_snapshot", new_callable=AsyncMock
+        ) as mock_fn:
+            mock_fn.return_value = expected
+            result = await server.get_camera_snapshot("h1", "cam-1", as_image=True)
+
+        assert isinstance(result, ToolResult)
+        image, meta = result.content
+        assert isinstance(image, mt.ImageContent)
+        assert image.data == "/9j/AA=="
+        assert image.mimeType == "image/jpeg"
+        assert isinstance(meta, mt.TextContent)
+        assert json.loads(meta.text) == {"content_type": "image/jpeg", "size_bytes": 4}
+        assert result.structured_content is None
 
 
 class TestGetRtspsStreamWrapper:
@@ -1848,6 +1885,21 @@ class TestGetNvrWrapper:
         with patch("unifi_fabric.server.protect.get_nvr", new_callable=AsyncMock) as mock_fn:
             mock_fn.return_value = expected
             result = await server.get_nvr("h1")
+
+        mock_fn.assert_awaited_once_with(mock_client, mock_registry, "h1")
+        assert result is expected
+
+
+class TestGetNvrDetailsWrapper:
+    async def test_delegates_to_protect(self, mock_globals):
+        mock_client, mock_registry = mock_globals
+        expected = {"id": "nvr-1", "storageInfo": {"hardDrives": []}}
+
+        with patch(
+            "unifi_fabric.server.protect.get_nvr_details", new_callable=AsyncMock
+        ) as mock_fn:
+            mock_fn.return_value = expected
+            result = await server.get_nvr_details("h1")
 
         mock_fn.assert_awaited_once_with(mock_client, mock_registry, "h1")
         assert result is expected

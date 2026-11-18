@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `get_camera_snapshot` takes `as_image` (default `false`). When `true`, the frame comes back as an MCP image content block, followed by a small JSON text block with `content_type` and `size_bytes`, so a vision-capable assistant can look at the view (for example to spot a blocked, fogged or water-streaked lens, or a camera knocked off aim). With the default, the response is unchanged: JSON with the JPEG as base64 text.
+- `get_camera_snapshot` takes `high_quality` (default `false`), which sends the Integration API's `highQuality=true` query parameter for a full-resolution frame. With the default, no parameter is sent.
+- `get_nvr_details` — read the full NVR record from the private Protect API (`/proxy/protect/api/nvr`), the record the Protect web UI uses, which carries storage capacity and usage, disk health and recording-retention settings. `get_nvr` (Integration API `/nvrs`) returns only identity and arm-mode fields. The path is unofficial, so its field names may change between Protect releases; the payload is returned unchanged. Annotated `readOnlyHint=true`.
+
+### Changed
+- `get_camera_snapshot` no longer declares an output schema, because with `as_image=true` it returns image content rather than JSON. The default JSON response itself is unchanged and still arrives as structured content.
+
 ## [0.8.0] - 2026-10-25
 
 ### Added
