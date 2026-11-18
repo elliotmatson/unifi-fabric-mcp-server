@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-11-18
+
 ### Security
 - `fabric_connector_get` refuses GET routes that change console state: Protect's `protect/api/cameras/{id}/enable-control` and `disable-control`. Before, the read-only relay sent them, so a client limited to read tools could turn camera control on or off. The check runs on the path as given and after site substitution, before any network call. (Ported from upstream 0.7.0.)
 - Dependencies refreshed in `requirements.lock` (used by the Docker image) to clear published advisories, among them fastmcp 3.4.11 (from 3.2.4), mcp 1.30.0 (from 1.27.0), starlette 1.10.0 (from 1.0.0), pyjwt 2.15.1 (from 2.12.1), authlib 1.9.9 (from 1.7.0), cryptography 50.0.2 (from 46.0.7) and certifi 2026.10.23 (from 2026.2.25, which still trusted the emSign roots). `pip-audit` reports no known vulnerabilities in the new lock.
