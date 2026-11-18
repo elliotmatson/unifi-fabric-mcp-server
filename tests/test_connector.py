@@ -243,6 +243,41 @@ class TestConnectorGet:
         assert result["body"] == {"text": "<html>ok</html>"}
 
 
+class TestStateChangingGet:
+    """GET routes that change console state are refused by the read-only relay."""
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "protect/api/cameras/abc123/enable-control",
+            "protect/api/cameras/abc123/disable-control",
+            "/protect/api/cameras/abc123/disable-control/",
+            "protect/api/cameras/abc123/ENABLE-CONTROL",
+        ],
+    )
+    async def test_refused_before_any_network_call(self, client, registry, path):
+        with pytest.raises(ValueError, match="changes console state"):
+            await connector_get(client, registry, "h", path)
+        client.request.assert_not_awaited()
+        registry.resolve_key_for_host.assert_not_awaited()
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "protect/api/cameras/abc123",
+            "protect/api/cameras",
+            "protect/api/cameras/abc123/snapshot",
+            "protect/api/cameras/abc123/enable-control-history",
+            "protect/integration/v1/cameras/abc123",
+        ],
+    )
+    async def test_neighbouring_reads_still_allowed(self, client, registry, path):
+        client.request.return_value = FakeResp(200, {"ok": True})
+        result = await connector_get(client, registry, "h", path)
+        assert result["status"] == 200
+        client.request.assert_awaited_once()
+
+
 # --------------------------------------------------------------------------- #
 # Mutation gating — confirm AND env flag, fail-closed, no network on refusal
 # --------------------------------------------------------------------------- #
